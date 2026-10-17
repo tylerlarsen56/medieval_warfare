@@ -3,7 +3,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Pixelify+Sans:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Jacquard+12&display=swap">
 <style>
 /* Layout: one-screen war table. HUD strip on top, board on the left,
    command column (info, recruit, dev) on the right; stacks on phones. */
@@ -28,7 +28,7 @@
   --white: #fffaf0;
   --shade: rgba(16, 12, 34, 0.72);
   --font-display: 'Jacquard 12', 'Old English Text MT', 'UnifrakturMaguntia', Georgia, serif;
-  --font-ui: 'Pixelify Sans', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+  --font-ui: 'Fredoka', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
   --radius: 10px;
   color-scheme: dark;
 }
@@ -91,6 +91,7 @@ button { font-family: inherit; }
 .chip.land { background: #c6e6a8; }
 .chip.air { background: #d6ecff; }
 .chip.water { background: #9fd0ff; }
+.chip.random { background: #f1d4ff; }
 .seg { display: inline-flex; border: 3px solid var(--ink); border-radius: 9px; overflow: hidden; box-shadow: 0 3px 0 var(--ink); }
 .seg button {
   font-size: 15px; font-weight: 600; border: 0; background: var(--parchment); color: var(--ink);
@@ -123,7 +124,7 @@ button { font-family: inherit; }
 #screen-maps { display: flex; flex-direction: column; gap: 18px; max-width: 1100px; margin: 0 auto; overflow-y: auto; }
 .screen-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .screen-head h2 { font-family: var(--font-display); font-weight: 400; font-size: 54px; margin: 0; color: var(--gold); text-shadow: 0 4px 0 var(--ink), 3px 0 0 var(--ink), -3px 0 0 var(--ink); line-height: 1; }
-.map-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px; }
 .map-card { text-align: left; padding: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 10px; color: var(--text); font: inherit; transition: transform 0.1s; }
 .map-card:hover { transform: translateY(-2px); }
 .map-card[aria-pressed="true"] { background: var(--white); outline: 4px solid var(--gold); outline-offset: -1px; }
@@ -216,6 +217,28 @@ button { font-family: inherit; }
 .toast { padding: 6px 14px; font-weight: 600; font-size: 14px; line-height: 1.3; animation: toastIn 2.6s ease forwards; text-align: center; }
 @keyframes toastIn { 0% { opacity: 0; transform: translateY(-8px); } 10%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 .thinking.blue { background: var(--blue); }
+.coin-wrap { position: absolute; inset: 0; z-index: 9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: rgba(16,12,34,0.5); line-height: 1.2; padding: 16px; }
+.coin-stage { perspective: 700px; width: 132px; height: 132px; }
+.coin { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
+.coin .face { position: absolute; inset: 0; border-radius: 50%; border: 7px solid var(--gold); outline: 3px solid var(--ink); backface-visibility: hidden; -webkit-backface-visibility: hidden; display: grid; place-items: center; box-shadow: inset 0 0 0 3px var(--ink), inset 0 -9px 0 rgba(0,0,0,0.18); }
+.coin .front { background: var(--blue); }
+.coin .back { background: var(--red); transform: rotateY(180deg); }
+.coin .face canvas { width: 76px; height: 76px; }
+.coin-text { padding: 8px 18px; font-weight: 600; font-size: 19px; text-align: center; max-width: 100%; }
+.spin { display: inline-block; width: 16px; height: 16px; margin-right: 8px; vertical-align: -3px; border: 3px solid var(--parchment-3); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation-duration: 2.4s; } }
+.panel-note { text-transform: none; letter-spacing: 0; font-size: 12px; text-align: right; }
+.build-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(46px, 1fr)); gap: 5px; }
+.build-item { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 3px 2px 4px; border: 2px solid var(--ink); border-radius: 8px; background: var(--white); cursor: pointer; color: var(--text); font: inherit; min-width: 0; line-height: 1.1; }
+.build-item canvas { width: 36px; height: 36px; }
+.build-item .nm { font-size: 11.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.build-item .price { font-weight: 700; font-size: 12.5px; display: inline-flex; align-items: center; gap: 2px; font-variant-numeric: tabular-nums; }
+.build-item .price .ico { width: 12px; height: 12px; }
+.build-item:hover:not(.off) { background: #fff3c4; }
+.build-item[aria-pressed="true"] { background: var(--gold); }
+.build-item.off { background: var(--parchment-2); color: var(--muted); cursor: not-allowed; }
+.build-item.off canvas { filter: grayscale(1); opacity: 0.6; }
 .net-pill { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 8px; border: 3px solid var(--ink); background: var(--parchment); white-space: nowrap; }
 .net-pill .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--ink); background: var(--leaf); }
 .net-pill.away .dot { background: #f2a33a; }
@@ -314,7 +337,7 @@ button { font-family: inherit; }
         <button class="btn btn-big btn-plain" id="btn-settings-title" type="button">Settings</button>
       </div>
     </div>
-    <div class="version">V1.2</div>
+    <div class="version">V1.3</div>
   </section>
 
   <!-- ===== Map select ===== -->
@@ -326,7 +349,7 @@ button { font-family: inherit; }
     <div class="map-grid" id="map-grid"></div>
     <div class="maps-foot panel">
       <div id="maps-diff-wrap"><span class="lab" style="font-weight:600;margin-right:10px">Bot difficulty</span><span class="seg" id="maps-diff"></span></div>
-      <div id="maps-online-note" hidden style="color:var(--muted);line-height:1.4;max-width:520px"><b style="color:var(--text)">Online 1v1.</b> You host as the Blue Kingdom and move first. Starting gold comes from Settings.</div>
+      <div id="maps-online-note" hidden style="color:var(--muted);line-height:1.4;max-width:520px"><b style="color:var(--text)">Online 1v1.</b> You host as the Blue Kingdom; a coin toss decides who moves first. Starting gold comes from Settings.</div>
       <button class="btn btn-big btn-blue" id="maps-start" type="button">To battle!</button>
     </div>
   </section>
@@ -362,12 +385,20 @@ button { font-family: inherit; }
           <div class="toast-area" id="toasts"></div>
           <div class="thinking" id="thinking" hidden>Red Empire is plotting…</div>
           <div class="paused-cover" id="paused-cover" hidden><div>Paused</div></div>
+          <div class="coin-wrap" id="coin" hidden>
+            <div class="coin-stage"><div class="coin" id="coin-el"><div class="face front"></div><div class="face back"></div></div></div>
+            <div class="coin-text panel" id="coin-text" role="status">Tossing a coin for the first move…</div>
+          </div>
         </div>
       </div>
       <aside class="side">
         <div class="panel">
           <h3 class="panel-title">Scout report</h3>
           <div class="info" id="info"></div>
+        </div>
+        <div class="panel">
+          <h3 class="panel-title"><span>Build</span><span class="panel-note">pick one, then a tile next to a Builder</span></h3>
+          <div class="build-list" id="build-list"></div>
         </div>
         <div class="panel">
           <h3 class="panel-title"><span>Recruit</span><span id="shop-note"></span></h3>
@@ -489,6 +520,10 @@ const UNIT_TYPES = {
     desc: 'A leader on horseback who uses a spear to attack further.' },
   juggernaut:{ name: 'Juggernaut', cls: 'land',  hp: 400, atk: 125, range: 1, move: 2, price: 300,
     desc: 'A walking fortress in full plate. Slow and short-reached, but very hard to bring down.' },
+  sniper:    { name: 'Sniper',     cls: 'land',  hp: 50,  atk: 50,  range: 8, move: 2, price: 200,
+    desc: 'A marksman with a heavy crossbow. Fragile and slow, but hits anything up to 8 tiles away.' },
+  mage:      { name: 'Mage',       cls: 'land',  hp: 100, atk: 50,  range: 2, move: 3, price: 250, area: 'burst',
+    desc: 'Casts a blast that hits every enemy within 2 tiles at once, for 50 damage each. Blasts can\'t be hit back.' },
   builder:   { name: 'Builder',    cls: 'land',  hp: 50,  atk: 0,   range: 1, move: 3, price: 150, maxBuilds: 3,
     desc: 'Constructs towers on an adjacent tile. Towers take one turn to finish. Worn out after 3 buildings.' },
   nurse:     { name: 'Nurse',      cls: 'land',  hp: 25,  atk: 0,   range: 1, move: 3, price: 150, heal: 50,
@@ -497,18 +532,22 @@ const UNIT_TYPES = {
     desc: 'Flies overhead, diving on enemy units. Recruited next to a Wind Tower.' },
   dragon:    { name: 'Dragon',     cls: 'air',   hp: 300, atk: 150, range: 2, move: 6, price: 500, chops: true,
     desc: 'Breathes fire from 2 tiles away and can burn down a tree next to it. Recruited next to a Wind Tower.' },
-  pirate:    { name: 'Pirate',     cls: 'water', hp: 200, atk: 100, range: 3, move: 3, price: 200,
+  phoenix:   { name: 'Phoenix',    cls: 'air',   hp: 500, atk: 100, range: 3, move: 4, price: 600, area: 'line',
+    desc: 'Breathes a line of fire 3 tiles straight or 2 tiles diagonally, hitting every enemy in it. Recruited next to a Wind Tower.' },
+  pirate:    { name: 'Pirate',     cls: 'water', hp: 200, atk: 100, range: 3, move: 3, price: 250,
     desc: 'A ship with cannons that hits land foes from afar. Recruited next to a Water Tower.' },
-  shark:     { name: 'Shark',      cls: 'water', hp: 150, atk: 75,  range: 1, move: 4, price: 150,
+  shark:     { name: 'Shark',      cls: 'water', hp: 150, atk: 100, range: 1, move: 4, price: 150,
     desc: 'A fast hunter that bites anything at the water\'s edge. Recruited next to a Water Tower.' },
+  carrier:   { name: 'Carrier',    cls: 'water', hp: 250, atk: 0,   range: 0, move: 5, price: 200, carries: 1,
+    desc: 'A transport barge. A land unit boards it from the shore; it sails, then unloads the unit onto land on a later turn. Recruited next to a Water Tower.' },
 };
-const UNIT_ORDER = ['soldier', 'archer', 'axeman', 'captain', 'juggernaut', 'builder', 'nurse', 'hawk', 'dragon', 'pirate', 'shark'];
+const UNIT_ORDER = ['soldier', 'archer', 'axeman', 'captain', 'juggernaut', 'sniper', 'mage', 'builder', 'nurse', 'hawk', 'dragon', 'phoenix', 'pirate', 'shark', 'carrier'];
 
 const TOWER_TYPES = {
   hq:          { name: 'HQ',           hp: 500, atk: 0,  range: 0, price: 0,
     effect: 'Home base. Protect it at all costs! Land units are recruited next to it.' },
-  archerTower: { name: 'Archer Tower', hp: 100, atk: 25, range: 5, price: 100,
-    effect: 'A long-range bowman sits in the canopy. Can attack once per turn.' },
+  archerTower: { name: 'Archer Tower', hp: 100, atk: 50, range: 5, price: 100,
+    effect: 'A long-range bowman sits in the canopy. Attacks once per turn, and units it shoots can\'t hit back.' },
   oilRig:      { name: 'Oil Rig',      hp: 200, atk: 0,  range: 0, price: 250,
     effect: 'Earns an additional $50 per turn. Can be built on plains or water.', income: 50 },
   nurseTent:   { name: 'Nurse Tent',   hp: 200, atk: 0,  range: 2, price: 150,
@@ -578,6 +617,35 @@ const MAPS = [
       '.B.WWWWWTTWWWWWW..',
     ]),
   },
+  {
+    id: 'thornwood', name: 'Thornwood', focus: 'land', focusLabel: 'Forest battle',
+    blurb: 'An old, dense forest. Every step into the trees ends a march, so units that clear paths are worth their gold.',
+    rows: buildMap([
+      'TTT.TTTT..TTTTT.TT',
+      'T..TTT.TTTTT.TT..T',
+      'TT.T.TT..TTT.T.TTT',
+      '..TTT..TT.TTT..TT.',
+      '.T.TTT.TTTT..TTT.T',
+      '.B..TT..TTT.TTT..T',
+    ]),
+  },
+  {
+    id: 'sunken', name: 'Sunken Isles', focus: 'water', focusLabel: 'Island battle', islands: true,
+    blurb: 'Two home islands in open sea, with no land between them. Ferry troops over on Carriers, or take to the air.',
+    rows: buildMap([
+      'WWWWWWWWWWWWWWWWWW',
+      '...WWWWWWWW.TWWWWW',
+      '..T.WWWWWWWWWWWWWW',
+      '....WWWWWW..WWWWWW',
+      '.T...WWWWWT.WWWWWW',
+      '.B..WWWWWWWWWWWWWW',
+    ]),
+  },
+  {
+    id: 'random', name: 'Uncharted Lands', focus: 'random', focusLabel: 'Random', random: true,
+    blurb: 'A new battlefield is drawn every time you play: woods, peaks and lakes in a fresh layout.',
+    rows: null, // filled in by genRandomMap() below
+  },
 ];
 
 // ============================================================
@@ -603,6 +671,7 @@ function createGame(mapDef, opts) {
     startBonus: opts.startBonus || 0,
     log: [],
     n: 0,             // actions taken so far (online sync counter)
+    first: 0,         // side that moved first (coin toss)
   };
   for (let y = 0; y < G.h; y++) {
     G.terrain.push([]);
@@ -674,22 +743,21 @@ function reachable(G, e, opts) {
       const nx = cur.x + dx, ny = cur.y + dy;
       if (!inBounds(G, nx, ny)) continue;
       const t = terrainAt(G, nx, ny);
-      if (!canEnter(cls, t)) continue;
       const occ = opts.ignoreUnits ? null : entityAt(G, nx, ny);
+      // A land unit can board an empty friendly Carrier from the shore; boarding ends its move.
+      const boards = cls === 'land' && t === 'W' && !!occ && occ.type === 'carrier' && occ.side === e.side && !occ.cargo;
+      if (!boards && !canEnter(cls, t)) continue;
       let stop = true;
-      if (occ) {
-        if (occ.kind === 'tower') {
-          if (cls !== 'air') continue;
-          stop = false;
-        } else if (occ.side !== e.side) {
-          continue;
-        } else stop = false;
+      if (occ && !boards) {
+        if (occ.kind === 'tower') stop = false;          // walk through buildings, never stop on one
+        else if (occ.side !== e.side) continue;
+        else stop = false;
       }
-      const rem = (cls === 'land' && t === 'T') ? 0 : cur.rem - 1;
+      const rem = boards ? 0 : (cls === 'land' && t === 'T') ? 0 : cur.rem - 1;
       const k = key(nx, ny);
       const old = nodes.get(k);
       if (old && (old.rem > rem || (old.rem === rem && old.steps <= cur.steps + 1))) continue;
-      const node = { x: nx, y: ny, rem, parent: cur, stop, steps: cur.steps + 1 };
+      const node = { x: nx, y: ny, rem, parent: cur, stop, steps: cur.steps + 1, board: boards };
       nodes.set(k, node);
       frontier.push(node);
     }
@@ -713,11 +781,59 @@ function pathFromNode(node) {
 function attackRange(e) { return statsOf(e).range; }
 function canAttackAtAll(e) { return statsOf(e).atk > 0 && statsOf(e).range > 0 && !e.building; }
 
+// Can e, standing at (fx, fy), hit tile (tx, ty)? Range is in straight steps,
+// except the Phoenix, whose flame reaches 3 tiles straight or 2 diagonally.
+function inReach(e, fx, fy, tx, ty) {
+  const dx = tx - fx, dy = ty - fy, ax = Math.abs(dx), ay = Math.abs(dy);
+  if (ax + ay < 1) return false;
+  if (e.type === 'phoenix') return (dx === 0 || dy === 0) ? ax + ay <= 3 : (ax === ay && ax <= 2);
+  return ax + ay <= attackRange(e);
+}
+const _reachCache = {};
+function reachOffsets(e) {
+  if (_reachCache[e.type]) return _reachCache[e.type];
+  const R = Math.max(3, attackRange(e)), out = [];
+  for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) if (inReach(e, 0, 0, dx, dy)) out.push([dx, dy]);
+  return (_reachCache[e.type] = out);
+}
+function reachTiles(G, e, fx, fy) {
+  if (!canAttackAtAll(e) && e.kind === 'tower') return [];
+  return reachOffsets(e).map(([dx, dy]) => ({ x: fx + dx, y: fy + dy })).filter((p) => inBounds(G, p.x, p.y));
+}
+const PHOENIX_DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+// Every way e can attack from (fx, fy). Each option has a key `k` (the target's
+// id, 'all' for a Mage blast, or a direction index for a Phoenix flame), the
+// tiles it covers and the enemies it hits.
+function attackOptions(G, e, fx, fy) {
+  if (!canAttackAtAll(e)) return [];
+  const area = statsOf(e).area;
+  if (area === 'burst') {
+    const v = targetsFrom(G, e, fx, fy);
+    return v.length ? [{ k: 'all', victims: v, tiles: reachTiles(G, e, fx, fy) }] : [];
+  }
+  if (area === 'line') {
+    const out = [];
+    PHOENIX_DIRS.forEach(([dx, dy], i) => {
+      const n = dx && dy ? 2 : 3, tiles = [];
+      for (let s = 1; s <= n; s++) if (inBounds(G, fx + dx * s, fy + dy * s)) tiles.push({ x: fx + dx * s, y: fy + dy * s });
+      const victims = G.entities.filter((o) => o.side !== e.side && tiles.some((p) => p.x === o.x && p.y === o.y));
+      if (victims.length) out.push({ k: i, victims, tiles });
+    });
+    return out;
+  }
+  return targetsFrom(G, e, fx, fy).map((t) => ({ k: t.id, victims: [t], tiles: [{ x: t.x, y: t.y }] }));
+}
+// Would def hit back at an attacker standing on (fx, fy)? Shots from Archer
+// Towers are never returned.
+function canCounter(att, def, fx, fy) {
+  return canAttackAtAll(def) && att.type !== 'archerTower' && inReach(def, def.x, def.y, fx, fy);
+}
+function hasWater(G) { return G.terrain.some((r) => r.includes('W')); }
+
 // Enemy entities attackable by e if it stood at (fx, fy).
 function targetsFrom(G, e, fx, fy) {
   if (!canAttackAtAll(e)) return [];
-  const r = attackRange(e);
-  return G.entities.filter((o) => o.side !== e.side && manhattan(fx, fy, o.x, o.y) <= r && manhattan(fx, fy, o.x, o.y) >= 1);
+  return G.entities.filter((o) => o.side !== e.side && inReach(e, fx, fy, o.x, o.y));
 }
 
 // Tiles in attack range (for drawing). Excludes the unit's own tile.
@@ -742,28 +858,62 @@ function checkWinner(G) {
   return null;
 }
 
-// Resolve an attack. A surviving defender counters at full ATK if the
-// attacker is within its own range.
-function doAttack(G, att, def) {
-  const res = { attacker: att, defender: def, dmg: 0, killed: false, counter: 0, counterKilled: false };
+// Resolve an attack option (see attackOptions). A surviving single target
+// counters at full ATK if the attacker is within its reach; area attacks
+// (Mage, Phoenix) and Archer Tower shots are never countered. Attacking ends
+// a unit's movement for the turn.
+function doAttack(G, att, opt) {
   const a = statsOf(att);
-  res.dmg = Math.min(a.atk, def.hp);
-  def.hp -= a.atk;
-  if (def.hp <= 0) {
-    def.hp = 0; res.killed = true; removeEntity(G, def);
-  } else if (canAttackAtAll(def) && manhattan(att.x, att.y, def.x, def.y) <= attackRange(def)) {
+  const res = { attacker: att, hits: [], counter: 0, counterKilled: false, area: !!a.area };
+  for (const def of opt.victims) {
+    if (!G.entities.includes(def)) continue;
+    const hit = { e: def, dmg: Math.min(a.atk, def.hp), killed: false };
+    def.hp -= a.atk;
+    if (def.hp <= 0) { def.hp = 0; hit.killed = true; removeEntity(G, def); }
+    res.hits.push(hit);
+  }
+  const def = res.hits.length === 1 ? res.hits[0].e : null;
+  if (!res.area && def && !res.hits[0].killed && canCounter(att, def, att.x, att.y)) {
     const d = statsOf(def);
     res.counter = Math.min(d.atk, att.hp);
     att.hp -= d.atk;
     if (att.hp <= 0) { att.hp = 0; res.counterKilled = true; removeEntity(G, att); }
   }
   att.acted = true;
+  if (att.kind === 'unit') att.moved = true;
   checkWinner(G);
   return res;
 }
 
+// Moving onto a friendly Carrier boards it: the unit leaves the map and rides
+// along until the Carrier unloads it on a later turn.
 function doMove(G, e, x, y) {
   e.x = x; e.y = y; e.moved = true;
+  const c = G.entities.find((o) => o !== e && o.x === x && o.y === y && o.type === 'carrier');
+  if (c && e.kind === 'unit' && UNIT_TYPES[e.type].cls === 'land') {
+    removeEntity(G, e);
+    c.cargo = e; c.cargoNew = true; e.acted = true;
+  }
+}
+
+// ---- Carriers ----
+function unloadTiles(G, c) {
+  if (!c.cargo) return [];
+  const out = [];
+  for (const [dx, dy] of DIRS) {
+    const x = c.x + dx, y = c.y + dy;
+    if (inBounds(G, x, y) && canEnter('land', terrainAt(G, x, y)) && !entityAt(G, x, y)) out.push({ x, y });
+  }
+  return out;
+}
+function canUnload(G, c) { return !!c.cargo && !c.cargoNew && !c.acted && unloadTiles(G, c).length > 0; }
+// The landed unit has used its move but may still attack this turn.
+function doUnload(G, c, x, y) {
+  const u = c.cargo;
+  c.cargo = null; c.cargoNew = false; c.acted = true;
+  u.x = x; u.y = y; u.moved = true; u.acted = false; u.fresh = false;
+  G.entities.push(u);
+  return u;
 }
 
 // ---- Building ----
@@ -863,7 +1013,7 @@ function beginTurn(G, side) {
   const events = [];
   for (const e of G.entities) {
     if (e.side !== side) continue;
-    if (e.kind === 'unit') { e.moved = false; e.acted = false; e.fresh = false; }
+    if (e.kind === 'unit') { e.moved = false; e.acted = false; e.fresh = false; e.cargoNew = false; }
     else {
       e.acted = false;
       if (e.building) { e.building = false; events.push({ type: 'built', e }); }
@@ -888,7 +1038,7 @@ function beginTurn(G, side) {
 
 function endTurn(G) {
   const next = 1 - G.turn;
-  if (next === 0) G.day++;
+  if (next === (G.first || 0)) G.day++;
   return beginTurn(G, next);
 }
 
@@ -899,6 +1049,7 @@ function entityExhausted(G, e) {
   if (e.kind === 'tower') return !canAttackAtAll(e) || e.acted;
   if (!e.moved) return false;
   if (e.acted) return true;
+  if (e.type === 'carrier') return !canUnload(G, e);
   if (e.type === 'builder') return !BUILDABLE.some((t) => canBuild(G, e, t));
   if (e.type === 'nurse') return healTargets(G, e).length === 0;
   return targetsFrom(G, e, e.x, e.y).length === 0 && chopTargets(G, e).length === 0;
@@ -930,14 +1081,57 @@ function distanceField(G, cls, seeds, moveAllowance) {
       const nx = x + dx, ny = y + dy;
       if (!inBounds(G, nx, ny)) continue;
       if (!canEnter(cls, terrainAt(G, nx, ny))) continue;
-      const occ = entityAt(G, nx, ny);
-      if (occ && occ.kind === 'tower' && cls !== 'air') continue;
       const nd = cd + enterCost;
       if (nd < d[ny][nx]) { d[ny][nx] = nd; q.push([nd, nx, ny]); }
     }
   }
   return d;
 }
+
+// ---- Random maps ----
+// Draws the top half at random (the bottom half is the same rotated 180
+// degrees, so both sides get identical ground) and keeps it only if a land
+// army can actually march from one HQ to the other.
+function genRandomMap() {
+  const rnd = Math.random;
+  for (let attempt = 0; attempt < 120; attempt++) {
+    const W = 18, H = 6, g = [];
+    const tDens = 0.08 + rnd() * 0.2, mDens = rnd() * 0.07;
+    for (let y = 0; y < H; y++) {
+      const row = [];
+      for (let x = 0; x < W; x++) { const v = rnd(); row.push(v < mDens ? 'M' : v < mDens + tDens ? 'T' : '.'); }
+      g.push(row);
+    }
+    // grow a few woods, ridges and lakes so the terrain clumps
+    const blob = (c, n, rad) => {
+      for (let i = 0; i < n; i++) {
+        const cx = 3 + Math.floor(rnd() * 15), cy = Math.floor(rnd() * H), r = rad[0] + rnd() * (rad[1] - rad[0]);
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (Math.hypot(x - cx, (y - cy) * 1.15) <= r) g[y][x] = c;
+      }
+    };
+    blob('T', Math.floor(rnd() * 3), [1, 2.2]);
+    blob('W', Math.floor(rnd() * 3.5), [1, 2.6]);
+    for (let i = Math.floor(rnd() * 2.5); i > 0; i--) {
+      let x = 4 + Math.floor(rnd() * 12), y = Math.floor(rnd() * H);
+      for (let s = 0; s < 4 + rnd() * 4; s++) { if (y >= 0 && y < H && x >= 0 && x < W) g[y][x] = 'M'; if (rnd() < 0.5) x += rnd() < 0.5 ? 1 : -1; else y += rnd() < 0.5 ? 1 : -1; }
+    }
+    const hx = 1 + Math.floor(rnd() * 2), hy = 3 + Math.floor(rnd() * 3);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const d = Math.abs(x - hx) + Math.abs(y - hy);
+      if (d <= 1 || (d <= 2 && (g[y][x] === 'M' || g[y][x] === 'W'))) g[y][x] = '.';
+    }
+    g[hy][hx] = 'B';
+    const rows = buildMap(g.map((r) => r.join('')));
+    const D = createGame({ rows });
+    const red = hqOf(D, 1), blue = hqOf(D, 0);
+    const f = distanceField(D, 'land', DIRS.map(([dx, dy]) => ({ x: red.x + dx, y: red.y + dy })), 3);
+    let best = 1e9;
+    for (const [dx, dy] of DIRS) if (inBounds(D, blue.x + dx, blue.y + dy)) best = Math.min(best, f[blue.y + dy][blue.x + dx]);
+    if (best < 1e9 && best >= 14) return rows;
+  }
+  return MAPS[0].rows;
+}
+MAPS.find((m) => m.random).rows = genRandomMap();
 
 
 // ============================================================
@@ -966,7 +1160,7 @@ function aiValue(e) {
     if (e.type === 'hq') return 1500;
     return TOWER_TYPES[e.type].price + 60;
   }
-  return UNIT_TYPES[e.type].price;
+  return UNIT_TYPES[e.type].price + (e.cargo ? UNIT_TYPES[e.cargo.type].price : 0);
 }
 
 // Sum of enemy attack power that could land on each tile next turn.
@@ -975,14 +1169,12 @@ function threatMap(G, side) {
   for (let y = 0; y < G.h; y++) m.push(new Array(G.w).fill(0));
   for (const e of G.entities) {
     if (e.side === side || !canAttackAtAll(e)) continue;
-    const r = attackRange(e), atk = statsOf(e).atk;
+    const atk = statsOf(e).atk;
     const origins = e.kind === 'unit'
       ? [...reachable(G, e).values()].filter((n) => n.stop)
       : [{ x: e.x, y: e.y }];
     const hit = new Set();
-    for (const o of origins) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
-      const d = Math.abs(dx) + Math.abs(dy);
-      if (d < 1 || d > r) continue;
+    for (const o of origins) for (const [dx, dy] of reachOffsets(e)) {
       const x = o.x + dx, y = o.y + dy;
       if (inBounds(G, x, y)) hit.add(y * G.w + x);
     }
@@ -1007,15 +1199,11 @@ function makeAI(G, side, level) {
   function objectiveField(u) {
     const st = UNIT_TYPES[u.type];
     const hq = hqOf(G, enemy), myHq = hqOf(G, side);
-    const k = st.cls + '|' + st.range + '|' + G.entities.length + '|' + G.entities.reduce((a, e) => a + e.x * 3 + e.y * 7, 0);
+    const k = u.type + '|' + G.entities.length + '|' + G.entities.reduce((a, e) => a + e.x * 3 + e.y * 7, 0);
     if (fieldCache.has(k)) return fieldCache.get(k);
     const seeds = [];
     const addAround = (e, bias) => {
-      for (let dy = -st.range; dy <= st.range; dy++) for (let dx = -st.range; dx <= st.range; dx++) {
-        const d = Math.abs(dx) + Math.abs(dy);
-        if (d < 1 || d > st.range) continue;
-        seeds.push({ x: e.x + dx, y: e.y + dy, d: bias });
-      }
+      for (const [dx, dy] of reachOffsets(u)) seeds.push({ x: e.x - dx, y: e.y - dy, d: bias });
     };
     if (hq) addAround(hq, 0);
     for (const e of G.entities) {
@@ -1038,16 +1226,18 @@ function makeAI(G, side, level) {
     return P.danger * (frac * aiValue(u) + (t >= u.hp ? aiValue(u) * 0.5 : 0));
   }
 
-  function attackScore(u, target, fx, fy) {
+  function optionScore(u, opt, fx, fy) {
     const a = statsOf(u).atk;
-    const dmg = Math.min(a, target.hp);
-    const kill = a >= target.hp;
-    const val = aiValue(target);
-    let s = dmg * val / maxHp(target) + (kill ? val * 0.6 : 0);
-    if (target.type === 'hq') s += dmg * 4 + (kill ? 1e6 : 0);
-    if (target.building) s += 40;
-    if (!kill && canAttackAtAll(target) && manhattan(fx, fy, target.x, target.y) <= attackRange(target)) {
-      const c = statsOf(target).atk;
+    let s = 0;
+    for (const target of opt.victims) {
+      const dmg = Math.min(a, target.hp), kill = a >= target.hp, val = aiValue(target);
+      s += dmg * val / maxHp(target) + (kill ? val * 0.6 : 0);
+      if (target.type === 'hq') s += dmg * 4 + (kill ? 1e6 : 0);
+      if (target.building) s += 40;
+    }
+    const t0 = opt.victims[0];
+    if (!statsOf(u).area && opt.victims.length === 1 && a < t0.hp && canCounter(u, t0, fx, fy)) {
+      const c = statsOf(t0).atk;
       s -= P.counterWeight * (Math.min(c, u.hp) * aiValue(u) / maxHp(u) + (c >= u.hp ? aiValue(u) * 0.6 : 0));
     }
     return s + rnd() * P.noise;
@@ -1056,7 +1246,7 @@ function makeAI(G, side, level) {
   function stopsOf(u) {
     const r = reachable(G, u);
     const out = [];
-    for (const n of r.values()) if (n.stop) out.push(n);
+    for (const n of r.values()) if (n.stop && !n.board) out.push(n);
     return out;
   }
 
@@ -1066,32 +1256,17 @@ function makeAI(G, side, level) {
     if (!u.acted) {
       for (const n of stops) {
         if (u.moved && (n.x !== u.x || n.y !== u.y)) continue;
-        for (const t of targetsFrom(G, u, n.x, n.y)) {
-          const s = attackScore(u, t, n.x, n.y) - dangerPenalty(u, n.x, n.y) * 0.6;
-          if (!best || s > best.s) best = { s, kind: 'moveAttack', node: n, target: t };
-        }
-      }
-      // Hard bots may strike first and then step back out of reach.
-      if (P.retreat && !u.moved) {
-        for (const t of targetsFrom(G, u, u.x, u.y)) {
-          const base = attackScore(u, t, u.x, u.y);
-          for (const n of stops) {
-            const s = base - dangerPenalty(u, n.x, n.y) * 0.6 + 2;
-            if (!best || s > best.s) best = { s, kind: 'attackMove', node: n, target: t };
-          }
+        for (const opt of attackOptions(G, u, n.x, n.y)) {
+          const s = optionScore(u, opt, n.x, n.y) - dangerPenalty(u, n.x, n.y) * 0.6;
+          if (!best || s > best.s) best = { s, node: n, opt };
         }
       }
     }
     if (best && best.s > 0) {
-      if (best.kind === 'moveAttack') {
-        if (best.node.x !== u.x || best.node.y !== u.y) await act.move(u, pathFromNode(best.node));
-        if (G.entities.includes(u) && G.entities.includes(best.target)) await act.attack(u, best.target);
-      } else {
-        await act.attack(u, best.target);
-        if (G.entities.includes(u) && G.winner === null && (best.node.x !== u.x || best.node.y !== u.y)) {
-          const again = reachable(G, u).get(key(best.node.x, best.node.y));
-          if (again && again.stop) await act.move(u, pathFromNode(again));
-        }
+      if (best.node.x !== u.x || best.node.y !== u.y) await act.move(u, pathFromNode(best.node));
+      if (G.entities.includes(u) && G.winner === null) {
+        const opt = attackOptions(G, u, u.x, u.y).find((o) => o.k === best.opt.k);
+        if (opt) await act.attack(u, opt);
       }
       return;
     }
@@ -1112,12 +1287,12 @@ function makeAI(G, side, level) {
     if (pick && (pick.x !== u.x || pick.y !== u.y)) await act.move(u, pathFromNode(pick));
     // Opportunistic attack after moving (e.g. bait or a free hit).
     if (G.entities.includes(u) && !u.acted) {
-      let bt = null, bs = 0;
-      for (const t of targetsFrom(G, u, u.x, u.y)) {
-        const s = attackScore(u, t, u.x, u.y);
-        if (s > bs) { bs = s; bt = t; }
+      let bo = null, bs = 0;
+      for (const opt of attackOptions(G, u, u.x, u.y)) {
+        const s = optionScore(u, opt, u.x, u.y);
+        if (s > bs) { bs = s; bo = opt; }
       }
-      if (bt) await act.attack(u, bt);
+      if (bo) await act.attack(u, bo);
     }
     // Axe-men and dragons clear a forest tile that lies on the way forward.
     if (G.entities.includes(u) && !u.acted && act.chop) {
@@ -1141,6 +1316,15 @@ function makeAI(G, side, level) {
   function wantedTower() {
     const myHq = hqOf(G, side);
     const keen = towerRoll < P.towerChance;
+    if (G.map.islands) {
+      if (!countTowers('waterTower')) return 'waterTower';
+      if (!countTowers('windTower')) return 'windTower';
+    }
+    if (G.map.focus === 'random' && keen) {
+      const water = G.terrain.reduce((a, r) => a + r.filter((c) => c === 'W').length, 0);
+      if (water >= 24 && !countTowers('waterTower')) return 'waterTower';
+      if (G.day >= 4 && !countTowers('windTower')) return 'windTower';
+    }
     if (G.map.focus === 'air' && !countTowers('windTower') && keen) return 'windTower';
     if (G.map.focus === 'water' && !countTowers('waterTower') && keen) return 'waterTower';
     if (P.archerTowers && countTowers('archerTower') < P.archerTowers && myHq &&
@@ -1226,12 +1410,12 @@ function makeAI(G, side, level) {
   }
 
   async function towerTurn(t, act) {
-    let bt = null, bs = 0;
-    for (const o of targetsFrom(G, t, t.x, t.y)) {
-      const s = attackScore(t, o, t.x, t.y) + 1;
-      if (s > bs) { bs = s; bt = o; }
+    let bo = null, bs = 0;
+    for (const o of attackOptions(G, t, t.x, t.y)) {
+      const s = optionScore(t, o, t.x, t.y) + 1;
+      if (s > bs) { bs = s; bo = o; }
     }
-    if (bt) await act.attack(t, bt);
+    if (bo) await act.attack(t, bo);
   }
 
   // The bot keeps a planned purchase across turns, so it can save up
@@ -1252,14 +1436,21 @@ function makeAI(G, side, level) {
     if (want && !count('builder') && options.includes('builder')) return 'builder';
     const w = {};
     if (!P.smartBuy) {
-      for (const t of options) w[t] = (t === 'builder' || t === 'nurse') ? 0.25 : 1;
+      for (const t of options) w[t] = t === 'carrier' ? 0 : (t === 'builder' || t === 'nurse') ? 0.25 : 1;
     } else {
-      w.soldier = 2; w.archer = 2.5; w.axeman = 2; w.captain = 3.5; w.juggernaut = 1.5;
-      w.hawk = 3; w.dragon = 1.5; w.pirate = 3; w.shark = 2;
-      if (G.map.focus === 'air') { w.hawk = 6; w.dragon = 3; }
+      w.soldier = 2; w.archer = 2.5; w.axeman = 2; w.captain = 3.5; w.juggernaut = 1.5; w.sniper = 1.5; w.mage = 2;
+      w.hawk = 3; w.dragon = 1.5; w.phoenix = 0.8; w.pirate = 3; w.shark = 2; w.carrier = 0;
+      if (G.map.focus === 'air') { w.hawk = 6; w.dragon = 3; w.phoenix = 1.5; }
       if (G.map.focus === 'water') { w.pirate = 6; w.shark = 3; w.hawk = 2.5; }
+      if (G.map.islands) {
+        // No land route: land troops only guard home.
+        for (const t of ['soldier', 'axeman', 'captain', 'juggernaut', 'mage']) w[t] *= 0.15;
+        w.archer = 1.5; w.sniper = 1; w.hawk = 5; w.dragon = 2.5; w.phoenix = 1.5; w.pirate = 6; w.shark = 4;
+      }
+      const trees = G.terrain.reduce((a, r) => a + r.filter((c) => c === 'T').length, 0);
+      if (trees >= 60) w.axeman += 2.5;
       // Late in the game, save up for the heavy hitters.
-      if (G.day >= 10) { w.juggernaut += 1; w.dragon += 1.5; }
+      if (G.day >= 10) { w.juggernaut += 1; w.dragon += 1.5; w.phoenix += 1; }
       if (theirs.filter((u) => u.type === 'hawk').length >= 2) w.archer += 3;
       if (theirs.filter((u) => u.type === 'pirate').length >= 1) w.archer += 2;
       w.nurse = (count('nurse') < P.nurses && mine.length >= 5) ? 3 : 0;
@@ -1748,6 +1939,91 @@ const ART = (() => {
       ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(4, 43); ctx.quadraticCurveTo(10, 40, 16, 43); ctx.moveTo(30, 43); ctx.quadraticCurveTo(37, 40, 44, 43); ctx.stroke();
     },
+    sniper(ctx, tm) {
+      shadow(ctx, 24, 43, 12, 3.5);
+      legs(ctx);
+      // cloak
+      poly(ctx, [15.5, 20, 30.5, 20, 33, 37, 13, 37]); fillStroke(ctx, '#5f7a3a');
+      rr(ctx, 18.5, 22, 11, 13, 3); fillStroke(ctx, tm.main);
+      ctx.fillStyle = C.woodDark; ctx.fillRect(19.5, 30, 9, 2.4);
+      // heavy crossbow, held level
+      ctx.beginPath(); ctx.moveTo(11, 26); ctx.lineTo(45, 23); ol(ctx, 6); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(11, 26); ctx.lineTo(45, 23); ctx.strokeStyle = C.wood; ctx.lineWidth = 3; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(39.5, 15); ctx.quadraticCurveTo(44.5, 23.5, 40, 32); ol(ctx, 5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(39.5, 15); ctx.quadraticCurveTo(44.5, 23.5, 40, 32); ctx.strokeStyle = C.steelDark; ctx.lineWidth = 2.4; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(39.5, 15); ctx.lineTo(30, 24.5); ctx.lineTo(40, 32); ctx.strokeStyle = C.white; ctx.lineWidth = 1; ctx.stroke();
+      circle(ctx, 28.5, 26, 2.8); fillStroke(ctx, C.skin, 2);
+      head(ctx, 24, 15, 6);
+      // hood
+      ctx.beginPath(); ctx.arc(24, 14.5, 7.8, Math.PI * 0.88, Math.PI * 1.98); ctx.lineTo(31.5, 13); ctx.quadraticCurveTo(26, 10.5, 21, 13);
+      ctx.quadraticCurveTo(18.5, 17, 18.5, 22); ctx.lineTo(15.5, 21); ctx.closePath(); fillStroke(ctx, '#5f7a3a', 2.2);
+      poly(ctx, [17, 9, 12, 4, 15, 10.5]); fillStroke(ctx, tm.light, 1.6);
+    },
+    mage(ctx, tm, t) {
+      shadow(ctx, 24, 43, 12, 3.5);
+      // robe
+      poly(ctx, [18, 20, 30, 20, 34.5, 42, 13.5, 42]); fillStroke(ctx, tm.main);
+      poly(ctx, [22, 21, 26, 21, 27.5, 41, 20.5, 41]); ctx.fillStyle = tm.dark; ctx.fill();
+      ctx.fillStyle = C.gold; ctx.fillRect(17.2, 29.5, 14, 2.4);
+      // staff with a glowing orb
+      ctx.beginPath(); ctx.moveTo(34, 42); ctx.lineTo(37.5, 12); ol(ctx, 5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(34, 42); ctx.lineTo(37.5, 12); ctx.strokeStyle = C.wood; ctx.lineWidth = 2.6; ctx.stroke();
+      const glow = 0.6 + 0.4 * Math.sin((t || 0) / 220);
+      circle(ctx, 38, 9.5, 8.5); ctx.fillStyle = `rgba(190,140,255,${0.4 * glow})`; ctx.fill();
+      circle(ctx, 38, 9.5, 4.6); fillStroke(ctx, '#c9a6ff', 2);
+      circle(ctx, 36.8, 8.3, 1.5); ctx.fillStyle = '#ffffff'; ctx.fill();
+      circle(ctx, 35, 27, 3); fillStroke(ctx, C.skin, 2);
+      head(ctx, 24, 16.5, 6);
+      // beard
+      ctx.beginPath(); ctx.moveTo(19.5, 18); ctx.quadraticCurveTo(25.5, 31, 30.5, 18); ctx.quadraticCurveTo(25, 21, 19.5, 18); ctx.closePath(); fillStroke(ctx, '#f0ece4', 1.8);
+      // pointed hat
+      ellipse(ctx, 24, 12.5, 11.5, 2.8); fillStroke(ctx, tm.dark, 2);
+      poly(ctx, [16.5, 12, 31.5, 12, 21, -1]); fillStroke(ctx, tm.main, 2.2);
+      poly(ctx, [23.5, 4.5, 24.6, 6.8, 27, 7, 25.2, 8.6, 25.8, 11, 23.5, 9.7, 21.3, 11, 21.9, 8.6, 20.1, 7, 22.5, 6.8]); fillStroke(ctx, C.gold, 1.2);
+    },
+    phoenix(ctx, tm, t) {
+      const bob = Math.sin((t || 0) / 300) * 2.4;
+      shadow(ctx, 24, 44.5, 13, 3);
+      ctx.save(); ctx.translate(0, bob - 5);
+      const flap = Math.sin((t || 0) / 190) * 4;
+      const fl = 0.5 + 0.5 * Math.sin((t || 0) / 110);
+      // flame tail
+      poly(ctx, [14, 28, 1, 35 + fl * 3, 6, 30.5, 0, 25 - fl * 2, 10, 24.5]); fillStroke(ctx, '#ff7a1f', 2);
+      poly(ctx, [13, 27.5, 5, 30.5, 9, 26]); ctx.fillStyle = '#ffe07a'; ctx.fill();
+      // far wing
+      poly(ctx, [24, 22, 30, 2 - flap, 36, 7 - flap, 42, 4 - flap, 41, 14 - flap * 0.5, 32, 24]); fillStroke(ctx, '#ff9a2a', 2.2);
+      // body
+      ellipse(ctx, 23, 26.5, 11, 7); fillStroke(ctx, '#ff6a2a', 2.4);
+      ellipse(ctx, 25, 29, 6.5, 3.6); ctx.fillStyle = '#ffd34a'; ctx.fill();
+      // neck + head
+      poly(ctx, [29, 25.5, 33, 15, 37.5, 15, 35, 26.5]); fillStroke(ctx, '#ff6a2a', 2.2);
+      rr(ctx, 30.5, 19.5, 6.5, 3.6, 1.5); fillStroke(ctx, tm.main, 1.6);
+      circle(ctx, 36.5, 13, 5.5); fillStroke(ctx, '#ff6a2a', 2.2);
+      poly(ctx, [33.5, 9, 30, 1.5 - fl, 35.5, 6.5, 36.5, -0.5 - fl, 38.5, 8]); fillStroke(ctx, '#ffd34a', 1.6);
+      poly(ctx, [41, 11.5, 47, 14, 41, 16]); fillStroke(ctx, C.gold, 1.8);
+      circle(ctx, 38.2, 12.2, 1.4); ctx.fillStyle = INK; ctx.fill();
+      // near wing in team colors, with flame tips
+      poly(ctx, [20, 22, 9, 1 + flap, 15, 6 + flap, 20, 2 + flap, 26, 8 + flap * 0.5, 28, 22]); fillStroke(ctx, tm.main, 2.4);
+      poly(ctx, [9, 1 + flap, 15, 6 + flap, 20, 2 + flap, 16.5, 10 + flap * 0.6, 12.5, 7 + flap * 0.8]); fillStroke(ctx, '#ffb43a', 1.6);
+      ctx.restore();
+    },
+    carrier(ctx, tm, t) {
+      const bob = Math.sin((t || 0) / 450) * 1.2;
+      ctx.save(); ctx.translate(0, bob);
+      ctx.beginPath(); ctx.moveTo(2, 27); ctx.lineTo(46, 27); ctx.lineTo(41, 40); ctx.lineTo(7, 40); ctx.closePath(); fillStroke(ctx, C.wood, 2.4);
+      ctx.strokeStyle = C.woodDark; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(5, 33.5); ctx.lineTo(43, 33.5); ctx.stroke();
+      rr(ctx, 4, 23.5, 40, 4, 1.5); fillStroke(ctx, '#d8b07a', 1.8);
+      // bow ramp
+      poly(ctx, [40, 23.5, 47, 16, 47.5, 20, 44, 27]); fillStroke(ctx, C.woodDark, 1.8);
+      // stern cabin
+      rr(ctx, 4.5, 14, 10, 10, 1.5); fillStroke(ctx, tm.main, 2);
+      ctx.fillStyle = C.white; ctx.fillRect(7.5, 17, 4, 3);
+      flag(ctx, 9.5, 2, tm, t);
+      rr(ctx, 3, 27, 42, 3, 1.5); fillStroke(ctx, tm.dark, 1.8);
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(4, 43); ctx.quadraticCurveTo(10, 40, 16, 43); ctx.moveTo(30, 43); ctx.quadraticCurveTo(36, 40, 42, 43); ctx.stroke();
+    },
   };
 
   // ---------------- Towers ----------------
@@ -1865,6 +2141,12 @@ const ART = (() => {
     if (e.kind === 'unit') {
       if (e.side === 1 && !opts.noFlip) { ctx.translate(T, 0); ctx.scale(-1, 1); }
       UNIT_DRAW[e.type](ctx, tm, t);
+      // a passenger riding on a Carrier, drawn small on the deck
+      if (e.cargo && UNIT_DRAW[e.cargo.type]) {
+        ctx.save(); ctx.translate(16, 3); ctx.scale(0.5, 0.5);
+        UNIT_DRAW[e.cargo.type](ctx, tm, t);
+        ctx.restore();
+      }
     } else {
       if (e.building) {
         ctx.globalAlpha = 0.45; TOWER_DRAW[e.type](ctx, tm, 0); ctx.globalAlpha = 1; drawScaffold(ctx);
@@ -2067,6 +2349,9 @@ const SOUND = (() => {
       for (const [n, dt, d] of seq) { tone(sfxBus, 'square', n, t + dt, d, 0.16, { vibrato: true }); tone(sfxBus, 'triangle', freq(n) / 2, t + dt, d, 0.25); }
     },
     pop(t) { noise(sfxBus, t, 0.35, 0.5, { filter: 'lowpass', freq: 3000, freqTo: 200 }); for (let i = 0; i < 6; i++) noise(sfxBus, t + 0.12 + Math.random() * 0.35, 0.03, 0.15, { filter: 'highpass', freq: 5000 }); },
+    magic(t) { ['E5', 'G#5', 'B5', 'E6'].forEach((n, i) => tone(sfxBus, 'sine', n, t + i * 0.045, 0.24, 0.16)); noise(sfxBus, t, 0.35, 0.1, { filter: 'bandpass', freq: 5000, q: 2 }); tone(sfxBus, 'triangle', 220, t, 0.3, 0.16, { slideTo: 660 }); },
+    flip(t) { for (let i = 0; i < 10; i++) tone(sfxBus, 'square', i % 2 ? 1250 : 1550, t + i * 0.085, 0.03, 0.06); },
+    bolt(t) { noise(sfxBus, t, 0.1, 0.35, { filter: 'bandpass', freq: 2500, freqTo: 5200, q: 3 }); tone(sfxBus, 'square', 900, t, 0.05, 0.08, { slideTo: 420 }); },
     launch(t) { noise(sfxBus, t, 0.5, 0.12, { filter: 'bandpass', freq: 600, freqTo: 3000, q: 2 }); },
   };
   function play(name, delay) {
@@ -2119,6 +2404,8 @@ const SOUND = (() => {
     soundOff: svg(`<path d="M2 6h3l4-3.5v11L5 10H2Z" fill="#cdd6e0" ${S_INK}/><path d="m11 5.5 4 5m0-5-4 5" ${S_INK}/>`, 'ico-big'),
     menu: svg(`<path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="#1b1530" stroke-width="2.2" stroke-linecap="round"/>`, 'ico-big'),
     tower: svg(`<path d="M4 14.5V5h8v9.5Z" fill="#c3bbad" ${S_INK}/><path d="M4 5V2.5h1.6V4h1.6V2.5h1.6V4h1.6V2.5H12V5" fill="#c3bbad" ${S_INK}/><path d="M6.5 14.5v-3a1.5 1.5 0 0 1 3 0v3" fill="#6b3d17" ${S_INK}/>`),
+    anchor: svg(`<circle cx="8" cy="3.4" r="1.7" fill="none" ${S_INK}/><path d="M8 5.1v9M5 7.5h6M2.6 10c.6 2.6 2.8 4.1 5.4 4.1s4.8-1.5 5.4-4.1" fill="none" ${S_INK}/>`),
+    random: svg(`<rect x="2" y="2" width="12" height="12" rx="3" fill="#fffaf0" ${S_INK}/><circle cx="5.3" cy="5.3" r="1.2" fill="#1b1530"/><circle cx="8" cy="8" r="1.2" fill="#1b1530"/><circle cx="10.7" cy="10.7" r="1.2" fill="#1b1530"/>`),
   };
   const clsIcon = (cls) => ICON[cls];
   const clsName = { land: 'Land', air: 'Air', water: 'Water' };
@@ -2139,6 +2426,7 @@ const SOUND = (() => {
   let G = null;
   const S = {
     screen: 'title', mapIdx: 0, ai: null, aiLevel: null, me: 0, online: false, flow: 'bot',
+    inspectEnt: null, atkOpts: null, buildWho: null, flipping: false,
     mode: 'idle', sel: null, moveInfo: null, targets: [], sites: [], buildType: null, recruitType: null,
     hover: null, inspect: null, botFocus: null, busy: false,
     anims: new Map(), offsets: new Map(), flashes: new Map(), ghosts: [], shown: new Map(),
@@ -2153,7 +2441,9 @@ const SOUND = (() => {
     for (const id of ['title', 'maps', 'game']) $('#screen-' + id).hidden = id !== name;
     if (name === 'title') { SOUND.playMusic('title'); sizeTitle(); }
     if (name === 'maps') {
-      SOUND.playMusic('title'); renderMapCards();
+      SOUND.playMusic('title');
+      for (const m of MAPS) if (m.random) m.rows = genRandomMap();
+      renderMapCards();
       const host = S.flow === 'host';
       $('#maps-diff-wrap').hidden = host; $('#maps-online-note').hidden = !host;
       $('#maps-start').textContent = host ? 'Create game' : 'To battle!';
@@ -2304,7 +2594,7 @@ const SOUND = (() => {
     ctx.fillStyle = r > 0.6 ? '#4fd364' : r > 0.3 ? '#f5c03a' : '#ff4b3a';
     ctx.fillRect(x, y, w * r, 4);
     if (e.kind === 'tower' || hp < max) {
-      ctx.font = '700 11px "Pixelify Sans", monospace';
+      ctx.font = '600 12px "Fredoka", "Trebuchet MS", sans-serif';
       ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
       ctx.lineWidth = 3; ctx.strokeStyle = '#1b1530'; ctx.fillStyle = '#fffaf0';
       ctx.strokeText(String(hp), px + T - 2, y - 1); ctx.fillText(String(hp), px + T - 2, y - 1);
@@ -2333,17 +2623,22 @@ const SOUND = (() => {
       ctx.stroke();
     }
     const pulse = 0.75 + 0.25 * Math.sin(Clock.t / 200);
-    // highlights
+    const hov = S.mode === 'attack' && S.hover ? optionAt(S.hover) : null;
+    // highlights (blue for your own unit, red for the other side's)
     const focus = S.botFocus || S.inspect;
     if (focus) {
-      if (focus.range) fillTiles(ctx, focus.range, 'rgba(255,40,30,0.24)');
-      if (focus.tiles) fillTiles(ctx, focus.tiles, `rgba(255,150,110,${0.38 * pulse})`, 'rgba(255,255,255,0.45)');
+      const mine = focus.mine;
+      if (focus.range) fillTiles(ctx, focus.range, mine ? 'rgba(40,110,255,0.2)' : 'rgba(255,40,30,0.24)');
+      if (focus.tiles) fillTiles(ctx, focus.tiles, mine ? `rgba(70,150,255,${0.42 * pulse})` : `rgba(255,150,110,${0.38 * pulse})`, 'rgba(255,255,255,0.45)');
+      if (focus.flame) fillTiles(ctx, focus.flame, `rgba(255,140,30,${0.6 * pulse})`, 'rgba(255,255,255,0.7)');
     }
     if (S.mode === 'move' && S.moveInfo) fillTiles(ctx, S.moveInfo.tiles, `rgba(40,120,255,${0.62 * pulse})`, 'rgba(255,255,255,0.85)');
     if (S.mode === 'attack') {
       fillTiles(ctx, S.rangeTiles || [], 'rgba(255,40,30,0.32)');
-      fillTiles(ctx, S.targets, `rgba(255,60,40,${0.55 * pulse})`, 'rgba(255,255,255,0.7)');
+      if (S.sel && statsOf(S.sel).area === 'line') for (const o of S.atkOpts || []) fillTiles(ctx, o.tiles, o === hov ? `rgba(255,150,30,${0.75 * pulse})` : 'rgba(255,150,30,0.32)', o === hov ? 'rgba(255,255,255,0.85)' : null);
+      fillTiles(ctx, hov ? hov.victims : S.targets, `rgba(255,60,40,${0.55 * pulse})`, 'rgba(255,255,255,0.7)');
     }
+    if (S.mode === 'unload') fillTiles(ctx, S.sites, `rgba(80,200,255,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
     if (S.mode === 'build-place' || S.mode === 'recruit') fillTiles(ctx, S.sites, `rgba(255,214,70,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
     if (S.mode === 'heal') fillTiles(ctx, S.targets, `rgba(70,220,120,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
     if (S.mode === 'chop') fillTiles(ctx, S.targets, `rgba(255,150,40,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
@@ -2368,8 +2663,13 @@ const SOUND = (() => {
       ctx.strokeStyle = '#f5c03a'; ctx.lineWidth = 3; ctx.setLineDash([6, 4]); ctx.lineDashOffset = -Clock.t / 40;
       ctx.strokeRect(p.x + 2, p.y + 2, T - 4, T - 4); ctx.setLineDash([]);
     }
-    if (S.mode === 'attack') for (const t of S.targets) crosshair(ctx, t.x, t.y, '#ff4b3a');
-    if (S.botFocus && S.botFocus.target) crosshair(ctx, S.botFocus.target.x, S.botFocus.target.y, '#ff4b3a');
+    if (S.mode === 'attack') for (const t of (hov ? hov.victims : S.targets)) crosshair(ctx, t.x, t.y, '#ff4b3a');
+    if (S.botFocus && S.botFocus.targets) for (const t of S.botFocus.targets) crosshair(ctx, t.x, t.y, '#ff4b3a');
+    if (S.inspectEnt && S.mode === 'idle' && G.entities.includes(S.inspectEnt)) {
+      const p = entityPos(S.inspectEnt);
+      ctx.strokeStyle = '#fffaf0'; ctx.lineWidth = 2.5; ctx.setLineDash([5, 4]); ctx.lineDashOffset = -Clock.t / 50;
+      ctx.strokeRect(p.x + 3, p.y + 3, T - 6, T - 6); ctx.setLineDash([]);
+    }
     drawShots(ctx);
     drawParticles(ctx);
     drawFloats(ctx);
@@ -2416,7 +2716,7 @@ const SOUND = (() => {
   function drawFloats(ctx) {
     const now = Clock.t;
     S.floats = S.floats.filter((f) => now - f.t0 < 1100);
-    ctx.font = '700 17px "Pixelify Sans", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '600 18px "Fredoka", "Trebuchet MS", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     for (const f of S.floats) {
       const k = (now - f.t0) / 1100;
       const y = f.y - 22 * Math.min(1, k * 2.2);
@@ -2432,7 +2732,7 @@ const SOUND = (() => {
     for (const s of S.shots) {
       const k = (now - s.t0) / s.dur;
       const x = s.fx + (s.tx - s.fx) * k, y = s.fy + (s.ty - s.fy) * k - Math.sin(k * Math.PI) * s.arc;
-      if (s.kind === 'arrow') {
+      if (s.kind === 'arrow' || s.kind === 'bolt') {
         const k2 = Math.min(1, k + 0.04);
         const x2 = s.fx + (s.tx - s.fx) * k2, y2 = s.fy + (s.ty - s.fy) * k2 - Math.sin(k2 * Math.PI) * s.arc;
         const a = Math.atan2(y2 - y, x2 - x);
@@ -2442,6 +2742,11 @@ const SOUND = (() => {
         ctx.fillStyle = '#dfe6ee'; ctx.beginPath(); ctx.moveTo(9, 0); ctx.lineTo(4, -3.5); ctx.lineTo(4, 3.5); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#1b1530'; ctx.lineWidth = 1.2; ctx.stroke();
         ctx.fillStyle = '#fffaf0'; ctx.fillRect(-12, -3, 4, 2); ctx.fillRect(-12, 1, 4, 2);
         ctx.restore();
+      } else if (s.kind === 'orb') {
+        ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.fillStyle = 'rgba(190,140,255,0.35)'; ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, 5.5, 0, Math.PI * 2); ctx.fillStyle = '#c9a6ff'; ctx.fill(); ctx.strokeStyle = '#1b1530'; ctx.lineWidth = 1.6; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x - 1.5, y - 1.5, 2, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+        if (Math.random() < 0.7) S.particles.push({ x, y, vx: (Math.random() - 0.5) * 0.02, vy: (Math.random() - 0.5) * 0.02, t0: now, life: 280, color: Math.random() < 0.5 ? '#e6d4ff' : '#b48cff', size: 2.5, grav: 0 });
       } else if (s.kind === 'fire') {
         ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,170,60,0.35)'; ctx.fill();
         ctx.beginPath(); ctx.arc(x, y, 5.5, 0, Math.PI * 2); ctx.fillStyle = '#ff7a1f'; ctx.fill(); ctx.strokeStyle = '#1b1530'; ctx.lineWidth = 1.6; ctx.stroke();
@@ -2456,7 +2761,7 @@ const SOUND = (() => {
   }
 
   // ---------------- Animated actions (player and bot) ----------------
-  const ATTACK_KIND = { archer: 'arrow', archerTower: 'arrow', pirate: 'cannon', hawk: 'peck', axeman: 'axe', juggernaut: 'smash', dragon: 'fire', shark: 'bite' };
+  const ATTACK_KIND = { archer: 'arrow', archerTower: 'arrow', pirate: 'cannon', hawk: 'peck', axeman: 'axe', juggernaut: 'smash', dragon: 'fire', shark: 'bite', sniper: 'bolt', mage: 'magic', phoenix: 'flame' };
   const LUNGE_SOUND = { sword: 'sword', peck: 'screech', axe: 'axe', smash: 'smash', bite: 'bite' };
   function attackKind(e) { return ATTACK_KIND[e.type] || 'sword'; }
   async function aMove(u, path) {
@@ -2472,19 +2777,40 @@ const SOUND = (() => {
     S.anims.delete(u);
     const end = path[path.length - 1];
     doMove(G, u, end.x, end.y);
+    if (!G.entities.includes(u)) { floatText(end.x, end.y, 'Aboard!', '#fffaf0'); SOUND.play('splash'); }
     updateAll();
   }
-  async function strike(a, b, kind) {
+  async function strikeMagic(a, opt) {
+    SOUND.play('magic');
+    burst(a.x, a.y, { n: 26, colors: ['#e6d4ff', '#b48cff', '#ffffff'], speed: 0.07, life: 520, size: 3.5, lift: 0.02 });
+    S.offsets.set(a, { dx: 0, dy: -0.12, t0: Clock.t, dur: 300 * speedMul() });
+    const dur = 380 * speedMul();
+    for (const v of opt.victims) S.shots.push({ kind: 'orb', fx: a.x * T + T / 2, fy: a.y * T + 8, tx: v.x * T + T / 2, ty: v.y * T + T / 2, arc: 14, t0: Clock.t, dur });
+    await wait(dur, true);
+  }
+  async function strikeFlame(a, opt) {
+    SOUND.play('fire'); SOUND.play('screech', 0.05);
+    const dx = Math.sign(opt.tiles[0].x - a.x), dy = Math.sign(opt.tiles[0].y - a.y);
+    S.offsets.set(a, { dx: dx * 0.25, dy: dy * 0.25, t0: Clock.t, dur: 420 * speedMul() });
+    for (const p of opt.tiles) {
+      burst(p.x, p.y, { n: 18, colors: ['#ffef9a', '#ffb03a', '#ff6a1f', '#ff3d1f'], speed: 0.06, life: 520, size: 4.5, lift: 0.04 });
+      await wait(90);
+    }
+    await wait(160);
+  }
+  async function strike(a, b, kind, opt) {
+    if (kind === 'magic') return strikeMagic(a, opt || { victims: [b] });
+    if (kind === 'flame') return strikeFlame(a, opt || { tiles: [{ x: b.x, y: b.y }] });
     const dx = Math.sign(b.x - a.x) * (Math.abs(b.x - a.x) >= Math.abs(b.y - a.y) ? 1 : 0.4);
     const dy = Math.sign(b.y - a.y) * (Math.abs(b.y - a.y) >= Math.abs(b.x - a.x) ? 1 : 0.4);
-    if (kind === 'arrow' || kind === 'cannon' || kind === 'fire') {
+    if (kind === 'arrow' || kind === 'cannon' || kind === 'fire' || kind === 'bolt') {
       const d = manhattan(a.x, a.y, b.x, b.y);
-      const dur = (kind === 'arrow' ? 140 + d * 70 : 220 + d * 90) * speedMul();
+      const dur = (kind === 'bolt' ? 100 + d * 32 : kind === 'arrow' ? 140 + d * 70 : 220 + d * 90) * speedMul();
       SOUND.play(kind);
       if (kind === 'fire') SOUND.play('roar');
       if (kind === 'cannon') { burst(a.x, a.y, { n: 8, colors: ['#ffffff', '#d8d8d8', '#ffcf6b'], speed: 0.05, life: 450, size: 4 }); S.shake = { t0: Clock.t, dur: 180, mag: 3 }; }
       S.offsets.set(a, { dx: -dx * 0.08, dy: -dy * 0.08, t0: Clock.t, dur: 180 * speedMul() });
-      S.shots.push({ kind, fx: a.x * T + T / 2, fy: a.y * T + T / 2 - 6, tx: b.x * T + T / 2, ty: b.y * T + T / 2, arc: kind === 'arrow' ? 10 + d * 8 : kind === 'fire' ? 4 : 8 + d * 10, t0: Clock.t, dur });
+      S.shots.push({ kind, fx: a.x * T + T / 2, fy: a.y * T + T / 2 - 6, tx: b.x * T + T / 2, ty: b.y * T + T / 2, arc: kind === 'bolt' ? 3 + d : kind === 'arrow' ? 10 + d * 8 : kind === 'fire' ? 4 : 8 + d * 10, t0: Clock.t, dur });
       await wait(dur, true);
     } else {
       SOUND.play(LUNGE_SOUND[kind] || 'sword');
@@ -2494,23 +2820,28 @@ const SOUND = (() => {
       if (kind === 'smash') S.shake = { t0: Clock.t, dur: 260, mag: 6 };
     }
   }
-  async function aAttack(att, def) {
+  async function aAttack(att, opt) {
     const kind = attackKind(att);
-    S.shown.set(att, att.hp); S.shown.set(def, def.hp);
-    const res = doAttack(G, att, def);
-    if (res.killed) S.ghosts.push(def);
+    const victims = opt.victims.slice(), def = victims[0];
+    S.shown.set(att, att.hp);
+    for (const v of victims) S.shown.set(v, v.hp);
+    const res = doAttack(G, att, opt);
+    for (const h of res.hits) if (h.killed) S.ghosts.push(h.e);
     if (res.counterKilled) S.ghosts.push(att);
-    await strike(att, def, kind);
-    S.shown.set(def, def.hp);
-    S.flashes.set(def, Clock.t + 360);
+    await strike(att, def, kind, opt);
+    for (const h of res.hits) {
+      S.shown.set(h.e, h.e.hp);
+      S.flashes.set(h.e, Clock.t + 360);
+      floatText(h.e.x, h.e.y, '-' + h.dmg, '#ff8a7a');
+      burst(h.e.x, h.e.y, { n: 10, colors: ['#fff6c4', '#ffd36b', '#ff8a5a'], speed: 0.09, life: 380, size: 3 });
+    }
     SOUND.play('hit');
-    floatText(def.x, def.y, '-' + res.dmg, '#ff8a7a');
-    burst(def.x, def.y, { n: 10, colors: ['#fff6c4', '#ffd36b', '#ff8a5a'], speed: 0.09, life: 380, size: 3 });
-    S.shake = { t0: Clock.t, dur: 160, mag: 2.5 };
+    S.shake = { t0: Clock.t, dur: 160, mag: res.hits.length > 1 ? 4 : 2.5 };
     updateAll();
     await wait(300);
-    if (res.killed) await die(def);
-    else if (res.counter > 0) {
+    const dead = res.hits.filter((h) => h.killed).map((h) => h.e);
+    if (dead.length) await Promise.all(dead.map((e) => die(e)));
+    if (res.counter > 0) {
       await wait(120);
       await strike(def, att, attackKind(def));
       S.shown.set(att, att.hp);
@@ -2522,8 +2853,8 @@ const SOUND = (() => {
       await wait(300);
       if (res.counterKilled) await die(att);
     }
-    S.shown.delete(att); S.shown.delete(def);
-    S.offsets.delete(att); S.offsets.delete(def);
+    S.shown.delete(att); S.offsets.delete(att);
+    for (const v of victims) { S.shown.delete(v); S.offsets.delete(v); }
     updateAll();
     if (G.winner !== null) await gameOver();
   }
@@ -2533,7 +2864,7 @@ const SOUND = (() => {
     S.shake = { t0: Clock.t, dur: 380, mag: e.kind === 'tower' ? 8 : 5 };
     burst(e.x, e.y, { n: 22, colors: ['#ffef9a', '#ffb347', '#ff6a3d', '#5a5a64', '#9a9aa6'], speed: 0.11, life: 650, size: 4.5 });
     if (S.stats) {
-      if (e.kind === 'unit') S.stats.lost[e.side]++;
+      if (e.kind === 'unit') S.stats.lost[e.side] += e.cargo ? 2 : 1;
       else S.stats.towersLost[e.side]++;
     }
     await wait(380);
@@ -2579,6 +2910,19 @@ const SOUND = (() => {
     updateAll();
     await wait(450);
   }
+  async function aUnload(c, x, y) {
+    const u = doUnload(G, c, x, y);
+    SOUND.play('step'); SOUND.play('splash', 0.05);
+    S.anims.set(u, { fx: c.x, fy: c.y, tx: x, ty: y, t0: Clock.t, dur: 220 * speedMul() });
+    burst(x, y, { n: 10, colors: ['#e7d7b0', '#c9ecff'], speed: 0.04, life: 450, size: 3 });
+    updateAll();
+    await wait(240);
+    S.anims.delete(u);
+    floatText(x, y, 'Ashore!', '#fffaf0');
+    updateAll();
+    await wait(200);
+    return u;
+  }
   async function aRecruit(side, type, x, y) {
     const u = doRecruit(G, side, type, x, y);
     if (S.stats) S.stats.recruited[side]++;
@@ -2599,15 +2943,15 @@ const SOUND = (() => {
       S.botFocus = null;
       await aMove(u, path);
     },
-    async attack(a, d) {
-      S.botFocus = { range: rangeTiles(G, a.x, a.y, attackRange(a)), target: d };
+    async attack(a, opt) {
+      S.botFocus = { range: reachTiles(G, a, a.x, a.y), flame: statsOf(a).area === 'line' ? opt.tiles : null, targets: opt.victims };
       await wait(340);
       S.botFocus = null;
-      await aAttack(a, d);
+      await aAttack(a, opt);
     },
     build: (b, type, x, y) => aBuild(b, type, x, y),
     async chop(u, x, y) {
-      S.botFocus = { target: { x, y } };
+      S.botFocus = { targets: [{ x, y }] };
       await wait(300);
       S.botFocus = null;
       await aChop(u, x, y);
@@ -2623,6 +2967,7 @@ const SOUND = (() => {
   function clearMode() {
     S.mode = 'idle'; S.sel = null; S.moveInfo = null; S.targets = []; S.sites = []; S.rangeTiles = null;
     S.buildType = null; S.recruitType = null; S.inspect = null; S.direct = false;
+    S.atkOpts = null; S.inspectEnt = null; S.buildWho = null;
     menuEl.hidden = true;
     renderShop();
   }
@@ -2648,7 +2993,8 @@ const SOUND = (() => {
     const t = tileFromEvent(ev);
     if (!t) return;
     S.hover = t;
-    if (!canInteract()) { if (G.turn !== 0 && !S.busy) return; return; }
+    // Off-turn, a click inspects any unit: where it can move and what it can hit.
+    if (!canInteract()) { if (G.turn !== S.me && G.winner === null && !Clock.paused && !S.flipping) inspectAt(t); return; }
     onTile(t);
   });
   const inList = (list, t) => list.some((p) => p.x === t.x && p.y === t.y);
@@ -2673,17 +3019,21 @@ const SOUND = (() => {
         if (inList(S.targets, t)) return playerChop(S.sel, t.x, t.y);
         return backToMenu();
       case 'attack': {
-        const target = S.targets.find((o) => o.x === t.x && o.y === t.y);
-        if (target) return playerAttack(S.sel, target);
+        const opt = optionAt(t);
+        if (opt) return playerAttack(S.sel, opt);
         return backToMenu();
       }
+      case 'unload':
+        if (inList(S.sites, t)) return playerUnload(S.sel, t.x, t.y);
+        return backToMenu();
       case 'heal': {
         const target = S.targets.find((o) => o.x === t.x && o.y === t.y);
         if (target) return playerHeal(S.sel, target);
         return backToMenu();
       }
       case 'build-place':
-        if (inList(S.sites, t)) return playerBuild(S.sel, S.buildType, t.x, t.y);
+        if (inList(S.sites, t)) return playerBuild(S.sel || S.buildWho.get(key(t.x, t.y)), S.buildType, t.x, t.y);
+        if (!S.sel) { SOUND.play('cancel'); clearMode(); return; }
         return backToMenu();
       case 'recruit':
         if (inList(S.sites, t)) return playerRecruit(S.recruitType, t.x, t.y);
@@ -2694,28 +3044,52 @@ const SOUND = (() => {
   }
   function select(t, e) {
     menuEl.hidden = true;
-    S.inspect = null;
+    S.inspect = null; S.inspectEnt = null;
     if (!e) { clearMode(); S.hover = t; renderInfo(); return; }
     SOUND.play('select');
     if (e.side === S.me) {
       S.sel = e;
       if (e.kind === 'unit' && !e.fresh) {
         // Nothing left to do: just show its report.
-        if (entityExhausted(G, e)) { S.mode = 'idle'; menuEl.hidden = true; renderInfo(e); return; }
+        if (entityExhausted(G, e)) { S.mode = 'idle'; menuEl.hidden = true; S.inspectEnt = e; refreshInspect(); renderInfo(e); return; }
         // Can't act from here: skip the menu and go straight to moving.
         if (!e.moved && !hasActionNow(e) && moveTargets(G, e).tiles.length) return startMove(e, true);
       }
       openMenu(e);
     } else {
-      S.mode = 'idle'; S.sel = e;
-      if (e.kind === 'unit') {
-        const mt = moveTargets(G, e);
-        const range = new Map();
-        for (const n of mt.nodes.values()) if (n.stop) for (const r of rangeTiles(G, n.x, n.y, attackRange(e))) range.set(key(r.x, r.y), r);
-        S.inspect = { tiles: mt.tiles, range: canAttackAtAll(e) ? [...range.values()] : [] };
-      } else if (canAttackAtAll(e)) S.inspect = { range: rangeTiles(G, e.x, e.y, attackRange(e)) };
+      S.mode = 'idle'; S.sel = e; S.inspectEnt = e;
+      refreshInspect();
       renderInfo(e);
     }
+  }
+  // ---- inspecting: movement and attack reach of any unit or tower ----
+  function inspectOf(e) {
+    const mine = e.side === S.me;
+    if (e.kind === 'unit') {
+      const mt = moveTargets(G, e);
+      const range = new Map();
+      if (canAttackAtAll(e)) for (const n of mt.nodes.values()) if (n.stop && !n.board) for (const r of reachTiles(G, e, n.x, n.y)) range.set(key(r.x, r.y), r);
+      return { tiles: mt.tiles, range: [...range.values()], mine };
+    }
+    return canAttackAtAll(e) ? { range: reachTiles(G, e, e.x, e.y), mine } : null;
+  }
+  function refreshInspect() {
+    const e = S.inspectEnt;
+    if (!e || !G || !G.entities.includes(e)) { S.inspectEnt = null; S.inspect = null; return; }
+    S.inspect = inspectOf(e);
+  }
+  function inspectAt(t) {
+    const e = entityAt(G, t.x, t.y);
+    SOUND.play(e ? 'select' : 'hover');
+    S.inspectEnt = e || null;
+    refreshInspect();
+    infoKey = '';
+    renderInfo(e || undefined);
+  }
+  function optionAt(t) {
+    if (!S.atkOpts || !S.sel) return null;
+    if (statsOf(S.sel).area === 'burst') return S.atkOpts[0] && (inList(S.rangeTiles, t) || (t.x === S.sel.x && t.y === S.sel.y)) ? S.atkOpts[0] : null;
+    return S.atkOpts.find((o) => inList(o.tiles, t)) || null;
   }
   // Attack, heal or build available from where the unit stands (chopping
   // doesn't count, so axe-men near trees still go straight to moving).
@@ -2724,11 +3098,12 @@ const SOUND = (() => {
     if (targetsFrom(G, e, e.x, e.y).length) return true;
     if (e.type === 'nurse' && healTargets(G, e).length) return true;
     if (e.type === 'builder' && BUILDABLE.some((t) => canBuild(G, e, t))) return true;
+    if (e.type === 'carrier' && canUnload(G, e)) return true;
     return false;
   }
   function cancel() {
     if (S.mode === 'move' && S.direct) { SOUND.play('cancel'); return clearMode(); }
-    if (S.mode === 'move' || S.mode === 'attack' || S.mode === 'heal' || S.mode === 'build-place' || S.mode === 'chop') return backToMenu();
+    if (S.mode === 'move' || S.mode === 'attack' || S.mode === 'heal' || S.mode === 'build-place' || S.mode === 'chop' || S.mode === 'unload') return backToMenu();
     SOUND.play('cancel');
     clearMode();
   }
@@ -2781,12 +3156,12 @@ const SOUND = (() => {
       }
       const mt = moveTargets(G, e);
       items.push(menuButton(ICON.moveArrow, 'Move', {
-        disabled: e.moved || !mt.tiles.length, why: e.moved ? 'Moved' : !mt.tiles.length ? 'Blocked' : '',
+        disabled: e.moved || !mt.tiles.length, why: e.moved ? (e.acted ? 'Done' : 'Moved') : !mt.tiles.length ? 'Blocked' : '',
         onClick: () => startMove(e),
       }));
       if (st.atk > 0) {
         const tg = targetsFrom(G, e, e.x, e.y);
-        items.push(menuButton(ICON.atk, 'Attack', {
+        items.push(menuButton(ICON.atk, st.area === 'burst' ? 'Cast blast' : st.area === 'line' ? 'Breathe fire' : 'Attack', {
           disabled: e.acted || !tg.length, why: e.acted ? 'Done' : !tg.length ? 'No enemies in range' : '',
           onClick: () => startAttack(e),
         }));
@@ -2810,6 +3185,14 @@ const SOUND = (() => {
         items.push(menuButton(ICON.heal, 'Heal', {
           disabled: e.acted || !ht.length, why: e.acted ? 'Done' : !ht.length ? 'No one hurt nearby' : '',
           onClick: () => startHeal(e),
+        }));
+      }
+      if (e.type === 'carrier') {
+        const ut = unloadTiles(G, e);
+        items.push(menuButton(ICON.anchor, e.cargo ? 'Unload ' + UNIT_TYPES[e.cargo.type].name : 'Unload', {
+          disabled: !canUnload(G, e),
+          why: !e.cargo ? 'Empty' : e.cargoNew ? 'Next turn' : e.acted ? 'Done' : !ut.length ? 'No free shore' : '',
+          onClick: () => { SOUND.play('select'); menuEl.hidden = true; S.mode = 'unload'; S.sites = ut; },
         }));
       }
       if (!entityExhausted(G, e)) items.push(menuButton(ICON.wait, 'Wait', { onClick: () => { record({ t: 'wait', id: e.id }); e.moved = true; e.acted = true; SOUND.play('select'); clearMode(); updateAll(); saveOnline(); } }));
@@ -2841,7 +3224,7 @@ const SOUND = (() => {
       const poor = G.gold[S.me] < tt.price;
       return menuButton(ART.iconCanvas('tower', type, S.me, 20), tt.name, {
         cost: tt.price, disabled: poor || !sites.length,
-        onClick: () => { SOUND.play('select'); menuEl.hidden = true; S.mode = 'build-place'; S.buildType = type; S.sites = sites; },
+        onClick: () => { SOUND.play('select'); menuEl.hidden = true; S.mode = 'build-place'; S.buildType = type; S.sites = sites; S.buildWho = null; },
       });
     });
     items.push(menuButton(ICON.back, 'Back', { onClick: () => backToMenu() }));
@@ -2869,8 +3252,10 @@ const SOUND = (() => {
   function startAttack(e) {
     SOUND.play('select');
     menuEl.hidden = true;
-    S.mode = 'attack'; S.targets = targetsFrom(G, e, e.x, e.y);
-    S.rangeTiles = rangeTiles(G, e.x, e.y, attackRange(e));
+    S.mode = 'attack';
+    S.atkOpts = attackOptions(G, e, e.x, e.y);
+    S.targets = [...new Set(S.atkOpts.flatMap((o) => o.victims))];
+    S.rangeTiles = reachTiles(G, e, e.x, e.y);
   }
   function startHeal(e) {
     SOUND.play('select');
@@ -2910,10 +3295,15 @@ const SOUND = (() => {
     record({ t: 'move', id: u.id, x: end.x, y: end.y });
     runPlayer(async () => { await aMove(u, path); S.busy = false; afterAction(u); });
   }
-  function playerAttack(a, d) {
+  function playerAttack(a, opt) {
     S.mode = 'busy'; S.targets = [];
-    record({ t: 'atk', id: a.id, tid: d.id });
-    runPlayer(async () => { await aAttack(a, d); S.busy = false; afterAction(a); });
+    record({ t: 'atk', id: a.id, k: opt.k });
+    runPlayer(async () => { await aAttack(a, opt); S.busy = false; afterAction(a); });
+  }
+  function playerUnload(c, x, y) {
+    S.mode = 'busy'; S.sites = [];
+    record({ t: 'unl', id: c.id, x, y });
+    runPlayer(async () => { const u = await aUnload(c, x, y); S.busy = false; afterAction(u); });
   }
   function playerChop(u, x, y) {
     S.mode = 'busy'; S.targets = [];
@@ -2950,14 +3340,14 @@ const SOUND = (() => {
     $('#hud-day').textContent = 'Day ' + G.day;
     const mine = G.turn === S.me;
     const them = S.online ? 'Rival' : 'Bot';
-    $('#hud-turn').textContent = mine ? 'Your turn' : them + '’s turn';
+    $('#hud-turn').textContent = S.flipping ? 'Coin toss' : mine ? 'Your turn' : them + '’s turn';
     $('#turn-chip').classList.toggle('red', G.turn === 1);
     $('#who-0').textContent = S.me === 0 ? 'You' : them;
     $('#who-1').textContent = S.me === 1 ? 'You' : them;
     $('#gold-0').textContent = '$' + G.gold[0];
     $('#gold-1').textContent = '$' + G.gold[1];
     const rc = readyCount();
-    $('#ready-count').textContent = mine ? (rc ? rc + ' ready' : 'all done') : 'please wait';
+    $('#ready-count').textContent = mine && !S.flipping ? (rc ? rc + ' ready' : 'all done') : 'please wait';
     $('#end-turn').disabled = !mine || S.busy || G.winner !== null || (S.online && !netReady());
     $('#end-turn').classList.toggle('btn-red', S.me === 1);
     $('#end-turn').classList.toggle('btn-blue', S.me !== 1);
@@ -2967,7 +3357,7 @@ const SOUND = (() => {
       const th = $('#thinking');
       th.classList.toggle('blue', G.turn === 0);
       if (NET.needSync) { th.hidden = false; th.textContent = 'Re-syncing with your rival…'; }
-      else if (G.winner !== null || mine) th.hidden = true;
+      else if (G.winner !== null || mine || S.flipping) th.hidden = true;
       else { th.hidden = false; th.textContent = NET.oppOnline ? SIDE_NAMES[G.turn] + ' is plotting…' : 'Waiting for your rival to reconnect…'; }
       pill.classList.toggle('away', !NET.oppOnline);
       $('#net-text').textContent = (NET.oppOnline ? 'Online' : NET.t ? 'Rival offline' : 'Offline') + ' · ' + (NET.code || '');
@@ -2986,6 +3376,7 @@ const SOUND = (() => {
     if (!e) {
       if (S.hover) { e = entityAt(G, S.hover.x, S.hover.y); tile = S.hover; }
       if (!e && S.sel && G.entities.includes(S.sel)) e = S.sel;
+      if (!e && S.inspectEnt && G.entities.includes(S.inspectEnt)) e = S.inspectEnt;
     }
     if (e) tile = { x: e.x, y: e.y };
     const k = e ? `e${e.id}|${e.hp}|${e.moved}|${e.acted}|${e.building}|${tile.x},${tile.y}` : tile ? `t${tile.x},${tile.y}` : 'none';
@@ -3012,6 +3403,7 @@ const SOUND = (() => {
       state = e.fresh ? 'Just recruited, ready next turn' : e.side !== G.turn ? 'Waiting' :
         entityExhausted(G, e) ? 'Done for this turn' : e.moved ? 'Moved, can still act' : e.acted ? 'Acted, can still move' : 'Ready';
       if (e.type === 'builder') state += ` \u00b7 ${buildsLeft(e)} of ${UNIT_TYPES.builder.maxBuilds} builds left`;
+      if (e.type === 'carrier') state += e.cargo ? ` \u00b7 carrying a ${UNIT_TYPES[e.cargo.type].name}${e.cargoNew ? ' (can unload next turn)' : ''}` : ' \u00b7 empty';
     } else state = e.building ? 'Under construction, ready next turn' : st.effect;
     const side = `<span class="chip ${e.side ? 'red' : 'blue'}">${e.side === S.me ? 'You' : S.online ? 'Rival' : 'Bot'}</span>`;
     const cls = e.kind === 'unit' ? `<span class="chip ${st.cls}">${clsIcon(st.cls)}${clsName[st.cls]}</span>` : '';
@@ -3029,7 +3421,9 @@ const SOUND = (() => {
     const el = $('#shop');
     el.innerHTML = '';
     const mine = G.turn === S.me && G.winner === null;
+    const water = hasWater(G);
     for (const type of UNIT_ORDER) {
+      if (UNIT_TYPES[type].cls === 'water' && !water) continue;   // no ships on dry maps
       const st = UNIT_TYPES[type];
       const block = recruitBlocker(G, S.me, type);
       const b = document.createElement('button');
@@ -3051,7 +3445,83 @@ const SOUND = (() => {
     }
     const hint = $('#shop-hint');
     if (S.mode === 'recruit') hint.textContent = 'Click a glowing tile to place your ' + UNIT_TYPES[S.recruitType].name + '. Right-click or Esc to cancel.';
-    else hint.textContent = 'Hover a unit for its stats. Recruits appear beside your HQ (air units: Wind Tower, water units: Water Tower) and act next turn.';
+    else if (S.mode === 'build-place' && S.buildType) hint.textContent = 'Click a glowing tile to place your ' + TOWER_TYPES[S.buildType].name + '. It finishes at the start of your next turn.';
+    else hint.textContent = water
+      ? 'Recruits appear beside your HQ (air: Wind Tower, ships: Water Tower) and act next turn.'
+      : 'Recruits appear beside your HQ (air: Wind Tower) and act next turn. No water here, so no ships.';
+    renderBuild();
+  }
+  // ---- Build panel ----
+  function buildersFor(type) { return unitsOf(G, S.me).filter((u) => canBuild(G, u, type)); }
+  function buildBlocker(type) {
+    const builders = unitsOf(G, S.me).filter((u) => u.type === 'builder');
+    if (!builders.length) return 'Recruit a Builder first';
+    if (G.gold[S.me] < TOWER_TYPES[type].price) return 'Not enough gold';
+    if (builders.every((u) => u.acted)) return 'Your Builders are done this turn';
+    if (!buildersFor(type).length) return type === 'waterTower' ? 'Move a Builder beside open plains that touch water' : 'Move a Builder next to an open tile';
+    return null;
+  }
+  function renderBuild() {
+    const el = $('#build-list');
+    el.innerHTML = '';
+    const mine = G.turn === S.me && G.winner === null;
+    const water = hasWater(G);
+    for (const type of BUILDABLE) {
+      if (type === 'waterTower' && !water) continue;
+      const tt = TOWER_TYPES[type];
+      const block = buildBlocker(type);
+      const b = document.createElement('button');
+      const off = !mine || !!block;
+      b.type = 'button'; b.className = 'build-item' + (off ? ' off' : '');
+      b.setAttribute('aria-disabled', off ? 'true' : 'false');
+      b.setAttribute('aria-label', tt.name + ', ' + tt.price + ' gold' + (block ? '. ' + block : ''));
+      b.setAttribute('aria-pressed', S.mode === 'build-place' && !S.sel && S.buildType === type ? 'true' : 'false');
+      b.appendChild(ART.iconCanvas('tower', type, S.me, 36));
+      const mid = document.createElement('span');
+      mid.innerHTML = `<span class="nm">${BUILD_SHORT[type]}</span>`;
+      b.appendChild(mid);
+      const pr = document.createElement('span'); pr.className = 'price'; pr.innerHTML = ICON.gold + tt.price;
+      b.appendChild(pr);
+      b.title = tt.name + (block ? ': ' + block : '');
+      b.addEventListener('mouseenter', () => previewTower(type, block));
+      b.addEventListener('focus', () => previewTower(type, block));
+      b.addEventListener('mouseleave', () => { infoKey = ''; renderInfo(); });
+      b.addEventListener('blur', () => { infoKey = ''; renderInfo(); });
+      b.addEventListener('click', () => {
+        SOUND.init(); previewTower(type, buildBlocker(type));
+        if (!mine) { SOUND.play('error'); toast('Wait for your turn to build.'); return; }
+        if (S.mode === 'build-place' && !S.sel && S.buildType === type) { SOUND.play('cancel'); clearMode(); } else startBuild(type);
+      });
+      el.appendChild(b);
+    }
+  }
+  const BUILD_SHORT = { archerTower: 'Archer', oilRig: 'Oil Rig', nurseTent: 'Tent', windTower: 'Wind', waterTower: 'Water' };
+  function startBuild(type) {
+    if (!canInteract()) return;
+    const block = buildBlocker(type);
+    if (block) { SOUND.play('error'); toast(block + '.'); return; }
+    const sites = [], who = new Map();
+    for (const b of buildersFor(type)) for (const s of buildSitesFrom(G, type, b.x, b.y)) {
+      const k = key(s.x, s.y);
+      if (!who.has(k)) { who.set(k, b); sites.push(s); }
+    }
+    SOUND.play('select'); menuEl.hidden = true;
+    S.mode = 'build-place'; S.sel = null; S.buildType = type; S.sites = sites; S.buildWho = who;
+    renderShop();
+  }
+  function previewTower(type, block) {
+    const st = TOWER_TYPES[type];
+    const el = $('#info');
+    infoKey = 'preview-t-' + type;
+    el.innerHTML = '';
+    el.appendChild(ART.iconCanvas('tower', type, S.me, 56));
+    const d = document.createElement('div');
+    d.innerHTML = `<h4>${st.name}</h4>
+      <div class="stats"><span>${ICON.hp}${st.hp}</span>${st.atk ? `<span>${ICON.atk}${st.atk}</span><span>${ICON.rng}${st.range}</span>` : ''}<span>${ICON.gold}${st.price}</span></div>
+      <div class="state">${block ? block + '.' : 'Ready to build.'}</div>`;
+    el.appendChild(d);
+    const tl = document.createElement('div'); tl.className = 'terrain-line'; tl.textContent = st.effect;
+    el.appendChild(tl);
   }
   // Show a unit type's full stats in the scout report (shop hover).
   function previewType(type, block) {
@@ -3069,7 +3539,7 @@ const SOUND = (() => {
     const tl = document.createElement('div'); tl.className = 'terrain-line'; tl.textContent = st.desc;
     el.appendChild(tl);
   }
-  function updateAll() { updateHUD(); renderShop(); infoKey = ''; renderInfo(); }
+  function updateAll() { if (S.inspectEnt) refreshInspect(); updateHUD(); renderShop(); infoKey = ''; renderInfo(); }
   // Keep the scout report at the height of its tallest possible content, so
   // hovering things never resizes it (which shoved the recruit list around).
   function lockInfoHeight() {
@@ -3086,6 +3556,7 @@ const SOUND = (() => {
     for (const type of ['hq'].concat(BUILDABLE)) {
       for (const extra of [{}, { building: true }, { side: 1 }]) { infoKey = ''; renderInfo(fake('tower', type, extra)); measure(); }
     }
+    for (const type of BUILDABLE) for (const block of [null, 'Move a Builder beside open plains that touch water']) { previewTower(type, block); measure(); }
     el.style.minHeight = max + 'px';
     infoKey = ''; renderInfo();
   }
@@ -3116,6 +3587,47 @@ const SOUND = (() => {
     updateAll();
     if (events.length > 1) await wait(350);
   }
+  // The coin toss that decides who moves first.
+  async function coinFlip(first) {
+    const wrap = $('#coin'), coin = $('#coin-el'), txt = $('#coin-text');
+    S.flipping = true; updateHUD();
+    wrap.hidden = false;
+    txt.textContent = 'Tossing a coin for the first move…';
+    const end = 5 * 360 + (first === 1 ? 180 : 0);
+    const base = reduceMotion ? 500 : 1700;
+    let anim = null;
+    SOUND.play('flip');
+    try {
+      anim = coin.animate([
+        { transform: 'translateY(0) rotateY(0deg) scale(1)' },
+        { transform: `translateY(-64px) rotateY(${end / 2}deg) scale(1.18)`, offset: 0.45 },
+        { transform: `translateY(0) rotateY(${end}deg) scale(1)` },
+      ], { duration: Math.max(1, base * speedMul()), easing: 'cubic-bezier(.3,.6,.35,1)', fill: 'forwards' });
+    } catch (e) { coin.style.transform = `rotateY(${first === 1 ? 180 : 0}deg)`; }
+    try {
+      await wait(base);
+      SOUND.play('coin');
+      const name = SIDE_NAMES[first];
+      txt.textContent = first === S.me ? `${name}: you go first!` : `${name}: ${S.online ? 'your rival goes' : 'the bot goes'} first.`;
+      await wait(1150);
+    } finally {
+      wrap.hidden = true; S.flipping = false;
+      if (anim) anim.cancel();
+      coin.style.transform = '';
+    }
+  }
+  async function botPhase() {
+    if (!S.ai || S.aiLevel !== settings.difficulty) { S.ai = makeAI(G, 1, settings.difficulty); S.aiLevel = settings.difficulty; }
+    $('#thinking').hidden = false;
+    await S.ai.takeTurn(botAct);
+    $('#thinking').hidden = true;
+    if (G.winner !== null) return;
+    await wait(250);
+    const ev2 = endTurn(G);
+    updateAll();
+    await banner(0);
+    await showEvents(ev2);
+  }
   async function endTurnFlow() {
     if (!canInteract()) return;
     SOUND.play('select');
@@ -3137,20 +3649,11 @@ const SOUND = (() => {
       return;
     }
     try {
-      if (!S.ai || S.aiLevel !== settings.difficulty) { S.ai = makeAI(G, 1, settings.difficulty); S.aiLevel = settings.difficulty; }
       const ev = endTurn(G);
       updateAll();
       await banner(1);
       await showEvents(ev);
-      $('#thinking').hidden = false;
-      await S.ai.takeTurn(botAct);
-      $('#thinking').hidden = true;
-      if (G.winner !== null) return;
-      await wait(250);
-      const ev2 = endTurn(G);
-      updateAll();
-      await banner(0);
-      await showEvents(ev2);
+      await botPhase();
     } catch (err) {
       $('#thinking').hidden = true;
       if (err instanceof Abort) return;
@@ -3173,28 +3676,46 @@ const SOUND = (() => {
     S.anims.clear(); S.offsets.clear(); S.flashes.clear(); S.shown.clear();
     S.ghosts = []; S.particles = []; S.floats = []; S.shots = []; S.botFocus = null; S.shake = null;
     $('#thinking').hidden = true; $('#thinking').textContent = 'Red Empire is plotting…'; $('#thinking').classList.remove('blue');
+    $('#coin').hidden = true; S.flipping = false;
   }
   function startGame(idx) {
     if (S.online || NET.t) netLeave(true);
     S.me = 0; S.online = false;
     resetBattle();
     S.mapIdx = idx;
-    G = createGame(MAPS[idx], { startBonus: settings.startBonus });
+    G = createGame(mapDefFor(idx), { startBonus: settings.startBonus });
+    S.ai = makeAI(G, 1, settings.difficulty); S.aiLevel = settings.difficulty;
     S.stats = newStats();
     clearMode();
     syncSettingsUI();
     show('game');
     fitBoard();
     SOUND.playMusic('battle');
-    const ev = beginTurn(G, 0);
     S.busy = true;
     updateAll();
+    const first = Math.random() < 0.5 ? 0 : 1;
     const g = gen;
     (async () => {
-      try { await banner(0); await showEvents(ev); } catch (e) { return; }
+      try {
+        await coinFlip(first);
+        G.first = first;
+        const ev = beginTurn(G, first);
+        updateAll();
+        await banner(first);
+        await showEvents(ev);
+        if (first === 1) await botPhase();
+      } catch (e) { if (!(e instanceof Abort)) console.error(e); return; }
       if (g !== gen) return;
-      S.busy = false; updateAll();
+      S.busy = false; S.botFocus = null; updateAll();
     })();
+  }
+  // A random map plays the layout shown on its card, then deals a new one.
+  function mapDefFor(idx) {
+    const m = MAPS[idx];
+    if (!m.random) return m;
+    const def = Object.assign({}, m, { rows: m.rows });
+    m.rows = genRandomMap();
+    return def;
   }
 
   // ---------------- Game over + fireworks ----------------
@@ -3221,14 +3742,58 @@ const SOUND = (() => {
     if (S.online) { $('#thinking').hidden = true; $('#end-maps').hidden = true; clearSaved(); updateEndButtons(); }
     end.hidden = false;
     $('#end-again').focus({ preventScroll: true });
-    if (won) startFireworks();
+    if (won) startFireworks(); else startFrowns();
   }
   const fw = { canvas: $('#fireworks'), on: false, rockets: [], sparks: [], next: 0, last: 0 };
   function startFireworks() {
     fw.on = true; fw.rockets = []; fw.sparks = []; fw.next = 0; fw.last = performance.now();
     const c = fw.canvas, dpr = Math.min(2, window.devicePixelRatio || 1);
     c.width = window.innerWidth * dpr; c.height = window.innerHeight * dpr;
-    fw.dpr = dpr;
+    fw.dpr = dpr; fw.mode = 'fire'; fw.faces = [];
+  }
+  // For the defeated side: a slow rain of frowny faces.
+  function startFrowns() {
+    startFireworks();
+    fw.mode = 'frown';
+    const c = fw.canvas, n = reduceMotion ? 12 : 34;
+    for (let i = 0; i < n; i++) fw.faces.push(newFrown(c.width, Math.random() * c.height));
+  }
+  function newFrown(W, y) {
+    const s = fw.dpr, r = (14 + Math.random() * 30) * s;
+    return { x: Math.random() * W, y: y == null ? -r * 1.2 : y, r, vy: (0.04 + Math.random() * 0.09) * s * (reduceMotion ? 0.5 : 1),
+      sway: Math.random() * 6.28, rot: (Math.random() - 0.5) * 0.6, vr: (Math.random() - 0.5) * 0.0012,
+      c: Math.random() < 0.78 ? '#ffd23f' : '#9fd0ff', tear: Math.random() < 0.4 };
+  }
+  function drawFrown(ctx, f) {
+    const r = f.r;
+    ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.rot);
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = f.c; ctx.fill(); ctx.lineWidth = Math.max(2, r * 0.12); ctx.strokeStyle = '#1b1530'; ctx.stroke();
+    ctx.fillStyle = '#1b1530';
+    ctx.beginPath(); ctx.ellipse(-r * 0.34, -r * 0.16, r * 0.1, r * 0.16, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(r * 0.34, -r * 0.16, r * 0.1, r * 0.16, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.lineCap = 'round'; ctx.lineWidth = Math.max(1.5, r * 0.08);
+    ctx.beginPath(); ctx.moveTo(-r * 0.52, -r * 0.4); ctx.lineTo(-r * 0.2, -r * 0.52); ctx.moveTo(r * 0.52, -r * 0.4); ctx.lineTo(r * 0.2, -r * 0.52); ctx.stroke();
+    ctx.lineWidth = Math.max(2, r * 0.11);
+    ctx.beginPath(); ctx.arc(0, r * 0.66, r * 0.42, Math.PI * 1.2, Math.PI * 1.8); ctx.stroke();
+    if (f.tear) {
+      ctx.fillStyle = '#4aa8ff';
+      ctx.beginPath(); ctx.moveTo(-r * 0.34, r * 0.04); ctx.quadraticCurveTo(-r * 0.5, r * 0.3, -r * 0.34, r * 0.36); ctx.quadraticCurveTo(-r * 0.18, r * 0.3, -r * 0.34, r * 0.04); ctx.fill();
+    }
+    ctx.restore();
+  }
+  function frownFrame(ctx, dt, W, H) {
+    ctx.clearRect(0, 0, W, H);
+    fw.next -= dt;
+    while (fw.next <= 0) {
+      fw.next += reduceMotion ? 450 : 120;
+      if (fw.faces.length < (reduceMotion ? 24 : 80)) fw.faces.push(newFrown(W));
+    }
+    fw.faces = fw.faces.filter((f) => {
+      f.y += f.vy * dt; f.sway += dt * 0.002; f.x += Math.sin(f.sway) * 0.15 * fw.dpr; f.rot += f.vr * dt;
+      drawFrown(ctx, f);
+      return f.y < H + f.r * 2;
+    });
   }
   function stopFireworks() { fw.on = false; const c = fw.canvas.getContext('2d'); c.clearRect(0, 0, fw.canvas.width, fw.canvas.height); }
   const FW_COLORS = ['#f5c03a', '#ffe680', '#3b7bff', '#9cc1ff', '#ff4b3a', '#ffffff', '#7dff9a', '#ff9be0'];
@@ -3238,6 +3803,7 @@ const SOUND = (() => {
     const c = fw.canvas, ctx = c.getContext('2d');
     const dt = Math.min(50, now - fw.last); fw.last = now;
     const W = c.width, H = c.height, s = fw.dpr;
+    if (fw.mode === 'frown') return frownFrame(ctx, dt, W, H);
     ctx.globalCompositeOperation = 'destination-out';
     ctx.fillStyle = 'rgba(0,0,0,0.13)'; ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'lighter';
@@ -3366,7 +3932,7 @@ const SOUND = (() => {
       const b = hqOf(D, 0);
       const route = Math.min(...DIRS.map(([dx, dy]) => (f[b.y + dy] && f[b.y + dy][b.x + dx] != null ? f[b.y + dy][b.x + dx] : 1e9)));
       const div = document.createElement('div');
-      div.innerHTML = `<h3>${m.name}</h3><div class="map-meta"><span class="chip ${m.focus === 'water' ? 'water' : m.focus}">${clsIcon(m.focus)}${m.focusLabel}</span><span>${D.w}×${D.h} tiles</span><span>Land route about ${route} tiles</span></div><p>${m.blurb}</p>`;
+      div.innerHTML = `<h3>${m.name}</h3><div class="map-meta"><span class="chip ${m.focus === 'water' ? 'water' : m.focus}">${clsIcon(m.focus)}${m.focusLabel}</span><span>${D.w}×${D.h} tiles</span><span>${m.random ? 'New layout every game' : route >= 1e9 ? 'No land route' : 'Land route about ' + route + ' tiles'}</span></div><p>${m.blurb}</p>`;
       card.appendChild(div);
       card.addEventListener('click', () => { SOUND.play('select'); S.mapIdx = i; renderMapCards(); });
       card.addEventListener('dblclick', () => { if (S.flow === 'host') { S.mapIdx = i; hostGame(); } else startGame(i); });
@@ -3458,8 +4024,9 @@ const SOUND = (() => {
       }
       const rules = document.createElement('div'); rules.className = 'guide-card'; rules.style.gridColumn = '1 / -1'; rules.style.display = 'block';
       rules.innerHTML = `<h3>How a turn works</h3>
-        <p style="margin-top:6px">Each side gets $100 at the start of its turn (plus $50 per Oil Rig). Click a unit to act with it. If it has nothing to attack, it goes straight into moving; otherwise choose <b>Move</b> or <b>Attack</b> (click a unit that is already moving to see its full menu). Each unit can move once and attack once per turn, in either order. A land unit must stop when it steps into a forest. Range counts tiles in straight steps, so range 2 covers the 8 tiles around a unit plus the 4 tiles two steps away.</p>
-        <p style="margin-top:6px">A unit that survives an attack hits back at full strength if the attacker is within its own range. Towers can be attacked like any unit. Builders put up towers on an adjacent tile; they finish at the start of your next turn and can be attacked while under construction. A Builder wears out after 3 buildings. Axe-men and Dragons can clear a forest tile next to them instead of attacking. Destroy the enemy HQ to win.</p>`;
+        <p style="margin-top:6px">A coin toss decides who moves first. Each side gets $100 at the start of its turn (plus $50 per Oil Rig). Click a unit to act with it. If it has nothing to attack, it goes straight into moving; otherwise choose <b>Move</b> or <b>Attack</b>. Each unit can move once and attack once per turn. Move first: a unit that attacks without moving stays put for the rest of the turn. A land unit must stop when it steps into a forest. Units can walk through buildings but can't stop on them. Range counts tiles in straight steps, so range 2 covers the 8 tiles around a unit plus the 4 tiles two steps away. Click any unit, even on the other side's turn, to see where it can move and what it can hit.</p>
+        <p style="margin-top:6px">A unit that survives an attack hits back at full strength if the attacker is within its own range. Archer Tower shots can't be returned, and neither can area attacks: the Mage blasts every enemy within 2 tiles, and the Phoenix breathes fire in a line 3 tiles straight or 2 tiles diagonally, hitting every enemy in it. Builders put up towers on an adjacent tile; they finish at the start of your next turn and can be attacked while under construction. A Builder wears out after 3 buildings. Axe-men and Dragons can clear a forest tile next to them instead of attacking.</p>
+        <p style="margin-top:6px">To ferry troops over water, move a land unit onto your Carrier from the shore. The Carrier can sail off that same turn, and from your next turn on it can unload the unit onto a free land tile beside it. A unit can still attack right after it lands. If a Carrier sinks, its passenger goes down with it. Destroy the enemy HQ to win.</p>`;
       grid.appendChild(rules);
     }
     body.appendChild(grid);
@@ -3469,6 +4036,8 @@ const SOUND = (() => {
   $('#btn-guide').innerHTML = ICON.book;
   $('#btn-settings').innerHTML = ICON.gear;
   $('#btn-menu').innerHTML = ICON.menu;
+  $('#coin-el .front').appendChild(ART.iconCanvas('tower', 'hq', 0, 76));
+  $('#coin-el .back').appendChild(ART.iconCanvas('tower', 'hq', 1, 76));
   $('#btn-guide').addEventListener('click', () => { SOUND.play('select'); openGuide(); });
   $('#btn-settings').addEventListener('click', () => { SOUND.play('select'); openModal('#modal-settings'); });
   $('#btn-menu').addEventListener('click', () => {
@@ -3563,7 +4132,7 @@ const SOUND = (() => {
   // other side replays it with the same animations. Every action is numbered,
   // so dropped messages are resent and a reloaded player catches up. If the
   // two boards ever disagree, the active player's board is sent whole.
-  const PROTO = 1;
+  const PROTO = 2;
   const SAVE_KEY = 'medieval-warfare-online' + (new URLSearchParams(location.search).get('slot') || '');
   const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   const PEERJS_URL = 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js';
@@ -3582,11 +4151,16 @@ const SOUND = (() => {
     const s = {
       v: PROTO, map: mapIdx, n: g.n || 0, turn: g.turn, day: g.day, winner: g.winner, gold: g.gold.slice(),
       bonus: g.startBonus, nid: g.nextId, ter: g.terrain.map((r) => r.join('')), st: g.stumps ? [...g.stumps] : [],
-      e: g.entities.map((e) => [e.id, e.kind === 'unit' ? 1 : 0, e.type, e.side, e.x, e.y, e.hp,
-        (e.moved ? 1 : 0) | (e.acted ? 2 : 0) | (e.building ? 4 : 0) | (e.fresh ? 8 : 0), e.builds || 0]),
+      first: g.first || 0, e: g.entities.map(entRow),
     };
     if (stats) s.stats = stats;
     return s;
+  }
+  function entRow(e) {
+    const r = [e.id, e.kind === 'unit' ? 1 : 0, e.type, e.side, e.x, e.y, e.hp,
+      (e.moved ? 1 : 0) | (e.acted ? 2 : 0) | (e.building ? 4 : 0) | (e.fresh ? 8 : 0) | (e.cargoNew ? 16 : 0), e.builds || 0];
+    if (e.cargo) r.push(entRow(e.cargo));
+    return r;
   }
   function stateHash(g) {
     const str = JSON.stringify(snapshotOf(g, 0));
@@ -3599,18 +4173,23 @@ const SOUND = (() => {
       s.ter.length === MAPS[s.map].rows.length && Array.isArray(s.gold) && (s.turn === 0 || s.turn === 1);
   }
   function applySnap(g, s) {
-    const old = new Map(g.entities.map((e) => [e.id, e]));
-    g.entities = s.e.map(([id, k, type, side, x, y, hp, f, b]) => {
+    const old = new Map();
+    for (const e of g.entities) { old.set(e.id, e); if (e.cargo) old.set(e.cargo.id, e.cargo); }
+    const valid = (e) => (e.kind === 'unit' ? UNIT_TYPES[e.type] : TOWER_TYPES[e.type]);
+    const make = ([id, k, type, side, x, y, hp, f, b, cg]) => {
       const e = old.get(id) || {};
       Object.assign(e, { id, kind: k ? 'unit' : 'tower', type, side, x, y, hp,
-        moved: !!(f & 1), acted: !!(f & 2), building: !!(f & 4), fresh: !!(f & 8) });
+        moved: !!(f & 1), acted: !!(f & 2), building: !!(f & 4), fresh: !!(f & 8), cargoNew: !!(f & 16) });
       if (b) e.builds = b; else delete e.builds;
+      e.cargo = Array.isArray(cg) ? make(cg) : null;
+      if (e.cargo && !valid(e.cargo)) e.cargo = null;
       return e;
-    }).filter((e) => (e.kind === 'unit' ? UNIT_TYPES[e.type] : TOWER_TYPES[e.type]));
+    };
+    g.entities = s.e.map(make).filter(valid);
     g.terrain = s.ter.map((r) => String(r).split(''));
     g.stumps = new Set(s.st || []);
     g.gold = s.gold.slice(0, 2); g.turn = s.turn; g.day = s.day; g.winner = s.winner;
-    g.startBonus = s.bonus || 0; g.nextId = s.nid; g.n = s.n || 0;
+    g.startBonus = s.bonus || 0; g.nextId = s.nid; g.n = s.n || 0; g.first = s.first || 0;
   }
 
   // ---- saving, so a reloaded page can rejoin ----
@@ -3732,7 +4311,7 @@ const SOUND = (() => {
         S.busy = G.winner !== null; S.ghosts = []; S.anims.clear(); S.offsets.clear();
         buildTerrainCache(); clearMode(); updateAll(); saveOnline();
       });
-    } else startOnline(m.gid, me, m.snap);
+    } else startOnline(m.gid, me, m.snap, (m.snap.n || 0) === 0);
   }
   function remoteResign(side) {
     if (!G || G.winner !== null) return;
@@ -3782,8 +4361,6 @@ const SOUND = (() => {
     const side = G.turn;
     const ent = (id) => G.entities.find((e) => e.id === id) || null;
     const mine = (id) => { const e = ent(id); if (!e || e.side !== side) throw new BadMove(a.t); return e; };
-    S.inspect = null;
-    if (S.sel && S.sel.side !== S.me) S.sel = null;
     switch (a.t) {
       case 'move': {
         const u = mine(a.id);
@@ -3794,10 +4371,17 @@ const SOUND = (() => {
         return botAct.move(u, pathFromNode(node));
       }
       case 'atk': {
-        const u = mine(a.id), d = ent(a.tid);
-        if (u.acted || !d || !targetsFrom(G, u, u.x, u.y).includes(d)) throw new BadMove('atk');
+        const u = mine(a.id);
+        const opt = u.acted ? null : attackOptions(G, u, u.x, u.y).find((o) => o.k === a.k);
+        if (!opt) throw new BadMove('atk');
         G.n++;
-        return botAct.attack(u, d);
+        return botAct.attack(u, opt);
+      }
+      case 'unl': {
+        const c = mine(a.id);
+        if (c.type !== 'carrier' || !canUnload(G, c) || !unloadTiles(G, c).some((p) => p.x === a.x && p.y === a.y)) throw new BadMove('unl');
+        G.n++;
+        return aUnload(c, a.x, a.y);
       }
       case 'chop': {
         const u = mine(a.id);
@@ -3846,13 +4430,14 @@ const SOUND = (() => {
   function createHostedGame() {
     NET.lobby = false;
     const gid = Math.random().toString(36).slice(2, 10);
-    const g = createGame(MAPS[NET.mapIdx], { startBonus: settings.startBonus });
-    beginTurn(g, 0);
-    startOnline(gid, 0, snapshotOf(g, NET.mapIdx, newStats()));
+    const g = createGame(mapDefFor(NET.mapIdx), { startBonus: settings.startBonus });
+    g.first = Math.random() < 0.5 ? 0 : 1;
+    beginTurn(g, g.first);
+    startOnline(gid, 0, snapshotOf(g, NET.mapIdx, newStats()), true);
     NET.syncAt = 0;
     sendSync();
   }
-  function startOnline(gid, me, snap) {
+  function startOnline(gid, me, snap, flip) {
     const m = $('#modal-online');
     if (!m.hidden) m.hidden = true;
     resetBattle();
@@ -3871,6 +4456,7 @@ const SOUND = (() => {
     saveOnline();
     syncSettingsUI();
     serial(async () => {
+      if (flip && G.winner === null) await coinFlip(G.first || 0);
       if (G.winner === null) await banner(G.turn);
       S.busy = G.winner !== null;
       updateAll();
@@ -4032,6 +4618,7 @@ const SOUND = (() => {
     el.classList.toggle('err', !!NET.error);
     el.textContent = NET.error || NET.status ||
       (NET.role === 'host' ? (NET.oppOnline ? 'Rival found! Starting…' : 'Waiting for your rival to join…') : NET.oppOnline ? 'Found the host. Starting…' : 'Looking for game ' + (NET.code || '') + '…');
+    if (!NET.error) { const sp = document.createElement('span'); sp.className = 'spin'; sp.setAttribute('aria-hidden', 'true'); el.prepend(sp); }
   }
   function newCode() {
     let c = '';
@@ -4114,13 +4701,13 @@ const SOUND = (() => {
   show('title');
   requestAnimationFrame(frame);
   // Debug/testing hook
-  window.__mw = { get G() { return G; }, S, NET, startGame, Clock, settings, togglePause, endTurnFlow, stateHash, hostGame, joinGame, localResign,
+  window.__mw = { get G() { return G; }, S, NET, snapshotOf, applySnap, applyRemote, coinFlip, mapDefFor, playerUnload, playerAttack, startGame, Clock, settings, togglePause, endTurnFlow, stateHash, hostGame, joinGame, localResign,
     // Testing: let the bot play this side's online turn through the same path as clicks.
     async autoPlay(level) {
       const ai = makeAI(G, S.me, level || 'normal');
       const act = {
         async move(u, path) { const e = path[path.length - 1]; record({ t: 'move', id: u.id, x: e.x, y: e.y }); await aMove(u, path); },
-        async attack(a, d) { record({ t: 'atk', id: a.id, tid: d.id }); await aAttack(a, d); },
+        async attack(a, opt) { record({ t: 'atk', id: a.id, k: opt.k }); await aAttack(a, opt); },
         build(b, type, x, y) { record({ t: 'build', id: b.id, type, x, y }); return aBuild(b, type, x, y); },
         async chop(u, x, y) { record({ t: 'chop', id: u.id, x, y }); await aChop(u, x, y); },
         async heal(n, t) { record({ t: 'heal', id: n.id, tid: t.id }); await aHeal(n, t); },

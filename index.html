@@ -22,6 +22,8 @@
   --red: #ff4b3a;
   --red-dark: #a8241b;
   --red-soft: #ffd2cb;
+  --green: #2fae5a;
+  --green-dark: #1d6e3a;
   --gold: #f5c03a;
   --gold-dark: #b9851a;
   --leaf: #3fa653;
@@ -88,6 +90,7 @@ button { font-family: inherit; }
 }
 .chip.blue { background: var(--blue); color: var(--white); }
 .chip.red { background: var(--red); color: var(--white); }
+.chip.green { background: var(--green); color: var(--white); }
 .chip.land { background: #c6e6a8; }
 .chip.air { background: #d6ecff; }
 .chip.water { background: #9fd0ff; }
@@ -137,15 +140,18 @@ button { font-family: inherit; }
 
 /* ---------- Game ---------- */
 #screen-game { display: flex; flex-direction: column; gap: 10px; }
-.hud { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 6px 8px; }
+.hud { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 8px; }
+.hud .icon-btn { width: 40px; height: 40px; }
+.hud .purse { font-size: 16px; padding: 3px 8px; }
 .turn-chip { display: flex; align-items: center; gap: 10px; padding: 6px 14px; border-radius: 8px; border: 3px solid var(--ink); color: var(--white); background: var(--blue); font-weight: 600; font-size: 17px; min-width: 0; }
 .turn-chip.red { background: var(--red); }
+.turn-chip.green { background: var(--green); }
 .turn-chip .day { font-family: var(--font-display); font-size: 28px; line-height: 0.8; font-weight: 400; }
 .purse { display: flex; align-items: center; gap: 6px; font-size: 18px; font-weight: 600; padding: 4px 10px; border-radius: 8px; border: 3px solid var(--ink); background: var(--parchment); font-variant-numeric: tabular-nums; }
 .purse .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); }
 .purse .who { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 .hud-spacer { flex: 1; }
-.hud-tools { display: flex; gap: 8px; }
+.hud-tools { display: flex; gap: 6px; }
 #end-turn { min-width: 150px; flex-direction: column; gap: 0; line-height: 1.1; padding: 6px 16px; }
 #end-turn small { font-size: 12px; font-weight: 500; opacity: 0.85; }
 .game-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 12px; }
@@ -185,9 +191,9 @@ button { font-family: inherit; }
 .shop-hint { font-size: 12px; color: var(--muted); margin: 8px 0 0; line-height: 1.4; }
 
 /* dev tools (HUD group) */
-.dev-panel { display: flex; align-items: center; gap: 6px; padding: 4px 6px 4px 10px; border: 3px dashed var(--ink); border-radius: 9px; background: #2b2b2b; }
-.dev-panel .dev-label { color: #9be29b; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; }
-.dev-panel .btn { font-size: 13px; padding: 5px 9px; background: #9be29b; box-shadow: 0 2px 0 var(--ink); border-width: 2px; }
+.dev-panel { display: flex; align-items: center; }
+
+.dev-panel .btn { font-size: 14px; padding: 6px 11px; gap: 5px; }
 
 /* popup action menu */
 .popup { position: absolute; z-index: 5; min-width: 170px; padding: 6px; display: flex; flex-direction: column; gap: 4px; line-height: 1.2; }
@@ -212,6 +218,7 @@ button { font-family: inherit; }
   animation: bannerSlide 1.3s ease-in-out forwards;
 }
 .banner.red div { background: var(--red); }
+.banner.green div { background: var(--green); }
 @keyframes bannerSlide { 0% { transform: translateX(-110%); } 22%, 78% { transform: translateX(0); } 100% { transform: translateX(110%); } }
 .toast-area { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 7; display: flex; flex-direction: column; gap: 6px; align-items: center; pointer-events: none; width: max-content; max-width: 90%; }
 .toast { padding: 6px 14px; font-weight: 600; font-size: 14px; line-height: 1.3; animation: toastIn 2.6s ease forwards; text-align: center; }
@@ -251,7 +258,12 @@ button { font-family: inherit; }
 .net-status { margin: 12px 0; text-align: center; color: var(--muted); line-height: 1.4; }
 .net-status.err { color: var(--red-dark); font-weight: 600; }
 .online-where { font-size: 12.5px; color: var(--muted); margin: 0; line-height: 1.4; }
-.thinking { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 4; padding: 6px 14px; font-weight: 600; background: var(--red); color: var(--white); border: 3px solid var(--ink); border-radius: 8px; box-shadow: 0 3px 0 var(--ink); line-height: 1.2; }
+.thinking { padding: 5px 12px; font-weight: 600; font-size: 14px; background: var(--red); color: var(--white); border: 3px solid var(--ink); border-radius: 8px; line-height: 1.2; white-space: nowrap; animation: thinkPulse 1.6s ease-in-out infinite; }
+.thinking.green { background: var(--green); }
+@keyframes thinkPulse { 50% { filter: brightness(1.15); } }
+@media (prefers-reduced-motion: reduce) { .thinking { animation: none; } }
+.btn-green { background: var(--green); color: var(--white); }
+.speed-btn { width: auto; min-width: 42px; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
 .paused-cover { position: absolute; inset: 0; z-index: 8; display: grid; place-items: center; background: rgba(16,12,34,0.55); }
 .paused-cover div { font-family: var(--font-display); font-size: 64px; color: var(--white); text-shadow: 0 4px 0 var(--ink); line-height: 1; }
 
@@ -337,7 +349,7 @@ button { font-family: inherit; }
         <button class="btn btn-big btn-plain" id="btn-settings-title" type="button">Settings</button>
       </div>
     </div>
-    <div class="version">V1.3</div>
+    <div class="version">V1.4.1</div>
   </section>
 
   <!-- ===== Map select ===== -->
@@ -349,7 +361,7 @@ button { font-family: inherit; }
     <div class="map-grid" id="map-grid"></div>
     <div class="maps-foot panel">
       <div id="maps-diff-wrap"><span class="lab" style="font-weight:600;margin-right:10px">Bot difficulty</span><span class="seg" id="maps-diff"></span></div>
-      <div id="maps-online-note" hidden style="color:var(--muted);line-height:1.4;max-width:520px"><b style="color:var(--text)">Online 1v1.</b> You host as the Blue Kingdom; a coin toss decides who moves first. Starting gold comes from Settings.</div>
+      <div id="maps-online-note" hidden style="color:var(--muted);line-height:1.4;max-width:520px"></div>
       <button class="btn btn-big btn-blue" id="maps-start" type="button">To battle!</button>
     </div>
   </section>
@@ -360,15 +372,15 @@ button { font-family: inherit; }
       <div class="turn-chip" id="turn-chip"><span class="day" id="hud-day">Day 1</span><span id="hud-turn">Your turn</span></div>
       <div class="purse" title="Blue Kingdom gold"><span class="dot" style="background:var(--blue)"></span><span class="who" id="who-0">You</span><span id="gold-0">$0</span></div>
       <div class="purse" title="Red Empire gold"><span class="dot" style="background:var(--red)"></span><span class="who" id="who-1">Bot</span><span id="gold-1">$0</span></div>
+      <div class="purse" title="Green Duchy gold" id="purse-2" hidden><span class="dot" style="background:var(--green)"></span><span class="who" id="who-2">Ally</span><span id="gold-2">$0</span></div>
       <div class="net-pill" id="net-pill" hidden><span class="dot"></span><span id="net-text">Online</span></div>
+      <div class="thinking" id="thinking" hidden role="status">Bot is plotting…</div>
       <div class="hud-spacer"></div>
       <div class="dev-panel" id="dev-panel" hidden>
-        <span class="dev-label">DEV</span>
-        <button class="btn" id="dev-pause" type="button">Pause</button>
-        <button class="btn" id="dev-reset" type="button">Reset</button>
-        <button class="btn" id="dev-gold" type="button">+$1000 both</button>
+        <button class="btn" id="dev-gold" type="button" title="Gives every side $1000">+$1000 all</button>
       </div>
       <div class="hud-tools">
+        <button class="btn icon-btn speed-btn" id="btn-speed" type="button" title="Animation speed" aria-label="Animation speed">1×</button>
         <button class="btn icon-btn" id="btn-guide" type="button" title="Unit guide" aria-label="Unit guide"></button>
         <button class="btn icon-btn" id="btn-mute" type="button" title="Mute" aria-label="Mute sound"></button>
         <button class="btn icon-btn" id="btn-settings" type="button" title="Settings" aria-label="Settings"></button>
@@ -383,7 +395,6 @@ button { font-family: inherit; }
           <div class="popup panel" id="action-menu" hidden></div>
           <div class="banner" id="banner" hidden><div></div></div>
           <div class="toast-area" id="toasts"></div>
-          <div class="thinking" id="thinking" hidden>Red Empire is plotting…</div>
           <div class="paused-cover" id="paused-cover" hidden><div>Paused</div></div>
           <div class="coin-wrap" id="coin" hidden>
             <div class="coin-stage"><div class="coin" id="coin-el"><div class="face front"></div><div class="face back"></div></div></div>
@@ -436,7 +447,8 @@ button { font-family: inherit; }
         <div class="setting-row"><label for="set-music">Music</label><input type="range" id="set-music" min="0" max="1" step="0.05"></div>
         <div class="setting-row"><label for="set-sfx">Sound effects</label><input type="range" id="set-sfx" min="0" max="1" step="0.05"></div>
         <div class="setting-row"><span class="lab" id="lab-grid">Show grid</span><button class="switch" id="set-grid" role="switch" aria-labelledby="lab-grid" type="button"></button></div>
-        <div class="setting-row"><span class="lab" id="lab-dev">Developer tools<small>Pause, reset and +$1000 buttons in the game.</small></span><button class="switch" id="set-dev" role="switch" aria-labelledby="lab-dev" type="button"></button></div>
+        <div class="setting-row"><span class="lab">Oil Rig limit<small>Most Oil Rigs each side may own. Online, the host's choice is used.</small></span><span class="seg" id="set-oil"></span></div>
+        <div class="setting-row"><span class="lab" id="lab-dev">Add money button<small>Shows a +$1000 button that gives every side $1000. Works online too, on your turn.</small></span><button class="switch" id="set-dev" role="switch" aria-labelledby="lab-dev" type="button"></button></div>
       </div>
     </div>
   </div>
@@ -469,8 +481,9 @@ button { font-family: inherit; }
       <div class="modal-head"><h2 id="online-title">Play Online</h2><button class="btn btn-plain" data-close type="button">Close</button></div>
       <div class="modal-body">
         <div class="menu-list" id="online-home">
-          <p class="confirm-text" style="margin:0">Battle a friend 1 v 1. One of you hosts and shares a five-letter code; the other joins with it.</p>
-          <button class="btn btn-blue" id="online-host" type="button">Host a game</button>
+          <p class="confirm-text" style="margin:0">Battle a friend 1 v 1, or team up against a bot. One of you hosts and shares a five-letter code; the other joins with it.</p>
+          <button class="btn btn-blue" id="online-host" type="button">Host 1 v 1</button>
+          <button class="btn btn-green" id="online-host2" type="button">Host 2 vs Bot</button>
           <div class="online-or">or join one</div>
           <div class="join-row"><input id="online-code" maxlength="5" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Game code"><button class="btn" id="online-join" type="button">Join</button></div>
           <button class="btn btn-plain" id="online-resume" type="button" hidden>Rejoin game</button>
@@ -510,7 +523,7 @@ button { font-family: inherit; }
 // DATA — units, towers, terrain and maps (from rules.txt)
 // ============================================================
 const UNIT_TYPES = {
-  soldier:   { name: 'Soldier',    cls: 'land',  hp: 100, atk: 50,  range: 1, move: 3, price: 100,
+  soldier:   { name: 'Soldier',    cls: 'land',  hp: 125, atk: 50,  range: 1, move: 3, price: 100,
     desc: 'A loyal foot soldier. Can attack as far as he can swing his sword.' },
   archer:    { name: 'Archer',     cls: 'land',  hp: 100, atk: 50,  range: 3, move: 3, price: 100,
     desc: 'A sturdy bowman. Can attack over trees.' },
@@ -518,43 +531,47 @@ const UNIT_TYPES = {
     desc: 'Swings a long-handled axe. Slow, but hits hard from 2 tiles away. Can chop down a tree next to him.' },
   captain:   { name: 'Captain',    cls: 'land',  hp: 200, atk: 100, range: 2, move: 4, price: 200,
     desc: 'A leader on horseback who uses a spear to attack further.' },
-  juggernaut:{ name: 'Juggernaut', cls: 'land',  hp: 400, atk: 125, range: 1, move: 2, price: 300,
+  juggernaut:{ name: 'Juggernaut', cls: 'land',  hp: 400, atk: 125, range: 1, move: 3, price: 300,
     desc: 'A walking fortress in full plate. Slow and short-reached, but very hard to bring down.' },
-  sniper:    { name: 'Sniper',     cls: 'land',  hp: 50,  atk: 50,  range: 8, move: 2, price: 200,
-    desc: 'A marksman with a heavy crossbow. Fragile and slow, but hits anything up to 8 tiles away.' },
-  mage:      { name: 'Mage',       cls: 'land',  hp: 100, atk: 50,  range: 2, move: 3, price: 250, area: 'burst',
+  sniper:    { name: 'Sniper',     cls: 'land',  hp: 50,  atk: 50,  range: 7, move: 2, price: 200,
+    desc: 'A marksman with a heavy crossbow. Fragile and slow, but hits anything up to 7 tiles away.' },
+  mage:      { name: 'Mage',       cls: 'land',  hp: 200, atk: 50,  range: 2, move: 4, price: 250, area: 'burst',
     desc: 'Casts a blast that hits every enemy within 2 tiles at once, for 50 damage each. Blasts can\'t be hit back.' },
   builder:   { name: 'Builder',    cls: 'land',  hp: 50,  atk: 0,   range: 1, move: 3, price: 150, maxBuilds: 3,
     desc: 'Constructs towers on an adjacent tile. Towers take one turn to finish. Worn out after 3 buildings.' },
+  cheerleader: { name: 'Cheerleader', cls: 'land', hp: 100, atk: 0, range: 2, move: 3, price: 200, cheer: 25,
+    desc: 'Cheers on friendly units within 2 tiles: they deal +25 damage. Two Cheerleaders on the same unit don\'t stack.' },
+  gnome:     { name: 'Gnome',      cls: 'land',  hp: 50,  atk: 0,   range: 1, move: 5, price: 125, maxBuilds: 3, terraform: true,
+    desc: 'A quick little landscaper. Plants a forest ($25) or raises a mountain ($75) on open plains next to him. Worn out after 3.' },
   nurse:     { name: 'Nurse',      cls: 'land',  hp: 25,  atk: 0,   range: 1, move: 3, price: 150, heal: 50,
     desc: 'Heals one adjacent unit by 50 HP per turn.' },
   hawk:      { name: 'Hawk',       cls: 'air',   hp: 100, atk: 50,  range: 1, move: 5, price: 125,
     desc: 'Flies overhead, diving on enemy units. Recruited next to a Wind Tower.' },
   dragon:    { name: 'Dragon',     cls: 'air',   hp: 300, atk: 150, range: 2, move: 6, price: 500, chops: true,
     desc: 'Breathes fire from 2 tiles away and can burn down a tree next to it. Recruited next to a Wind Tower.' },
-  phoenix:   { name: 'Phoenix',    cls: 'air',   hp: 500, atk: 100, range: 3, move: 4, price: 600, area: 'line',
+  phoenix:   { name: 'Phoenix',    cls: 'air',   hp: 350, atk: 100, range: 3, move: 4, price: 700, area: 'line',
     desc: 'Breathes a line of fire 3 tiles straight or 2 tiles diagonally, hitting every enemy in it. Recruited next to a Wind Tower.' },
   pirate:    { name: 'Pirate',     cls: 'water', hp: 200, atk: 100, range: 3, move: 3, price: 250,
     desc: 'A ship with cannons that hits land foes from afar. Recruited next to a Water Tower.' },
-  shark:     { name: 'Shark',      cls: 'water', hp: 150, atk: 100, range: 1, move: 4, price: 150,
+  shark:     { name: 'Shark',      cls: 'water', hp: 200, atk: 100, range: 1, move: 6, price: 150,
     desc: 'A fast hunter that bites anything at the water\'s edge. Recruited next to a Water Tower.' },
   carrier:   { name: 'Carrier',    cls: 'water', hp: 250, atk: 0,   range: 0, move: 5, price: 200, carries: 1,
     desc: 'A transport barge. A land unit boards it from the shore; it sails, then unloads the unit onto land on a later turn. Recruited next to a Water Tower.' },
 };
-const UNIT_ORDER = ['soldier', 'archer', 'axeman', 'captain', 'juggernaut', 'sniper', 'mage', 'builder', 'nurse', 'hawk', 'dragon', 'phoenix', 'pirate', 'shark', 'carrier'];
+const UNIT_ORDER = ['soldier', 'archer', 'axeman', 'captain', 'juggernaut', 'sniper', 'mage', 'cheerleader', 'builder', 'gnome', 'nurse', 'hawk', 'dragon', 'phoenix', 'pirate', 'shark', 'carrier'];
 
 const TOWER_TYPES = {
   hq:          { name: 'HQ',           hp: 500, atk: 0,  range: 0, price: 0,
     effect: 'Home base. Protect it at all costs! Land units are recruited next to it.' },
-  archerTower: { name: 'Archer Tower', hp: 100, atk: 50, range: 5, price: 100,
+  archerTower: { name: 'Archer Tower', hp: 200, atk: 50, range: 5, price: 100,
     effect: 'A long-range bowman sits in the canopy. Attacks once per turn, and units it shoots can\'t hit back.' },
-  oilRig:      { name: 'Oil Rig',      hp: 200, atk: 0,  range: 0, price: 250,
+  oilRig:      { name: 'Oil Rig',      hp: 150, atk: 0,  range: 0, price: 250,
     effect: 'Earns an additional $50 per turn. Can be built on plains or water.', income: 50 },
   nurseTent:   { name: 'Nurse Tent',   hp: 200, atk: 0,  range: 2, price: 150,
     effect: 'Heals every friendly unit in range by 25 HP at the start of your turn.', heal: 25 },
-  windTower:   { name: 'Wind Tower',   hp: 500, atk: 0,  range: 1, price: 250,
+  windTower:   { name: 'Wind Tower',   hp: 300, atk: 0,  range: 1, price: 250,
     effect: 'Air units may be recruited and placed next to it.', spawns: 'air' },
-  waterTower:  { name: 'Water Tower',  hp: 500, atk: 0,  range: 1, price: 250,
+  waterTower:  { name: 'Water Tower',  hp: 300, atk: 0,  range: 1, price: 250,
     effect: 'Water units may be recruited and placed next to it, in the water. Must be built beside water.', spawns: 'water' },
 };
 const BUILDABLE = ['archerTower', 'oilRig', 'nurseTent', 'windTower', 'waterTower'];
@@ -567,7 +584,9 @@ const TERRAIN = {
 };
 
 const START_INCOME = 100;
-const SIDE_NAMES = ['Blue Kingdom', 'Red Empire'];
+const SIDE_NAMES = ['Blue Kingdom', 'Red Empire', 'Green Duchy'];
+// Terraforming by Gnomes: tile kind -> cost
+const TERRA = { T: { name: 'Forest', price: 25 }, M: { name: 'Mountain', price: 75 } };
 
 // Maps are written as their top half; the bottom half is the top rotated
 // 180 degrees, so both sides get the same terrain. 'B' marks the Blue HQ,
@@ -672,6 +691,7 @@ function createGame(mapDef, opts) {
     log: [],
     n: 0,             // actions taken so far (online sync counter)
     first: 0,         // side that moved first (coin toss)
+    oilCap: opts.oilCap == null ? null : opts.oilCap,   // most Oil Rigs per side (null = no limit)
   };
   for (let y = 0; y < G.h; y++) {
     G.terrain.push([]);
@@ -684,9 +704,54 @@ function createGame(mapDef, opts) {
       G.terrain[y].push(c);
     }
   }
-  G.gold = [G.startBonus, G.startBonus];
+  if (opts.mode === '2v1') setupTeams(G, opts.botLevel);
+  G.gold = G.order ? [G.startBonus, G.startBonus, G.startBonus] : [G.startBonus, G.startBonus];
   return G;
 }
+
+// ---- Sides and teams ----
+// A normal game has two sides (0 Blue, 1 Red). "2 vs Bot" adds side 2 (Green):
+// Blue and Green are one team, the Red bot the other.
+function teamOf(G, s) { return G.teams ? G.teams[s] : s; }
+function isFoe(G, a, b) { return teamOf(G, a) !== teamOf(G, b); }
+function sidesOf(G) { return G.order || (G.first === 1 ? [1, 0] : [0, 1]); }
+// 2 vs Bot: Blue and Green each get an HQ in the west, as far apart as the
+// ground allows; the bot keeps the single Red HQ in the east and earns double.
+function setupTeams(G, botLevel) {
+  G.mode = '2v1'; G.teams = [0, 1, 0]; G.order = [0, 2, 1]; G.incomeMul = [1, 2, 1];
+  G.out = [false, false, false]; G.bots = [1]; G.botLevel = botLevel || 'normal';
+  removeEntity(G, hqOf(G, 0));
+  const land = (x, y) => inBounds(G, x, y) && (G.terrain[y][x] === '.' || G.terrain[y][x] === 'T');
+  const roomy = (x, y) => land(x, y) && !entityAt(G, x, y) && DIRS.filter(([dx, dy]) => land(x + dx, y + dy)).length >= 3;
+  let best = null;
+  for (let y1 = 1; y1 < G.h - 1; y1++) for (let x1 = 1; x1 <= 4; x1++) {
+    if (!roomy(x1, y1)) continue;
+    for (let y2 = y1 + 3; y2 < G.h - 1; y2++) for (let x2 = 1; x2 <= 4; x2++) {
+      if (!roomy(x2, y2)) continue;
+      const s = (y2 - y1) * 10 - x1 - x2;
+      if (!best || s > best.s) best = { s, a: [x1, y1], b: [x2, y2] };
+    }
+  }
+  if (!best) best = { a: [1, 2], b: [1, G.h - 3] };
+  for (const [side, [x, y]] of [[0, best.a], [2, best.b]]) {
+    for (const [dx, dy] of [[0, 0]].concat(DIRS)) {
+      const nx = x + dx, ny = y + dy;
+      if (inBounds(G, nx, ny) && G.terrain[ny][nx] === 'T') G.terrain[ny][nx] = '.';
+    }
+    G.terrain[y][x] = '.';
+    addTower(G, 'hq', side, x, y, false);
+  }
+}
+// The Cheerleader's +25: friendly units with an attack, within 2 tiles of one.
+function cheerBonus(G, e) {
+  if (!G || e.kind !== 'unit' || !(UNIT_TYPES[e.type].atk > 0)) return 0;
+  for (const c of G.entities) {
+    if (c.type === 'cheerleader' && c !== e && !isFoe(G, c.side, e.side) && manhattan(c.x, c.y, e.x, e.y) <= UNIT_TYPES.cheerleader.range) return UNIT_TYPES.cheerleader.cheer;
+  }
+  return 0;
+}
+function atkOf(G, e) { return statsOf(e).atk + cheerBonus(G, e); }
+function oilRoom(G, side) { return G.oilCap == null || towersOf(G, side).filter((t) => t.type === 'oilRig').length < G.oilCap; }
 
 function addTower(G, type, side, x, y, building) {
   const t = TOWER_TYPES[type];
@@ -750,7 +815,7 @@ function reachable(G, e, opts) {
       let stop = true;
       if (occ && !boards) {
         if (occ.kind === 'tower') stop = false;          // walk through buildings, never stop on one
-        else if (occ.side !== e.side) continue;
+        else if (isFoe(G, occ.side, e.side)) continue;
         else stop = false;
       }
       const rem = boards ? 0 : (cls === 'land' && t === 'T') ? 0 : cur.rem - 1;
@@ -816,7 +881,7 @@ function attackOptions(G, e, fx, fy) {
     PHOENIX_DIRS.forEach(([dx, dy], i) => {
       const n = dx && dy ? 2 : 3, tiles = [];
       for (let s = 1; s <= n; s++) if (inBounds(G, fx + dx * s, fy + dy * s)) tiles.push({ x: fx + dx * s, y: fy + dy * s });
-      const victims = G.entities.filter((o) => o.side !== e.side && tiles.some((p) => p.x === o.x && p.y === o.y));
+      const victims = G.entities.filter((o) => isFoe(G, o.side, e.side) && tiles.some((p) => p.x === o.x && p.y === o.y));
       if (victims.length) out.push({ k: i, victims, tiles });
     });
     return out;
@@ -833,7 +898,7 @@ function hasWater(G) { return G.terrain.some((r) => r.includes('W')); }
 // Enemy entities attackable by e if it stood at (fx, fy).
 function targetsFrom(G, e, fx, fy) {
   if (!canAttackAtAll(e)) return [];
-  return G.entities.filter((o) => o.side !== e.side && inReach(e, fx, fy, o.x, o.y));
+  return G.entities.filter((o) => isFoe(G, o.side, e.side) && inReach(e, fx, fy, o.x, o.y));
 }
 
 // Tiles in attack range (for drawing). Excludes the unit's own tile.
@@ -851,11 +916,23 @@ function removeEntity(G, e) {
   if (i >= 0) G.entities.splice(i, 1);
 }
 
+// G.winner holds the winning team (in a normal game, team = side).
 function checkWinner(G) {
-  for (const side of [0, 1]) {
-    if (!hqOf(G, side)) { G.winner = 1 - side; return G.winner; }
+  if (!G.order) {
+    for (const side of [0, 1]) {
+      if (!hqOf(G, side)) { G.winner = 1 - side; return G.winner; }
+    }
+    return null;
   }
-  return null;
+  for (const s of G.order) {
+    if (G.out[s] || hqOf(G, s)) continue;
+    // A side that loses its HQ is out of the game, army and all.
+    G.out[s] = true;
+    G.entities = G.entities.filter((e) => e.side !== s);
+  }
+  const alive = new Set(G.order.filter((s) => !G.out[s]).map((s) => teamOf(G, s)));
+  if (alive.size === 1) G.winner = [...alive][0];
+  return G.winner;
 }
 
 // Resolve an attack option (see attackOptions). A surviving single target
@@ -863,20 +940,20 @@ function checkWinner(G) {
 // (Mage, Phoenix) and Archer Tower shots are never countered. Attacking ends
 // a unit's movement for the turn.
 function doAttack(G, att, opt) {
-  const a = statsOf(att);
+  const a = statsOf(att), atk = atkOf(G, att);
   const res = { attacker: att, hits: [], counter: 0, counterKilled: false, area: !!a.area };
   for (const def of opt.victims) {
     if (!G.entities.includes(def)) continue;
-    const hit = { e: def, dmg: Math.min(a.atk, def.hp), killed: false };
-    def.hp -= a.atk;
+    const hit = { e: def, dmg: Math.min(atk, def.hp), killed: false };
+    def.hp -= atk;
     if (def.hp <= 0) { def.hp = 0; hit.killed = true; removeEntity(G, def); }
     res.hits.push(hit);
   }
   const def = res.hits.length === 1 ? res.hits[0].e : null;
   if (!res.area && def && !res.hits[0].killed && canCounter(att, def, att.x, att.y)) {
-    const d = statsOf(def);
-    res.counter = Math.min(d.atk, att.hp);
-    att.hp -= d.atk;
+    const datk = atkOf(G, def);
+    res.counter = Math.min(datk, att.hp);
+    att.hp -= datk;
     if (att.hp <= 0) { att.hp = 0; res.counterKilled = true; removeEntity(G, att); }
   }
   att.acted = true;
@@ -934,10 +1011,36 @@ function buildSitesFrom(G, type, bx, by) {
 }
 function canBuild(G, builder, type) {
   return builder.type === 'builder' && !builder.acted && G.gold[builder.side] >= TOWER_TYPES[type].price &&
-    buildSitesFrom(G, type, builder.x, builder.y).length > 0;
+    (type !== 'oilRig' || oilRoom(G, builder.side)) && buildSitesFrom(G, type, builder.x, builder.y).length > 0;
 }
-// Builders wear out after UNIT_TYPES.builder.maxBuilds towers.
-function buildsLeft(b) { return UNIT_TYPES.builder.maxBuilds - (b.builds || 0); }
+// Builders and Gnomes wear out after maxBuilds jobs.
+function buildsLeft(b) { return (UNIT_TYPES[b.type].maxBuilds || 3) - (b.builds || 0); }
+
+// ---- Terraforming (Gnome) ----
+// Forest or mountain on an empty plains tile next to the Gnome. No mountains
+// right next to an HQ, so nobody can wall off a base.
+function terraSites(G, g, kind) {
+  if (g.type !== 'gnome' || g.acted) return [];
+  const out = [];
+  for (const [dx, dy] of DIRS) {
+    const x = g.x + dx, y = g.y + dy;
+    if (!inBounds(G, x, y) || G.terrain[y][x] !== '.' || entityAt(G, x, y)) continue;
+    if (kind === 'M' && G.entities.some((e) => e.type === 'hq' && manhattan(e.x, e.y, x, y) <= 1)) continue;
+    out.push({ x, y });
+  }
+  return out;
+}
+function canTerra(G, g, kind) { return g.type === 'gnome' && !g.acted && G.gold[g.side] >= TERRA[kind].price && terraSites(G, g, kind).length > 0; }
+function doTerra(G, g, kind, x, y) {
+  G.gold[g.side] -= TERRA[kind].price;
+  G.terrain[y][x] = kind;
+  if (G.stumps) G.stumps.delete(key(x, y));
+  g.acted = true;
+  g.builds = (g.builds || 0) + 1;
+  const retired = buildsLeft(g) <= 0;
+  if (retired) removeEntity(G, g);
+  return { retired };
+}
 function doBuild(G, builder, type, x, y) {
   G.gold[builder.side] -= TOWER_TYPES[type].price;
   builder.acted = true;
@@ -967,7 +1070,7 @@ function doChop(G, e, x, y) {
 
 // ---- Healing ----
 function healTargets(G, nurse) {
-  return G.entities.filter((o) => o.kind === 'unit' && o.side === nurse.side && o !== nurse &&
+  return G.entities.filter((o) => o.kind === 'unit' && !isFoe(G, o.side, nurse.side) && o !== nurse &&
     manhattan(o.x, o.y, nurse.x, nurse.y) === 1 && o.hp < maxHp(o));
 }
 function doHeal(G, nurse, target) {
@@ -1021,6 +1124,7 @@ function beginTurn(G, side) {
   }
   let income = START_INCOME + ((G.bonusIncome && G.bonusIncome[side]) || 0);
   for (const t of towersOf(G, side)) if (t.type === 'oilRig' && !t.building) income += TOWER_TYPES.oilRig.income;
+  income *= (G.incomeMul && G.incomeMul[side]) || 1;
   G.gold[side] += income;
   events.push({ type: 'income', amount: income });
   for (const tent of towersOf(G, side)) {
@@ -1037,8 +1141,14 @@ function beginTurn(G, side) {
 }
 
 function endTurn(G) {
-  const next = 1 - G.turn;
-  if (next === (G.first || 0)) G.day++;
+  const order = sidesOf(G);
+  let i = order.indexOf(G.turn), next = G.turn;
+  for (let k = 0; k < order.length; k++) {
+    i = (i + 1) % order.length;
+    if (i === 0) G.day++;
+    next = order[i];
+    if (!(G.out && G.out[next])) break;   // sides that are out are skipped
+  }
   return beginTurn(G, next);
 }
 
@@ -1050,6 +1160,7 @@ function entityExhausted(G, e) {
   if (!e.moved) return false;
   if (e.acted) return true;
   if (e.type === 'carrier') return !canUnload(G, e);
+  if (e.type === 'gnome') return !canTerra(G, e, 'T') && !canTerra(G, e, 'M');
   if (e.type === 'builder') return !BUILDABLE.some((t) => canBuild(G, e, t));
   if (e.type === 'nurse') return healTargets(G, e).length === 0;
   return targetsFrom(G, e, e.x, e.y).length === 0 && chopTargets(G, e).length === 0;
@@ -1168,8 +1279,8 @@ function threatMap(G, side) {
   const m = [];
   for (let y = 0; y < G.h; y++) m.push(new Array(G.w).fill(0));
   for (const e of G.entities) {
-    if (e.side === side || !canAttackAtAll(e)) continue;
-    const atk = statsOf(e).atk;
+    if (!isFoe(G, e.side, side) || !canAttackAtAll(e)) continue;
+    const atk = atkOf(G, e);
     const origins = e.kind === 'unit'
       ? [...reachable(G, e).values()].filter((n) => n.stop)
       : [{ x: e.x, y: e.y }];
@@ -1185,9 +1296,15 @@ function threatMap(G, side) {
 
 function makeAI(G, side, level) {
   const P = AI_PROFILES[level] || AI_PROFILES.normal;
-  if (!G.bonusIncome) G.bonusIncome = [0, 0];
+  if (!G.bonusIncome) G.bonusIncome = [0, 0, 0];
   G.bonusIncome[side] = P.bonusIncome || 0;
-  const enemy = 1 - side;
+  const isFoeE = (e) => isFoe(G, e.side, side);
+  // the enemy HQ closest to (x, y); there are two in "2 vs Bot"
+  const foeHq = (x, y) => {
+    let best = null, bd = 1e9;
+    for (const e of G.entities) if (e.type === 'hq' && isFoeE(e)) { const d = manhattan(x, y, e.x, e.y); if (d < bd) { bd = d; best = e; } }
+    return best;
+  };
   const fieldCache = new Map();
   let threat = null;
   const rnd = () => Math.random();
@@ -1198,16 +1315,16 @@ function makeAI(G, side, level) {
   // something worth hitting. Enemy HQ is the main pull.
   function objectiveField(u) {
     const st = UNIT_TYPES[u.type];
-    const hq = hqOf(G, enemy), myHq = hqOf(G, side);
+    const myHq = hqOf(G, side);
     const k = u.type + '|' + G.entities.length + '|' + G.entities.reduce((a, e) => a + e.x * 3 + e.y * 7, 0);
     if (fieldCache.has(k)) return fieldCache.get(k);
     const seeds = [];
     const addAround = (e, bias) => {
       for (const [dx, dy] of reachOffsets(u)) seeds.push({ x: e.x - dx, y: e.y - dy, d: bias });
     };
-    if (hq) addAround(hq, 0);
+    for (const h of G.entities) if (h.type === 'hq' && isFoeE(h)) addAround(h, 0);
     for (const e of G.entities) {
-      if (e.side !== enemy || e.type === 'hq') continue;
+      if (!isFoeE(e) || e.type === 'hq') continue;
       let bias = e.kind === 'unit' ? 4 : 6;
       // Enemies close to our own HQ are urgent.
       if (P.defend && myHq && manhattan(e.x, e.y, myHq.x, myHq.y) <= 6) bias = -4;
@@ -1226,8 +1343,23 @@ function makeAI(G, side, level) {
     return P.danger * (frac * aiValue(u) + (t >= u.hp ? aiValue(u) * 0.5 : 0));
   }
 
+  // Cheerleader: stand where the most friendly fighters hear her, away from danger.
+  async function cheerTurn(u, act) {
+    if (u.moved) return;
+    const allies = unitsOf(G, side).filter((o) => o !== u && UNIT_TYPES[o.type].atk > 0);
+    if (!allies.length) return;
+    let pick = null, ps = -Infinity;
+    for (const n of stopsOf(u)) {
+      let s = 0;
+      for (const o of allies) if (manhattan(n.x, n.y, o.x, o.y) <= UNIT_TYPES.cheerleader.range) s += 30;
+      const h = foeHq(n.x, n.y);
+      s -= dangerPenalty(u, n.x, n.y) * 2 + (h ? manhattan(n.x, n.y, h.x, h.y) : 0);
+      if (s > ps) { ps = s; pick = n; }
+    }
+    if (pick && (pick.x !== u.x || pick.y !== u.y)) await act.move(u, pathFromNode(pick));
+  }
   function optionScore(u, opt, fx, fy) {
-    const a = statsOf(u).atk;
+    const a = atkOf(G, u);
     let s = 0;
     for (const target of opt.victims) {
       const dmg = Math.min(a, target.hp), kill = a >= target.hp, val = aiValue(target);
@@ -1237,7 +1369,7 @@ function makeAI(G, side, level) {
     }
     const t0 = opt.victims[0];
     if (!statsOf(u).area && opt.victims.length === 1 && a < t0.hp && canCounter(u, t0, fx, fy)) {
-      const c = statsOf(t0).atk;
+      const c = atkOf(G, t0);
       s -= P.counterWeight * (Math.min(c, u.hp) * aiValue(u) / maxHp(u) + (c >= u.hp ? aiValue(u) * 0.6 : 0));
     }
     return s + rnd() * P.noise;
@@ -1279,7 +1411,7 @@ function makeAI(G, side, level) {
       let bs = -Infinity;
       for (const n of stops) {
         let d = f[n.y][n.x];
-        if (d >= 1e9) d = 200 + manhattan(n.x, n.y, hqOf(G, enemy).x, hqOf(G, enemy).y);
+        if (d >= 1e9) { const h = foeHq(n.x, n.y); d = 200 + (h ? manhattan(n.x, n.y, h.x, h.y) : 0); }
         const s = -d * 30 - dangerPenalty(u, n.x, n.y) + rnd() * P.noise * 0.2;
         if (s > bs) { bs = s; pick = n; }
       }
@@ -1328,8 +1460,8 @@ function makeAI(G, side, level) {
     if (G.map.focus === 'air' && !countTowers('windTower') && keen) return 'windTower';
     if (G.map.focus === 'water' && !countTowers('waterTower') && keen) return 'waterTower';
     if (P.archerTowers && countTowers('archerTower') < P.archerTowers && myHq &&
-        G.entities.some((e) => e.side === enemy && e.kind === 'unit' && manhattan(e.x, e.y, myHq.x, myHq.y) <= 7)) return 'archerTower';
-    if (countTowers('oilRig') < P.oilRigs && G.day >= 3) return 'oilRig';
+        G.entities.some((e) => isFoeE(e) && e.kind === 'unit' && manhattan(e.x, e.y, myHq.x, myHq.y) <= 7)) return 'archerTower';
+    if (countTowers('oilRig') < P.oilRigs && G.day >= 3 && oilRoom(G, side)) return 'oilRig';
     return null;
   }
 
@@ -1398,7 +1530,7 @@ function makeAI(G, side, level) {
     // Follow the army from a safe distance.
     const friends = unitsOf(G, side).filter((o) => o !== u && o.type !== 'builder' && o.type !== 'nurse' && UNIT_TYPES[o.type].cls === 'land');
     if (!friends.length) return;
-    const hq = hqOf(G, enemy);
+    const hq = foeHq(u.x, u.y) || u;
     friends.sort((a, b) => manhattan(a.x, a.y, hq.x, hq.y) - manhattan(b.x, b.y, hq.x, hq.y));
     const lead = friends[Math.min(1, friends.length - 1)];
     let pick = null, ps = -Infinity;
@@ -1430,13 +1562,13 @@ function makeAI(G, side, level) {
   function rollPlan(want) {
     const mine = unitsOf(G, side);
     const count = (t) => mine.filter((u) => u.type === t).length;
-    const theirs = unitsOf(G, enemy);
+    const theirs = G.entities.filter((e) => e.kind === 'unit' && isFoeE(e));
     const options = availableTypes();
     if (!options.length) return null;
     if (want && !count('builder') && options.includes('builder')) return 'builder';
     const w = {};
     if (!P.smartBuy) {
-      for (const t of options) w[t] = t === 'carrier' ? 0 : (t === 'builder' || t === 'nurse') ? 0.25 : 1;
+      for (const t of options) w[t] = (t === 'carrier' || t === 'gnome') ? 0 : (t === 'builder' || t === 'nurse' || t === 'cheerleader') ? 0.25 : 1;
     } else {
       w.soldier = 2; w.archer = 2.5; w.axeman = 2; w.captain = 3.5; w.juggernaut = 1.5; w.sniper = 1.5; w.mage = 2;
       w.hawk = 3; w.dragon = 1.5; w.phoenix = 0.8; w.pirate = 3; w.shark = 2; w.carrier = 0;
@@ -1454,7 +1586,8 @@ function makeAI(G, side, level) {
       if (theirs.filter((u) => u.type === 'hawk').length >= 2) w.archer += 3;
       if (theirs.filter((u) => u.type === 'pirate').length >= 1) w.archer += 2;
       w.nurse = (count('nurse') < P.nurses && mine.length >= 5) ? 3 : 0;
-      w.builder = 0;
+      w.cheerleader = (count('cheerleader') < 1 && mine.length >= 4) ? 1.5 : 0;
+      w.builder = 0; w.gnome = 0;
     }
     const total = options.reduce((a, t) => a + (w[t] || 0), 0);
     if (total <= 0) return null;
@@ -1464,7 +1597,7 @@ function makeAI(G, side, level) {
   }
   function homeUnderAttack() {
     const myHq = hqOf(G, side);
-    return G.entities.some((e) => e.side === enemy && e.kind === 'unit' && manhattan(e.x, e.y, myHq.x, myHq.y) <= 4);
+    return G.entities.some((e) => isFoeE(e) && e.kind === 'unit' && manhattan(e.x, e.y, myHq.x, myHq.y) <= 4);
   }
   function chooseRecruit(want) {
     const hasBuilder = unitsOf(G, side).some((u) => u.type === 'builder');
@@ -1486,7 +1619,9 @@ function makeAI(G, side, level) {
   }
 
   async function recruitPhase(act) {
-    const hq = hqOf(G, enemy);
+    const mine0 = hqOf(G, side);
+    const hq = mine0 && foeHq(mine0.x, mine0.y);
+    if (!hq) return;
     for (let guard = 0; guard < 12; guard++) {
       if (G.winner !== null) return;
       const type = chooseRecruit(wantedTower());
@@ -1505,12 +1640,13 @@ function makeAI(G, side, level) {
     async takeTurn(act) {
       towerRoll = rnd();
       refreshThreat();
-      const myHq = hqOf(G, side), eHq = hqOf(G, enemy);
+      const myHq = hqOf(G, side), eHq = myHq && foeHq(myHq.x, myHq.y);
+      if (!eHq) return;
       const order = unitsOf(G, side).filter((u) => !u.moved || !u.acted);
       // Front-line units first so they don't block those behind.
       order.sort((a, b) => {
-        const ka = targetsFrom(G, a, a.x, a.y).some((t) => statsOf(a).atk >= t.hp) ? -100 : 0;
-        const kb = targetsFrom(G, b, b.x, b.y).some((t) => statsOf(b).atk >= t.hp) ? -100 : 0;
+        const ka = targetsFrom(G, a, a.x, a.y).some((t) => atkOf(G, a) >= t.hp) ? -100 : 0;
+        const kb = targetsFrom(G, b, b.x, b.y).some((t) => atkOf(G, b) >= t.hp) ? -100 : 0;
         return (ka + manhattan(a.x, a.y, eHq.x, eHq.y)) - (kb + manhattan(b.x, b.y, eHq.x, eHq.y));
       });
       for (const u of order) {
@@ -1518,6 +1654,8 @@ function makeAI(G, side, level) {
         if (!G.entities.includes(u)) continue;
         if (u.type === 'builder') await builderTurn(u, act);
         else if (u.type === 'nurse') await nurseTurn(u, act);
+        else if (u.type === 'cheerleader') await cheerTurn(u, act);
+        else if (u.type === 'gnome') { /* the bot doesn't landscape */ }
         else await combat(u, act);
         refreshThreat();
         await act.pause();
@@ -1541,6 +1679,7 @@ const ART = (() => {
   const TEAM = [
     { main: '#3b7bff', light: '#9cc1ff', dark: '#1f45a8', name: 'blue' },
     { main: '#ff4b3a', light: '#ffa190', dark: '#a8241b', name: 'red' },
+    { main: '#2fae5a', light: '#9ee6b4', dark: '#1d6e3a', name: 'green' },
   ];
   const C = {
     skin: '#f5c99b', steel: '#cdd6e0', steelDark: '#8a96a6', wood: '#a8662f', woodDark: '#6b3d17',
@@ -1938,6 +2077,47 @@ const ART = (() => {
       ctx.restore();
       ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(4, 43); ctx.quadraticCurveTo(10, 40, 16, 43); ctx.moveTo(30, 43); ctx.quadraticCurveTo(37, 40, 44, 43); ctx.stroke();
+    },
+    gnome(ctx, tm) {
+      shadow(ctx, 24, 43, 10, 3);
+      rr(ctx, 19.5, 37, 4, 6, 1.5); fillStroke(ctx, C.boot, 1.8);
+      rr(ctx, 25, 37, 4, 6, 1.5); fillStroke(ctx, C.boot, 1.8);
+      rr(ctx, 17, 27, 14, 12, 5); fillStroke(ctx, '#5c8f3a');
+      ctx.fillStyle = C.woodDark; ctx.fillRect(17.5, 33, 13, 2.2);
+      // shovel
+      ctx.beginPath(); ctx.moveTo(33, 40); ctx.lineTo(37, 18); ol(ctx, 4.5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(33, 40); ctx.lineTo(37, 18); ctx.strokeStyle = C.wood; ctx.lineWidth = 2.2; ctx.stroke();
+      poly(ctx, [30.5, 38.5, 35.5, 39.4, 34.6, 45.5, 29.8, 44.6]); fillStroke(ctx, C.steel, 1.6);
+      circle(ctx, 34.6, 30, 2.6); fillStroke(ctx, C.skin, 1.8);
+      head(ctx, 24, 23, 5.5);
+      ctx.beginPath(); ctx.moveTo(18.8, 23.5); ctx.quadraticCurveTo(24.5, 37, 30.2, 23.5); ctx.quadraticCurveTo(24.5, 26.5, 18.8, 23.5); ctx.closePath(); fillStroke(ctx, C.white, 1.8);
+      circle(ctx, 28, 24, 1.7); fillStroke(ctx, '#ff9a8a', 1.2);
+      // tall pointed hat in team colours
+      poly(ctx, [16.5, 20, 31.5, 20, 21, 1.5]); fillStroke(ctx, tm.main, 2.2);
+      rr(ctx, 15.5, 18.5, 17, 3.4, 1.5); fillStroke(ctx, tm.dark, 1.6);
+    },
+    cheerleader(ctx, tm, t) {
+      shadow(ctx, 24, 43, 12, 3.5);
+      const bob = Math.sin((t || 0) / 170) * 1.6;
+      legs(ctx);
+      poly(ctx, [17.5, 29.5, 30.5, 29.5, 34, 37, 14, 37]); fillStroke(ctx, tm.main);
+      ctx.strokeStyle = tm.dark; ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(20.5, 30.5); ctx.lineTo(19, 36.5); ctx.moveTo(24, 30.5); ctx.lineTo(24, 36.5); ctx.moveTo(27.5, 30.5); ctx.lineTo(29, 36.5); ctx.stroke();
+      rr(ctx, 18, 19.5, 12, 11, 3.5); fillStroke(ctx, C.white);
+      ctx.fillStyle = tm.main; ctx.fillRect(18.7, 23.5, 10.6, 2.6);
+      // arms up, pom-poms waving
+      for (const [sx, ex, ey] of [[19, 11.5, 12 - bob], [29, 36.5, 12 + bob]]) {
+        ctx.beginPath(); ctx.moveTo(sx, 22); ctx.lineTo(ex, ey); ol(ctx, 4.6); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(sx, 22); ctx.lineTo(ex, ey); ctx.strokeStyle = C.skin; ctx.lineWidth = 2.4; ctx.stroke();
+        for (const [ox, oy] of [[-3, -2], [3, -2], [0, -4.5], [-2, 1.5], [2.5, 1.5], [0, -1]]) { circle(ctx, ex + ox, ey + oy - 1, 3); ctx.fillStyle = C.gold; ctx.fill(); }
+        circle(ctx, ex, ey - 1.5, 5.6); ol(ctx, 1.6); ctx.stroke();
+      }
+      // ponytail with a bow
+      ctx.beginPath(); ctx.moveTo(19, 11); ctx.quadraticCurveTo(12, 13, 14, 21); ctx.quadraticCurveTo(17, 16, 20, 14); ctx.closePath(); fillStroke(ctx, '#e8b04a', 1.8);
+      head(ctx, 24, 15, 6);
+      ctx.beginPath(); ctx.arc(24, 13.5, 6.4, Math.PI * 1.02, Math.PI * 1.98); ctx.lineTo(30, 12); ctx.quadraticCurveTo(24, 10, 18.2, 13); ctx.closePath(); ctx.fillStyle = '#e8b04a'; ctx.fill();
+      poly(ctx, [18.5, 8.5, 15, 6, 15, 11]); fillStroke(ctx, tm.main, 1.4);
+      poly(ctx, [18.5, 8.5, 22, 6, 22, 11]); fillStroke(ctx, tm.main, 1.4);
     },
     sniper(ctx, tm) {
       shadow(ctx, 24, 43, 12, 3.5);
@@ -2372,7 +2552,7 @@ const SOUND = (() => {
   const B = 42; // width of the decorative frame around the board, in board units
 
   // ---------------- Settings ----------------
-  const DEFAULTS = { difficulty: 'normal', speed: 'normal', startBonus: 0, music: 0.5, sfx: 0.7, grid: true, dev: false, muted: false };
+  const DEFAULTS = { difficulty: 'normal', speed: 'normal', startBonus: 0, music: 0.5, sfx: 0.7, grid: true, dev: false, muted: false, oilCap: -1 };
   let settings = { ...DEFAULTS };
   try { settings = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('medieval-warfare-settings') || '{}')); } catch (e) { /* storage blocked */ }
   function saveSettings() { try { localStorage.setItem('medieval-warfare-settings', JSON.stringify(settings)); } catch (e) { /* ignore */ } }
@@ -2405,6 +2585,8 @@ const SOUND = (() => {
     menu: svg(`<path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="#1b1530" stroke-width="2.2" stroke-linecap="round"/>`, 'ico-big'),
     tower: svg(`<path d="M4 14.5V5h8v9.5Z" fill="#c3bbad" ${S_INK}/><path d="M4 5V2.5h1.6V4h1.6V2.5h1.6V4h1.6V2.5H12V5" fill="#c3bbad" ${S_INK}/><path d="M6.5 14.5v-3a1.5 1.5 0 0 1 3 0v3" fill="#6b3d17" ${S_INK}/>`),
     anchor: svg(`<circle cx="8" cy="3.4" r="1.7" fill="none" ${S_INK}/><path d="M8 5.1v9M5 7.5h6M2.6 10c.6 2.6 2.8 4.1 5.4 4.1s4.8-1.5 5.4-4.1" fill="none" ${S_INK}/>`),
+    sapling: svg(`<path d="M8 15V8" stroke="#6b3d17" stroke-width="2" stroke-linecap="round"/><path d="M8 2 13 9H3Z" fill="#3fa653" ${S_INK}/><path d="M8 5.5 12 11H4Z" fill="#55bd5f" ${S_INK}/>`),
+    peak: svg(`<path d="M1.5 14 6.5 4l2.5 4 1.8-2.4 3.7 8.4Z" fill="#a98b6a" ${S_INK}/><path d="M6.5 4 8 7 6.6 6.4 5.4 6.6Z" fill="#fff" />`),
     random: svg(`<rect x="2" y="2" width="12" height="12" rx="3" fill="#fffaf0" ${S_INK}/><circle cx="5.3" cy="5.3" r="1.2" fill="#1b1530"/><circle cx="8" cy="8" r="1.2" fill="#1b1530"/><circle cx="10.7" cy="10.7" r="1.2" fill="#1b1530"/>`),
   };
   const clsIcon = (cls) => ICON[cls];
@@ -2426,7 +2608,7 @@ const SOUND = (() => {
   let G = null;
   const S = {
     screen: 'title', mapIdx: 0, ai: null, aiLevel: null, me: 0, online: false, flow: 'bot',
-    inspectEnt: null, atkOpts: null, buildWho: null, flipping: false,
+    inspectEnt: null, atkOpts: null, buildWho: null, flipping: false, terraKind: null, outSeen: [],
     mode: 'idle', sel: null, moveInfo: null, targets: [], sites: [], buildType: null, recruitType: null,
     hover: null, inspect: null, botFocus: null, busy: false,
     anims: new Map(), offsets: new Map(), flashes: new Map(), ghosts: [], shown: new Map(),
@@ -2444,12 +2626,23 @@ const SOUND = (() => {
       SOUND.playMusic('title');
       for (const m of MAPS) if (m.random) m.rows = genRandomMap();
       renderMapCards();
-      const host = S.flow === 'host';
-      $('#maps-diff-wrap').hidden = host; $('#maps-online-note').hidden = !host;
+      const host = S.flow === 'host', team = host && NET.pendingMode === '2v1';
+      $('#maps-diff-wrap').hidden = host && !team; $('#maps-online-note').hidden = !host;
+      $('#maps-online-note').innerHTML = team
+        ? '<b style="color:var(--text)">2 vs Bot.</b> You (Blue) and your friend (Green) each get an HQ in the west. The Red bot has one HQ and earns double gold. A coin toss decides whether your team or the bot moves first.'
+        : '<b style="color:var(--text)">Online 1v1.</b> You host as the Blue Kingdom; a coin toss decides who moves first. Starting gold and the Oil Rig limit come from your Settings.';
       $('#maps-start').textContent = host ? 'Create game' : 'To battle!';
     }
     if (name === 'game') requestAnimationFrame(fitBoard);
   }
+
+  // Who a side is, from this player's point of view.
+  function nameOf(s) {
+    if (s === S.me) return 'You';
+    if (G && G.mode === '2v1') return isFoe(G, s, S.me) ? 'Bot' : 'Ally';
+    return S.online ? 'Rival' : 'Bot';
+  }
+  const SIDE_CLASS = ['blue', 'red', 'green'];
 
   // ---------------- Board sizing ----------------
   function fitBoard() {
@@ -2534,6 +2727,31 @@ const SOUND = (() => {
       ctx.strokeStyle = stroke; ctx.lineWidth = 2;
       for (const t of tiles) ctx.strokeRect(t.x * T + 2.5, t.y * T + 2.5, T - 5, T - 5);
     }
+  }
+  // A soft green area with a dashed edge: where a Nurse Tent heals.
+  function drawZone(ctx, cx, cy, r) {
+    const inZ = (x, y) => manhattan(x, y, cx, cy) <= r && inBounds(G, x, y);
+    const tiles = [];
+    for (let y = cy - r; y <= cy + r; y++) for (let x = cx - r; x <= cx + r; x++) if (inZ(x, y)) tiles.push({ x, y });
+    ctx.fillStyle = 'rgba(110,235,150,0.16)';
+    for (const t of tiles) ctx.fillRect(t.x * T, t.y * T, T, T);
+    ctx.strokeStyle = 'rgba(30,150,80,0.7)'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    for (const t of tiles) {
+      const x0 = t.x * T, y0 = t.y * T;
+      if (!inZ(t.x, t.y - 1)) { ctx.moveTo(x0, y0 + 1); ctx.lineTo(x0 + T, y0 + 1); }
+      if (!inZ(t.x, t.y + 1)) { ctx.moveTo(x0, y0 + T - 1); ctx.lineTo(x0 + T, y0 + T - 1); }
+      if (!inZ(t.x - 1, t.y)) { ctx.moveTo(x0 + 1, y0); ctx.lineTo(x0 + 1, y0 + T); }
+      if (!inZ(t.x + 1, t.y)) { ctx.moveTo(x0 + T - 1, y0); ctx.lineTo(x0 + T - 1, y0 + T); }
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  // Small gold star on units a Cheerleader is cheering (+25 ATK).
+  function drawCheer(ctx, px, py) {
+    const cx = px + 9, cy = py + 9, R = 6, r = 2.6;
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, d = i % 2 ? r : R; ctx.lineTo(cx + Math.cos(a) * d, cy + Math.sin(a) * d); }
+    ctx.closePath(); ctx.fillStyle = '#f5c03a'; ctx.fill(); ctx.strokeStyle = '#1b1530'; ctx.lineWidth = 1.6; ctx.stroke();
   }
   function crosshair(ctx, x, y, color) {
     const cx = x * T + T / 2, cy = y * T + T / 2, r = 15 + Math.sin(Clock.t / 140) * 2;
@@ -2624,14 +2842,18 @@ const SOUND = (() => {
     }
     const pulse = 0.75 + 0.25 * Math.sin(Clock.t / 200);
     const hov = S.mode === 'attack' && S.hover ? optionAt(S.hover) : null;
-    // highlights (blue for your own unit, red for the other side's)
-    const focus = S.botFocus || S.inspect;
+    // Nurse Tent healing zones
+    for (const t of G.entities) if (t.type === 'nurseTent' && !t.building) drawZone(ctx, t.x, t.y, TOWER_TYPES.nurseTent.range);
+    // highlights (blue for your own side, red for the other side's)
+    const focus = S.botFocus || ((S.mode === 'idle' || S.mode === 'menu') ? S.inspect : null);
     if (focus) {
       const mine = focus.mine;
       if (focus.range) fillTiles(ctx, focus.range, mine ? 'rgba(40,110,255,0.2)' : 'rgba(255,40,30,0.24)');
       if (focus.tiles) fillTiles(ctx, focus.tiles, mine ? `rgba(70,150,255,${0.42 * pulse})` : `rgba(255,150,110,${0.38 * pulse})`, 'rgba(255,255,255,0.45)');
       if (focus.flame) fillTiles(ctx, focus.flame, `rgba(255,140,30,${0.6 * pulse})`, 'rgba(255,255,255,0.7)');
     }
+    // while choosing a move, a faint wash shows everywhere the unit could attack after it
+    if (S.mode === 'move' && S.inspect && S.inspect.range) fillTiles(ctx, S.inspect.range, 'rgba(255,60,40,0.12)');
     if (S.mode === 'move' && S.moveInfo) fillTiles(ctx, S.moveInfo.tiles, `rgba(40,120,255,${0.62 * pulse})`, 'rgba(255,255,255,0.85)');
     if (S.mode === 'attack') {
       fillTiles(ctx, S.rangeTiles || [], 'rgba(255,40,30,0.32)');
@@ -2639,13 +2861,21 @@ const SOUND = (() => {
       fillTiles(ctx, hov ? hov.victims : S.targets, `rgba(255,60,40,${0.55 * pulse})`, 'rgba(255,255,255,0.7)');
     }
     if (S.mode === 'unload') fillTiles(ctx, S.sites, `rgba(80,200,255,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
+    if (S.mode === 'terra') fillTiles(ctx, S.sites, S.terraKind === 'M' ? `rgba(190,140,90,${0.6 * pulse})` : `rgba(70,200,90,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
     if (S.mode === 'build-place' || S.mode === 'recruit') fillTiles(ctx, S.sites, `rgba(255,214,70,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
     if (S.mode === 'heal') fillTiles(ctx, S.targets, `rgba(70,220,120,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
     if (S.mode === 'chop') fillTiles(ctx, S.targets, `rgba(255,150,40,${0.55 * pulse})`, 'rgba(255,255,255,0.8)');
-    // path preview
+    // path preview, plus what the unit could hit from that tile
+    let preview = null;
     if (S.mode === 'move' && S.hover && S.moveInfo) {
       const n = S.moveInfo.nodes.get(key(S.hover.x, S.hover.y));
-      if (n && n.stop) drawPath(ctx, pathFromNode(n), '#fffaf0');
+      if (n && n.stop) {
+        if (!n.board && S.sel && canAttackAtAll(S.sel) && !S.sel.acted) {
+          fillTiles(ctx, reachTiles(G, S.sel, n.x, n.y), 'rgba(255,60,40,0.18)');
+          preview = [...new Set(attackOptions(G, S.sel, n.x, n.y).flatMap((o) => o.victims))];
+        }
+        drawPath(ctx, pathFromNode(n), '#fffaf0');
+      }
     }
     if (S.botFocus && S.botFocus.path) drawPath(ctx, S.botFocus.path, '#ffb3a6');
     // entities, back to front
@@ -2657,6 +2887,7 @@ const SOUND = (() => {
     }
     for (const { e, p } of drawn) if (e.kind === 'unit' && UNIT_TYPES[e.type].cls === 'air') drawOne(ctx, e, p);
     for (const { e, p } of drawn) drawHpBar(ctx, e, p.x, p.y);
+    for (const { e, p } of drawn) if (e.kind === 'unit' && !S.ghosts.includes(e) && cheerBonus(G, e)) drawCheer(ctx, p.x, p.y);
     // selection ring
     if (S.sel && G.entities.includes(S.sel) && S.mode !== 'idle') {
       const p = entityPos(S.sel);
@@ -2664,6 +2895,7 @@ const SOUND = (() => {
       ctx.strokeRect(p.x + 2, p.y + 2, T - 4, T - 4); ctx.setLineDash([]);
     }
     if (S.mode === 'attack') for (const t of (hov ? hov.victims : S.targets)) crosshair(ctx, t.x, t.y, '#ff4b3a');
+    if (preview) for (const t of preview) crosshair(ctx, t.x, t.y, '#ffb43a');
     if (S.botFocus && S.botFocus.targets) for (const t of S.botFocus.targets) crosshair(ctx, t.x, t.y, '#ff4b3a');
     if (S.inspectEnt && S.mode === 'idle' && G.entities.includes(S.inspectEnt)) {
       const p = entityPos(S.inspectEnt);
@@ -2923,6 +3155,31 @@ const SOUND = (() => {
     await wait(200);
     return u;
   }
+  async function aTerra(g, kind, x, y) {
+    const res = doTerra(G, g, kind, x, y);
+    if (res.retired) S.ghosts.push(g);
+    SOUND.play(kind === 'M' ? 'smash' : 'build');
+    S.offsets.set(g, { dx: (x - g.x) * 0.25, dy: (y - g.y) * 0.25, t0: Clock.t, dur: 360 * speedMul() });
+    burst(x, y, { n: 18, colors: kind === 'M' ? ['#a98b6a', '#7c634a', '#e7d7b0'] : ['#55bd5f', '#2f9446', '#a8662f'], speed: 0.06, life: 600, size: 4, lift: 0.02 });
+    buildTerrainCache();
+    floatText(x, y, '-$' + TERRA[kind].price, '#f5c03a');
+    if (kind === 'M') S.shake = { t0: Clock.t, dur: 220, mag: 3 };
+    updateAll();
+    await wait(420);
+    S.offsets.delete(g);
+    if (res.retired) {
+      floatText(g.x, g.y, 'Worn out!', '#ffd2cb');
+      if (g.side === S.me) toast('Your Gnome finished his third job and is worn out.');
+      await die(g);
+    }
+  }
+  async function aMoney() {
+    for (const s of sidesOf(G)) G.gold[s] += 1000;
+    SOUND.play('coin');
+    for (const s of sidesOf(G)) { const hq = hqOf(G, s); if (hq) floatText(hq.x, hq.y, '+$1000', '#f5c03a'); }
+    updateAll();
+    await wait(200);
+  }
   async function aRecruit(side, type, x, y) {
     const u = doRecruit(G, side, type, x, y);
     if (S.stats) S.stats.recruited[side]++;
@@ -3026,6 +3283,9 @@ const SOUND = (() => {
       case 'unload':
         if (inList(S.sites, t)) return playerUnload(S.sel, t.x, t.y);
         return backToMenu();
+      case 'terra':
+        if (inList(S.sites, t)) return playerTerra(S.sel, S.terraKind, t.x, t.y);
+        return backToMenu();
       case 'heal': {
         const target = S.targets.find((o) => o.x === t.x && o.y === t.y);
         if (target) return playerHeal(S.sel, target);
@@ -3064,12 +3324,20 @@ const SOUND = (() => {
   }
   // ---- inspecting: movement and attack reach of any unit or tower ----
   function inspectOf(e) {
-    const mine = e.side === S.me;
+    const mine = !isFoe(G, e.side, S.me);
     if (e.kind === 'unit') {
-      const mt = moveTargets(G, e);
+      // A unit that has already moved this turn can only act from where it stands.
+      const done = e.side === G.turn && e.moved;
+      const mt = done ? null : moveTargets(G, e);
+      const origins = done ? [{ x: e.x, y: e.y }] : [...mt.nodes.values()].filter((n) => n.stop && !n.board);
       const range = new Map();
-      if (canAttackAtAll(e)) for (const n of mt.nodes.values()) if (n.stop && !n.board) for (const r of reachTiles(G, e, n.x, n.y)) range.set(key(r.x, r.y), r);
-      return { tiles: mt.tiles, range: [...range.values()], mine };
+      if (e.type === 'cheerleader') {
+        for (const o of origins) for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+          const x = o.x + dx, y = o.y + dy;
+          if (Math.abs(dx) + Math.abs(dy) <= 2 && inBounds(G, x, y)) range.set(key(x, y), { x, y });
+        }
+      } else if (canAttackAtAll(e)) for (const o of origins) for (const r of reachTiles(G, e, o.x, o.y)) range.set(key(r.x, r.y), r);
+      return { tiles: done ? [] : mt.tiles, range: [...range.values()], mine };
     }
     return canAttackAtAll(e) ? { range: reachTiles(G, e, e.x, e.y), mine } : null;
   }
@@ -3099,11 +3367,12 @@ const SOUND = (() => {
     if (e.type === 'nurse' && healTargets(G, e).length) return true;
     if (e.type === 'builder' && BUILDABLE.some((t) => canBuild(G, e, t))) return true;
     if (e.type === 'carrier' && canUnload(G, e)) return true;
+    if (e.type === 'gnome' && (canTerra(G, e, 'T') || canTerra(G, e, 'M'))) return true;
     return false;
   }
   function cancel() {
     if (S.mode === 'move' && S.direct) { SOUND.play('cancel'); return clearMode(); }
-    if (S.mode === 'move' || S.mode === 'attack' || S.mode === 'heal' || S.mode === 'build-place' || S.mode === 'chop' || S.mode === 'unload') return backToMenu();
+    if (S.mode === 'move' || S.mode === 'attack' || S.mode === 'heal' || S.mode === 'build-place' || S.mode === 'chop' || S.mode === 'unload' || S.mode === 'terra') return backToMenu();
     SOUND.play('cancel');
     clearMode();
   }
@@ -3146,6 +3415,7 @@ const SOUND = (() => {
   }
   function openMenu(e) {
     S.mode = 'menu'; S.sel = e; S.moveInfo = null; S.targets = []; S.sites = []; S.direct = false;
+    S.inspectEnt = e; refreshInspect();   // show its movement and reach while the menu is open
     renderInfo(e);
     const st = statsOf(e);
     const items = [];
@@ -3187,6 +3457,16 @@ const SOUND = (() => {
           onClick: () => startHeal(e),
         }));
       }
+      if (st.terraform) {
+        for (const kind of ['T', 'M']) {
+          const ok = canTerra(G, e, kind), sites = terraSites(G, e, kind);
+          const why = e.acted ? 'Done' : !sites.length ? (kind === 'M' ? 'No room' : 'No open plains') : 'Need gold';
+          items.push(menuButton(kind === 'T' ? ICON.sapling : ICON.peak, kind === 'T' ? 'Plant forest' : 'Raise mountain', {
+            cost: ok ? TERRA[kind].price : null, disabled: !ok, why: ok ? '' : why,
+            onClick: () => { SOUND.play('select'); menuEl.hidden = true; S.mode = 'terra'; S.terraKind = kind; S.sites = sites; S.inspect = null; },
+          }));
+        }
+      }
       if (e.type === 'carrier') {
         const ut = unloadTiles(G, e);
         items.push(menuButton(ICON.anchor, e.cargo ? 'Unload ' + UNIT_TYPES[e.cargo.type].name : 'Unload', {
@@ -3197,7 +3477,7 @@ const SOUND = (() => {
       }
       if (!entityExhausted(G, e)) items.push(menuButton(ICON.wait, 'Wait', { onClick: () => { record({ t: 'wait', id: e.id }); e.moved = true; e.acted = true; SOUND.play('select'); clearMode(); updateAll(); saveOnline(); } }));
       items.push(menuButton(ICON.cancel, 'Cancel', { onClick: () => { SOUND.play('cancel'); clearMode(); } }));
-      return showMenu(e, e.type === 'builder' ? st.name + ' \u00b7 ' + buildsLeft(e) + ' build' + (buildsLeft(e) === 1 ? '' : 's') + ' left' : st.name, items);
+      return showMenu(e, (e.type === 'builder' || e.type === 'gnome') ? st.name + ' \u00b7 ' + buildsLeft(e) + ' build' + (buildsLeft(e) === 1 ? '' : 's') + ' left' : st.name, items);
     }
     // towers
     if (e.building) {
@@ -3247,6 +3527,7 @@ const SOUND = (() => {
     menuEl.hidden = true;
     S.sel = e; S.direct = !!direct;
     S.mode = 'move'; S.moveInfo = moveTargets(G, e);
+    S.inspectEnt = e; refreshInspect();
     renderInfo(e);
   }
   function startAttack(e) {
@@ -3300,6 +3581,11 @@ const SOUND = (() => {
     record({ t: 'atk', id: a.id, k: opt.k });
     runPlayer(async () => { await aAttack(a, opt); S.busy = false; afterAction(a); });
   }
+  function playerTerra(g, kind, x, y) {
+    S.mode = 'busy'; S.sites = [];
+    record({ t: 'terra', id: g.id, kind, x, y });
+    runPlayer(async () => { await aTerra(g, kind, x, y); S.busy = false; afterAction(g); });
+  }
   function playerUnload(c, x, y) {
     S.mode = 'busy'; S.sites = [];
     record({ t: 'unl', id: c.id, x, y });
@@ -3339,28 +3625,42 @@ const SOUND = (() => {
     if (!G) return;
     $('#hud-day').textContent = 'Day ' + G.day;
     const mine = G.turn === S.me;
-    const them = S.online ? 'Rival' : 'Bot';
-    $('#hud-turn').textContent = S.flipping ? 'Coin toss' : mine ? 'Your turn' : them + '’s turn';
+    const out = G.out && G.out[S.me];
+    $('#hud-turn').textContent = S.flipping ? 'Coin toss' : out ? 'Watching your ally' : mine ? 'Your turn' : nameOf(G.turn) + '’s turn';
     $('#turn-chip').classList.toggle('red', G.turn === 1);
-    $('#who-0').textContent = S.me === 0 ? 'You' : them;
-    $('#who-1').textContent = S.me === 1 ? 'You' : them;
-    $('#gold-0').textContent = '$' + G.gold[0];
-    $('#gold-1').textContent = '$' + G.gold[1];
+    $('#turn-chip').classList.toggle('green', G.turn === 2);
+    for (const s of [0, 1, 2]) {
+      if (s === 2) $('#purse-2').hidden = !G.order;
+      if (G.gold[s] == null) continue;
+      $('#who-' + s).textContent = nameOf(s);
+      $('#gold-' + s).textContent = '$' + G.gold[s];
+    }
+    // tell players when a side in 2 vs Bot is knocked out
+    if (G.out) for (const s of G.order) if (G.out[s] && !S.outSeen[s] && G.winner === null) {
+      S.outSeen[s] = true;
+      toast(s === S.me ? 'Your HQ has fallen! Your ally fights on.' : SIDE_NAMES[s] + ' has fallen!');
+    }
     const rc = readyCount();
     $('#ready-count').textContent = mine && !S.flipping ? (rc ? rc + ' ready' : 'all done') : 'please wait';
     $('#end-turn').disabled = !mine || S.busy || G.winner !== null || (S.online && !netReady());
     $('#end-turn').classList.toggle('btn-red', S.me === 1);
-    $('#end-turn').classList.toggle('btn-blue', S.me !== 1);
+    $('#end-turn').classList.toggle('btn-green', S.me === 2);
+    $('#end-turn').classList.toggle('btn-blue', S.me === 0);
     const pill = $('#net-pill');
     pill.hidden = !S.online;
+    $('#btn-speed').textContent = settings.speed === 'fast' ? '2×' : '1×';
     if (S.online) {
       const th = $('#thinking');
-      th.classList.toggle('blue', G.turn === 0);
-      if (NET.needSync) { th.hidden = false; th.textContent = 'Re-syncing with your rival…'; }
+      for (const c of SIDE_CLASS) th.classList.toggle(c, SIDE_CLASS[G.turn] === c);
+      const botTurn = G.bots && G.bots.includes(G.turn);
+      const peer = G.mode === '2v1' ? 'ally' : 'rival';
+      if (NET.needSync) { th.hidden = false; th.textContent = 'Re-syncing with your ' + peer + '…'; }
       else if (G.winner !== null || mine || S.flipping) th.hidden = true;
-      else { th.hidden = false; th.textContent = NET.oppOnline ? SIDE_NAMES[G.turn] + ' is plotting…' : 'Waiting for your rival to reconnect…'; }
+      else if (botTurn) { th.hidden = false; th.textContent = NET.role === 'host' || NET.oppOnline ? 'Bot is plotting…' : 'Waiting for the host…'; }
+      else { th.hidden = false; th.textContent = NET.oppOnline ? (G.mode === '2v1' ? 'Ally is planning…' : 'Rival is plotting…') : 'Waiting for your ' + peer + '…'; }
       pill.classList.toggle('away', !NET.oppOnline);
-      $('#net-text').textContent = (NET.oppOnline ? 'Online' : NET.t ? 'Rival offline' : 'Offline') + ' · ' + (NET.code || '');
+      $('#net-text').textContent = NET.oppOnline ? (NET.code || 'Online') : NET.t ? peerWord()[0].toUpperCase() + peerWord().slice(1) + ' offline' : 'Offline';
+      pill.title = 'Online game ' + (NET.code || '');
     }
   }
   function statLine(st) {
@@ -3402,14 +3702,15 @@ const SOUND = (() => {
     if (e.kind === 'unit') {
       state = e.fresh ? 'Just recruited, ready next turn' : e.side !== G.turn ? 'Waiting' :
         entityExhausted(G, e) ? 'Done for this turn' : e.moved ? 'Moved, can still act' : e.acted ? 'Acted, can still move' : 'Ready';
-      if (e.type === 'builder') state += ` \u00b7 ${buildsLeft(e)} of ${UNIT_TYPES.builder.maxBuilds} builds left`;
+      if (e.type === 'builder' || e.type === 'gnome') state += ` \u00b7 ${buildsLeft(e)} of ${UNIT_TYPES[e.type].maxBuilds} ${e.type === 'gnome' ? 'jobs' : 'builds'} left`;
+      if (cheerBonus(G, e)) state += ' \u00b7 cheered on (+' + cheerBonus(G, e) + ' ATK)';
       if (e.type === 'carrier') state += e.cargo ? ` \u00b7 carrying a ${UNIT_TYPES[e.cargo.type].name}${e.cargoNew ? ' (can unload next turn)' : ''}` : ' \u00b7 empty';
     } else state = e.building ? 'Under construction, ready next turn' : st.effect;
-    const side = `<span class="chip ${e.side ? 'red' : 'blue'}">${e.side === S.me ? 'You' : S.online ? 'Rival' : 'Bot'}</span>`;
+    const side = `<span class="chip ${SIDE_CLASS[e.side]}">${nameOf(e.side)}</span>`;
     const cls = e.kind === 'unit' ? `<span class="chip ${st.cls}">${clsIcon(st.cls)}${clsName[st.cls]}</span>` : '';
     d.innerHTML = `<h4>${st.name} ${side} ${cls}</h4>
       <div class="hpbar"><i style="width:${(100 * e.hp / st.hp).toFixed(0)}%"></i></div>
-      <div class="stats"><span>${ICON.hp}${e.hp}/${st.hp}</span><span>${ICON.atk}${st.atk}</span><span>${ICON.rng}${st.range}</span>${st.move != null ? `<span>${ICON.mov}${st.move}</span>` : ''}</div>
+      <div class="stats"><span>${ICON.hp}${e.hp}/${st.hp}</span><span>${ICON.atk}${st.atk}${cheerBonus(G, e) ? '<b style="color:var(--gold-dark)">+' + cheerBonus(G, e) + '</b>' : ''}</span><span>${ICON.rng}${st.range}</span>${st.move != null ? `<span>${ICON.mov}${st.move}</span>` : ''}</div>
       <div class="state">${state}</div>`;
     el.appendChild(d);
     const tl = document.createElement('div'); tl.className = 'terrain-line';
@@ -3456,6 +3757,7 @@ const SOUND = (() => {
   function buildBlocker(type) {
     const builders = unitsOf(G, S.me).filter((u) => u.type === 'builder');
     if (!builders.length) return 'Recruit a Builder first';
+    if (type === 'oilRig' && !oilRoom(G, S.me)) return G.oilCap === 0 ? 'Oil Rigs are off in this game' : 'Oil Rig limit reached (' + G.oilCap + ')';
     if (G.gold[S.me] < TOWER_TYPES[type].price) return 'Not enough gold';
     if (builders.every((u) => u.acted)) return 'Your Builders are done this turn';
     if (!buildersFor(type).length) return type === 'waterTower' ? 'Move a Builder beside open plains that touch water' : 'Move a Builder next to an open tile';
@@ -3566,10 +3868,11 @@ const SOUND = (() => {
   async function banner(side) {
     const el = $('#banner');
     el.hidden = true; void el.offsetWidth;
-    el.className = 'banner' + (side ? ' red' : '');
-    el.firstElementChild.textContent = side === S.me ? 'Day ' + G.day + ' · Your turn' : SIDE_NAMES[side];
+    el.className = 'banner' + (side ? ' ' + SIDE_CLASS[side] : '');
+    const ally = G.mode === '2v1' && side !== S.me && !isFoe(G, side, S.me);
+    el.firstElementChild.textContent = side === S.me ? 'Day ' + G.day + ' · Your turn' : SIDE_NAMES[side] + (ally ? ' · your ally' : '');
     el.hidden = false;
-    SOUND.play(side === S.me ? 'turn' : 'enemyTurn');
+    SOUND.play(side === S.me || ally ? 'turn' : 'enemyTurn');
     await wait(1300, true);
     el.hidden = true;
   }
@@ -3608,7 +3911,9 @@ const SOUND = (() => {
       await wait(base);
       SOUND.play('coin');
       const name = SIDE_NAMES[first];
-      txt.textContent = first === S.me ? `${name}: you go first!` : `${name}: ${S.online ? 'your rival goes' : 'the bot goes'} first.`;
+      txt.textContent = G && G.mode === '2v1'
+        ? (first === 1 ? 'Red Empire: the bot goes first.' : 'Your team goes first!')
+        : first === S.me ? `${name}: you go first!` : `${name}: ${S.online ? 'your rival goes' : 'the bot goes'} first.`;
       await wait(1150);
     } finally {
       wrap.hidden = true; S.flipping = false;
@@ -3646,6 +3951,7 @@ const SOUND = (() => {
         updateAll();
       });
       pump();
+      kickBot();
       return;
     }
     try {
@@ -3666,7 +3972,7 @@ const SOUND = (() => {
   }
   $('#end-turn').addEventListener('click', () => { SOUND.init(); endTurnFlow(); });
 
-  function newStats() { return { recruited: [0, 0], lost: [0, 0], built: [0, 0], towersLost: [0, 0] }; }
+  function newStats() { return { recruited: [0, 0, 0], lost: [0, 0, 0], built: [0, 0, 0], towersLost: [0, 0, 0] }; }
   function resetBattle() {
     gen++; flushTimers();
     Clock.paused = false; $('#paused-cover').hidden = true; SOUND.duck(false);
@@ -3675,15 +3981,15 @@ const SOUND = (() => {
     S.ai = null; S.aiLevel = null;
     S.anims.clear(); S.offsets.clear(); S.flashes.clear(); S.shown.clear();
     S.ghosts = []; S.particles = []; S.floats = []; S.shots = []; S.botFocus = null; S.shake = null;
-    $('#thinking').hidden = true; $('#thinking').textContent = 'Red Empire is plotting…'; $('#thinking').classList.remove('blue');
-    $('#coin').hidden = true; S.flipping = false;
+    $('#thinking').hidden = true; $('#thinking').textContent = 'Bot is plotting…'; for (const c of SIDE_CLASS) $('#thinking').classList.remove(c);
+    $('#coin').hidden = true; S.flipping = false; S.outSeen = [];
   }
   function startGame(idx) {
     if (S.online || NET.t) netLeave(true);
     S.me = 0; S.online = false;
     resetBattle();
     S.mapIdx = idx;
-    G = createGame(mapDefFor(idx), { startBonus: settings.startBonus });
+    G = createGame(mapDefFor(idx), { startBonus: settings.startBonus, oilCap: settings.oilCap < 0 ? null : settings.oilCap });
     S.ai = makeAI(G, 1, settings.difficulty); S.aiLevel = settings.difficulty;
     S.stats = newStats();
     clearMode();
@@ -3724,21 +4030,26 @@ const SOUND = (() => {
     clearMode();
     updateHUD();
     await wait(500, true);
-    const won = G.winner === S.me;
-    const me = S.me, op = 1 - S.me;
+    const won = G.winner === teamOf(G, S.me);
+    const me = S.me, op = G.mode === '2v1' ? 1 : 1 - S.me;
+    const cols = [S.me].concat(sidesOf(G).filter((s) => s !== S.me).sort());
     SOUND.stopMusic();
     SOUND.play(won ? 'victory' : 'defeat');
     const end = $('#end');
     end.classList.toggle('defeat', !won);
     $('#end-title').textContent = won ? 'Victory!' : 'Defeat';
     const resigned = S.online && NET.resignedBy !== null;
-    $('#end-sub').textContent = resigned ? (won ? `Your rival surrendered on day ${G.day}.` : `You surrendered on day ${G.day}.`)
-      : won ? `The ${SIDE_NAMES[op]}’s HQ has fallen on day ${G.day}.` : `Your HQ fell on day ${G.day}. Regroup and try again.`;
+    const team = G.mode === '2v1';
+    $('#end-sub').textContent = resigned
+      ? (team ? (NET.resignedBy === S.me ? `Your team surrendered on day ${G.day}.` : `Your ally surrendered on day ${G.day}.`)
+        : won ? `Your rival surrendered on day ${G.day}.` : `You surrendered on day ${G.day}.`)
+      : won ? `The ${SIDE_NAMES[op]}’s HQ has fallen on day ${G.day}.${team ? ' Well fought, allies!' : ''}`
+      : team ? `Both of your HQs fell on day ${G.day}. Regroup and try again.` : `Your HQ fell on day ${G.day}. Regroup and try again.`;
     const s = S.stats;
-    $('#end-stats').innerHTML = `<span class="h"></span><span class="h">You</span><span class="h">${S.online ? 'Rival' : 'Bot'}</span>
-      <span>Units recruited</span><b>${s.recruited[me]}</b><b>${s.recruited[op]}</b>
-      <span>Units lost</span><b>${s.lost[me]}</b><b>${s.lost[op]}</b>
-      <span>Towers built</span><b>${s.built[me]}</b><b>${s.built[op]}</b>`;
+    const row = (label, arr) => `<span>${label}</span>` + cols.map((c) => `<b>${arr[c] || 0}</b>`).join('');
+    $('#end-stats').style.gridTemplateColumns = `auto repeat(${cols.length}, auto)`;
+    $('#end-stats').innerHTML = `<span class="h"></span>` + cols.map((c) => `<span class="h">${nameOf(c)}</span>`).join('') +
+      row('Units recruited', s.recruited) + row('Units lost', s.lost) + row('Towers built', s.built);
     if (S.online) { $('#thinking').hidden = true; $('#end-maps').hidden = true; clearSaved(); updateEndButtons(); }
     end.hidden = false;
     $('#end-again').focus({ preventScroll: true });
@@ -4026,7 +4337,9 @@ const SOUND = (() => {
       rules.innerHTML = `<h3>How a turn works</h3>
         <p style="margin-top:6px">A coin toss decides who moves first. Each side gets $100 at the start of its turn (plus $50 per Oil Rig). Click a unit to act with it. If it has nothing to attack, it goes straight into moving; otherwise choose <b>Move</b> or <b>Attack</b>. Each unit can move once and attack once per turn. Move first: a unit that attacks without moving stays put for the rest of the turn. A land unit must stop when it steps into a forest. Units can walk through buildings but can't stop on them. Range counts tiles in straight steps, so range 2 covers the 8 tiles around a unit plus the 4 tiles two steps away. Click any unit, even on the other side's turn, to see where it can move and what it can hit.</p>
         <p style="margin-top:6px">A unit that survives an attack hits back at full strength if the attacker is within its own range. Archer Tower shots can't be returned, and neither can area attacks: the Mage blasts every enemy within 2 tiles, and the Phoenix breathes fire in a line 3 tiles straight or 2 tiles diagonally, hitting every enemy in it. Builders put up towers on an adjacent tile; they finish at the start of your next turn and can be attacked while under construction. A Builder wears out after 3 buildings. Axe-men and Dragons can clear a forest tile next to them instead of attacking.</p>
-        <p style="margin-top:6px">To ferry troops over water, move a land unit onto your Carrier from the shore. The Carrier can sail off that same turn, and from your next turn on it can unload the unit onto a free land tile beside it. A unit can still attack right after it lands. If a Carrier sinks, its passenger goes down with it. Destroy the enemy HQ to win.</p>`;
+        <p style="margin-top:6px">To ferry troops over water, move a land unit onto your Carrier from the shore. The Carrier can sail off that same turn, and from your next turn on it can unload the unit onto a free land tile beside it. A unit can still attack right after it lands. If a Carrier sinks, its passenger goes down with it. Destroy the enemy HQ to win.</p>
+        <p style="margin-top:6px">A Cheerleader gives every friendly fighter within 2 tiles +25 attack (a gold star marks them; two Cheerleaders don't stack). A Gnome plants a forest ($25) or raises a mountain ($75) on open plains next to him, three times before he's worn out; mountains can't go right next to an HQ. A green dashed area around a Nurse Tent shows where it heals. Settings can cap how many Oil Rigs each side may own.</p>
+        <p style="margin-top:6px"><b>2 vs Bot</b> (Play Online): you (Blue) and a friend (Green) each have an HQ in the west and take turns one after the other; the Red bot has one HQ and earns double gold. If one of your HQs falls, that player is out and the other fights on. Destroy the bot's HQ to win together.</p>`;
       grid.appendChild(rules);
     }
     body.appendChild(grid);
@@ -4059,7 +4372,7 @@ const SOUND = (() => {
   $('#menu-quit').addEventListener('click', () => confirmMenu(S.online
     ? 'Leave this battle? It stays saved in this browser: choose Play Online, then Rejoin, to come back.'
     : 'Quit to the title screen? Progress in this battle will be lost.', () => { leaveGame(); show('title'); }));
-  $('#menu-resign').addEventListener('click', () => confirmMenu('Surrender this battle? Your rival wins.', () => localResign()));
+  $('#menu-resign').addEventListener('click', () => confirmMenu(G && G.mode === '2v1' ? 'Surrender this battle? Your whole team loses to the bot.' : 'Surrender this battle? Your rival wins.', () => localResign()));
   $('#menu-yes').addEventListener('click', () => { SOUND.play('select'); $('#modal-menu').hidden = true; const f = pendingConfirm; pendingConfirm = null; if (f) f(); });
   $('#menu-no').addEventListener('click', () => { SOUND.play('cancel'); $('#menu-main').hidden = false; $('#menu-confirm').hidden = true; });
 
@@ -4079,10 +4392,12 @@ const SOUND = (() => {
     seg($('#maps-diff'), DIFF, () => settings.difficulty, (v) => { settings.difficulty = v; });
     seg($('#set-speed'), [['normal', 'Normal'], ['fast', 'Fast']], () => settings.speed, (v) => { settings.speed = v; });
     seg($('#set-bonus'), [[0, '$0'], [200, '+$200'], [500, '+$500']], () => settings.startBonus, (v) => { settings.startBonus = v; });
+    seg($('#set-oil'), [[0, '0'], [1, '1'], [3, '3'], [5, '5'], [10, '10'], [-1, 'No limit']], () => settings.oilCap, (v) => { settings.oilCap = v; });
+    if (G) updateHUD();
     $('#set-music').value = settings.music; $('#set-sfx').value = settings.sfx;
     $('#set-grid').setAttribute('aria-checked', settings.grid ? 'true' : 'false');
     $('#set-dev').setAttribute('aria-checked', settings.dev ? 'true' : 'false');
-    $('#dev-panel').hidden = !settings.dev || S.online;
+    $('#dev-panel').hidden = !settings.dev;
   }
   $('#set-music').addEventListener('input', (e) => { settings.music = +e.target.value; applyAudio(); saveSettings(); });
   $('#set-sfx').addEventListener('input', (e) => { settings.sfx = +e.target.value; applyAudio(); saveSettings(); });
@@ -4091,25 +4406,24 @@ const SOUND = (() => {
   $('#set-dev').addEventListener('click', () => { settings.dev = !settings.dev; saveSettings(); syncSettingsUI(); });
   function applyAudio() { SOUND.setVolumes(settings.music, settings.sfx); SOUND.setMuted(settings.muted); }
 
-  // ---------------- Developer tools ----------------
-  function togglePause() {
-    if (S.screen !== 'game' || !G || S.online) return;
-    Clock.paused = !Clock.paused;
-    $('#paused-cover').hidden = !Clock.paused;
-    $('#dev-pause').textContent = Clock.paused ? 'Resume' : 'Pause';
-    SOUND.duck(Clock.paused);
-    if (Clock.paused) menuEl.hidden = true;
-    else if (S.mode === 'menu' && S.sel) openMenu(S.sel);
-  }
-  $('#dev-pause').addEventListener('click', () => { SOUND.init(); togglePause(); });
-  $('#dev-reset').addEventListener('click', () => { SOUND.init(); $('#dev-pause').textContent = 'Pause'; if (S.screen === 'game') startGame(S.mapIdx); });
+  // ---------------- Add money button + speed toggle ----------------
+  // Online, the money is an ordinary synced action, so it's only allowed on your own turn.
   $('#dev-gold').addEventListener('click', () => {
     SOUND.init();
-    if (!G || S.online) return;
-    G.gold[0] += 1000; G.gold[1] += 1000;
-    SOUND.play('coin');
-    for (const s of [0, 1]) { const hq = hqOf(G, s); if (hq) floatText(hq.x, hq.y, '+$1000', '#f5c03a'); }
-    updateAll();
+    if (!G || G.winner !== null) return;
+    if (S.online) {
+      if (!canInteract()) { SOUND.play('error'); toast('You can add money on your own turn.'); return; }
+      record({ t: 'gold' });
+      runPlayer(async () => { await aMoney(); S.busy = false; saveOnline(); });
+      return;
+    }
+    aMoney();
+  });
+  $('#btn-speed').addEventListener('click', () => {
+    SOUND.init(); SOUND.play('hover');
+    settings.speed = settings.speed === 'fast' ? 'normal' : 'fast';
+    saveSettings(); syncSettingsUI();
+    toast(settings.speed === 'fast' ? 'Fast animations' : 'Normal animations');
   });
 
   // ---------------- Keyboard ----------------
@@ -4121,7 +4435,6 @@ const SOUND = (() => {
       return;
     }
     if (openM || ev.target.tagName === 'INPUT') return;
-    if (settings.dev && (ev.key === 'p' || ev.key === 'P')) togglePause();
   });
 
   window.addEventListener('resize', () => { if (S.screen === 'game') fitBoard(); if (S.screen === 'title') sizeTitle(); });
@@ -4132,7 +4445,7 @@ const SOUND = (() => {
   // other side replays it with the same animations. Every action is numbered,
   // so dropped messages are resent and a reloaded player catches up. If the
   // two boards ever disagree, the active player's board is sent whole.
-  const PROTO = 2;
+  const PROTO = 4;
   const SAVE_KEY = 'medieval-warfare-online' + (new URLSearchParams(location.search).get('slot') || '');
   const CODE_ABC = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   const PEERJS_URL = 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js';
@@ -4142,7 +4455,7 @@ const SOUND = (() => {
     t: null, code: null, role: null, gid: null, count: 0, logBase: 0, log: {}, needSync: false,
     lastRecv: 0, oppOnline: false, rematch: { me: false, them: false }, resigned: null, resignedBy: null,
     parts: new Map(), timer: null, lobby: false, mapIdx: 0, pumping: false, syncAt: 0, syncPending: false,
-    resendAt: 0, status: '', error: '', connecting: false, resyncs: 0,
+    resendAt: 0, status: '', error: '', connecting: false, resyncs: 0, mode: '1v1', pendingMode: '1v1',
   };
   const netReady = () => !!NET.gid && !NET.needSync;
 
@@ -4151,8 +4464,10 @@ const SOUND = (() => {
     const s = {
       v: PROTO, map: mapIdx, n: g.n || 0, turn: g.turn, day: g.day, winner: g.winner, gold: g.gold.slice(),
       bonus: g.startBonus, nid: g.nextId, ter: g.terrain.map((r) => r.join('')), st: g.stumps ? [...g.stumps] : [],
-      first: g.first || 0, e: g.entities.map(entRow),
+      first: g.first || 0, e: g.entities.map(entRow), oc: g.oilCap == null ? null : g.oilCap,
+      bi: g.bonusIncome ? g.bonusIncome.slice() : null,
     };
+    if (g.mode) Object.assign(s, { md: g.mode, tm: g.teams, od: g.order, out: g.out.slice(), im: g.incomeMul, bots: g.bots, bl: g.botLevel });
     if (stats) s.stats = stats;
     return s;
   }
@@ -4170,7 +4485,7 @@ const SOUND = (() => {
   }
   function validSnap(s) {
     return s && typeof s === 'object' && MAPS[s.map] && Array.isArray(s.e) && Array.isArray(s.ter) &&
-      s.ter.length === MAPS[s.map].rows.length && Array.isArray(s.gold) && (s.turn === 0 || s.turn === 1);
+      s.ter.length === MAPS[s.map].rows.length && Array.isArray(s.gold) && [0, 1, 2].includes(s.turn) && (s.md === undefined || s.md === '2v1');
   }
   function applySnap(g, s) {
     const old = new Map();
@@ -4188,8 +4503,12 @@ const SOUND = (() => {
     g.entities = s.e.map(make).filter(valid);
     g.terrain = s.ter.map((r) => String(r).split(''));
     g.stumps = new Set(s.st || []);
-    g.gold = s.gold.slice(0, 2); g.turn = s.turn; g.day = s.day; g.winner = s.winner;
+    g.gold = s.gold.slice(0, 3); g.turn = s.turn; g.day = s.day; g.winner = s.winner;
     g.startBonus = s.bonus || 0; g.nextId = s.nid; g.n = s.n || 0; g.first = s.first || 0;
+    g.oilCap = s.oc == null ? null : s.oc;
+    if (s.bi) g.bonusIncome = s.bi.slice(); else delete g.bonusIncome;
+    if (s.md === '2v1') Object.assign(g, { mode: s.md, teams: s.tm, order: s.od, out: s.out.slice(), incomeMul: s.im, bots: s.bots, botLevel: s.bl });
+    else { delete g.mode; delete g.teams; delete g.order; delete g.out; delete g.incomeMul; delete g.bots; delete g.botLevel; }
   }
 
   // ---- saving, so a reloaded page can rejoin ----
@@ -4269,7 +4588,7 @@ const SOUND = (() => {
       return;
     }
     NET.lastRecv = Date.now();
-    if (!NET.oppOnline) { NET.oppOnline = true; if (S.online && G) toast('Your rival is connected.'); onNetChange(); }
+    if (!NET.oppOnline) { NET.oppOnline = true; if (S.online && G) toast('Your ' + peerWord() + ' is connected.'); onNetChange(); }
     switch (m.t) {
       case 'st': return onPeerStatus(m);
       case 'act':
@@ -4280,7 +4599,7 @@ const SOUND = (() => {
       case 'needsync': if (NET.gid && m.gid === NET.gid) sendSync(); return;
       case 'bye':
         NET.oppOnline = false; NET.lastRecv = 0;
-        if (S.online) toast('Your rival left. They can rejoin with the same code.');
+        if (S.online) toast('Your ' + peerWord() + ' left. They can rejoin with the same code.');
         onNetChange(); return;
     }
   }
@@ -4292,7 +4611,7 @@ const SOUND = (() => {
         if (m.n < NET.logBase) sendSync();
         else for (let n = m.n; n < Math.min(NET.count, m.n + 12); n++) netSend({ t: 'act', n, a: NET.log[n].a, h: NET.log[n].h });
       }
-      if (m.rs === 0 || m.rs === 1) remoteResign(m.rs);
+      if ([0, 1, 2].includes(m.rs)) remoteResign(m.rs);
       if (m.rm && !NET.rematch.them) { NET.rematch.them = true; updateEndButtons(); checkRematch(); }
       return;
     }
@@ -4300,9 +4619,10 @@ const SOUND = (() => {
     if (NET.role === 'host' && NET.lobby && !m.gid) createHostedGame();
   }
   function adoptSync(m) {
-    if (!validSnap(m.snap) || (m.side !== 0 && m.side !== 1) || typeof m.gid !== 'string') return;
+    if (!validSnap(m.snap) || ![0, 1, 2].includes(m.side) || typeof m.gid !== 'string') return;
     if (NET.role === 'host' && NET.gid && NET.gid !== m.gid) return; // the host's game wins
-    const me = 1 - m.side;
+    // 1v1: the guest plays the other side. 2 vs Bot: the host is Blue, the guest Green.
+    const me = m.snap.md === '2v1' ? (m.side === 0 ? 2 : 0) : 1 - m.side;
     if (S.online && G && NET.gid === m.gid && S.me === me) {
       serial(async () => {
         applySnap(G, m.snap);
@@ -4317,7 +4637,7 @@ const SOUND = (() => {
     if (!G || G.winner !== null) return;
     serial(async () => {
       if (!G || G.winner !== null) return;
-      NET.resignedBy = side; G.winner = 1 - side;
+      NET.resignedBy = side; G.winner = G.mode === '2v1' ? 1 : 1 - side;
       await gameOver();
     });
   }
@@ -4354,6 +4674,41 @@ const SOUND = (() => {
       if (g !== gen) return;
       if (G && G.winner === null) { S.busy = false; updateAll(); }
       if (G && G.n < NET.count && !NET.needSync) pump();
+      else kickBot();
+    });
+  }
+  // ---- 2 vs Bot: the host's browser plays the bot ----
+  // Its moves are recorded like a player's, so the guest replays them exactly.
+  const recBotAct = {
+    async move(u, path) { const e = path[path.length - 1]; record({ t: 'move', id: u.id, x: e.x, y: e.y }); await botAct.move(u, path); },
+    async attack(a, opt) { record({ t: 'atk', id: a.id, k: opt.k }); await botAct.attack(a, opt); },
+    async build(b, type, x, y) { record({ t: 'build', id: b.id, type, x, y }); return botAct.build(b, type, x, y); },
+    async chop(u, x, y) { record({ t: 'chop', id: u.id, x, y }); await botAct.chop(u, x, y); },
+    async heal(n, t) { record({ t: 'heal', id: n.id, tid: t.id }); await botAct.heal(n, t); },
+    async recruit(side, type, x, y) { record({ t: 'rec', type, x, y }); return botAct.recruit(side, type, x, y); },
+    pause: () => wait(140),
+  };
+  let botRunning = false;
+  function kickBot() {
+    if (!S.online || !G || G.mode !== '2v1' || NET.role !== 'host' || G.winner !== null || botRunning || S.flipping) return;
+    if (!G.bots.includes(G.turn) || !netReady() || G.n < NET.count) return;
+    botRunning = true;
+    serial(async () => {
+      try {
+        if (!G || G.winner !== null || !G.bots.includes(G.turn)) return;
+        if (!S.ai || S.aiSide !== G.turn) { S.ai = makeAI(G, G.turn, G.botLevel); S.aiSide = G.turn; }
+        S.busy = true; updateAll();
+        await S.ai.takeTurn(recBotAct);
+        S.botFocus = null;
+        if (G.winner !== null) return;
+        await wait(250);
+        record({ t: 'end' });
+        const ev = endTurn(G);
+        updateAll(); saveOnline();
+        await banner(G.turn);
+        await showEvents(ev);
+        S.busy = false; updateAll();
+      } finally { botRunning = false; }
     });
   }
   class BadMove extends Error {}
@@ -4414,6 +4769,16 @@ const SOUND = (() => {
         u.moved = true; u.acted = true; updateAll();
         return;
       }
+      case 'terra': {
+        const g = mine(a.id);
+        if (!TERRA[a.kind] || !canTerra(G, g, a.kind) || !terraSites(G, g, a.kind).some((p) => p.x === a.x && p.y === a.y)) throw new BadMove('terra');
+        G.n++;
+        return aTerra(g, a.kind, a.x, a.y);
+      }
+      case 'gold': {
+        G.n++;
+        return aMoney();
+      }
       case 'end': {
         G.n++;
         const ev = endTurn(G);
@@ -4430,8 +4795,13 @@ const SOUND = (() => {
   function createHostedGame() {
     NET.lobby = false;
     const gid = Math.random().toString(36).slice(2, 10);
-    const g = createGame(mapDefFor(NET.mapIdx), { startBonus: settings.startBonus });
-    g.first = Math.random() < 0.5 ? 0 : 1;
+    const g = createGame(mapDefFor(NET.mapIdx), { startBonus: settings.startBonus, oilCap: settings.oilCap < 0 ? null : settings.oilCap, mode: NET.mode, botLevel: settings.difficulty });
+    if (g.mode === '2v1') {
+      // the coin decides whether the team or the bot goes first
+      g.order = Math.random() < 0.5 ? [0, 2, 1] : [1, 0, 2];
+      g.first = g.order[0];
+      makeAI(g, 1, g.botLevel);   // sets the bot's difficulty income bonus, which the snapshot carries
+    } else g.first = Math.random() < 0.5 ? 0 : 1;
     beginTurn(g, g.first);
     startOnline(gid, 0, snapshotOf(g, NET.mapIdx, newStats()), true);
     NET.syncAt = 0;
@@ -4462,16 +4832,17 @@ const SOUND = (() => {
       updateAll();
     });
     pump();
+    kickBot();
   }
   function localResign() {
     if (!S.online || !G || G.winner !== null) return;
     NET.resigned = S.me; NET.resignedBy = S.me;
     sendSt();
-    serial(async () => { if (G.winner !== null) return; G.winner = 1 - S.me; await gameOver(); });
+    serial(async () => { if (G.winner !== null) return; G.winner = G.mode === '2v1' ? 1 : 1 - S.me; await gameOver(); });
   }
   function checkRematch() {
     if (NET.rematch.me && NET.rematch.them && NET.role === 'host' && G && G.winner !== null) {
-      NET.mapIdx = S.mapIdx;
+      NET.mapIdx = S.mapIdx; NET.mode = G.mode || '1v1';
       createHostedGame();
     }
   }
@@ -4479,7 +4850,7 @@ const SOUND = (() => {
     if (!S.online) return;
     const b = $('#end-again');
     b.disabled = NET.rematch.me;
-    b.textContent = NET.rematch.me ? 'Waiting for rival…' : NET.rematch.them ? 'Accept rematch' : 'Rematch';
+    b.textContent = NET.rematch.me ? 'Waiting for your ' + peerWord() + '…' : NET.rematch.them ? 'Accept rematch' : 'Rematch';
   }
   function netLeave(keepSave) {
     if (NET.t) { try { netSend({ t: 'bye' }); } catch (e) { /* ignore */ } }
@@ -4597,8 +4968,10 @@ const SOUND = (() => {
     sendSt();
     return true;
   }
+  function peerWord() { return (G && G.mode === '2v1') || NET.mode === '2v1' ? 'ally' : 'rival'; }
   function netTick() {
     if (!NET.t) return;
+    kickBot();
     sendSt();
     if (NET.needSync) netSend({ t: 'needsync' });
     if (NET.oppOnline && Date.now() - NET.lastRecv > 6500) {
@@ -4636,7 +5009,7 @@ const SOUND = (() => {
     const saved = loadSaved();
     const rb = $('#online-resume');
     rb.hidden = !saved;
-    if (saved) rb.textContent = `Rejoin game ${saved.code} · day ${saved.snap.day}`;
+    if (saved) rb.textContent = `Rejoin ${saved.snap.md === '2v1' ? '2 vs Bot' : ''} game ${saved.code} · day ${saved.snap.day}`.replace('  ', ' ');
     if (prefill) $('#online-code').value = prefill;
     $('#online-where').textContent = inClaude
       ? 'You’re playing inside Claude: your friend opens this same artifact (shared with them) and joins with the code.'
@@ -4655,7 +5028,7 @@ const SOUND = (() => {
   function hostGame() {
     netLeave(true);
     const code = newCode();
-    NET.mapIdx = S.mapIdx; NET.lobby = true;
+    NET.mapIdx = S.mapIdx; NET.lobby = true; NET.mode = NET.pendingMode;
     SOUND.play('select');
     openModal('#modal-online');
     showWait(code, 'host');
@@ -4679,7 +5052,8 @@ const SOUND = (() => {
     netConnect(s.code, s.role);
   }
   $('#btn-online').addEventListener('click', () => { SOUND.play('select'); openOnline(); });
-  $('#online-host').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; show('maps'); });
+  $('#online-host').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '1v1'; show('maps'); });
+  $('#online-host2').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '2v1'; show('maps'); });
   $('#online-join').addEventListener('click', () => joinGame($('#online-code').value));
   $('#online-code').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') joinGame(ev.target.value); });
   $('#online-code').addEventListener('input', (ev) => { ev.target.value = ev.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); });
@@ -4701,10 +5075,13 @@ const SOUND = (() => {
   show('title');
   requestAnimationFrame(frame);
   // Debug/testing hook
-  window.__mw = { get G() { return G; }, S, NET, snapshotOf, applySnap, applyRemote, coinFlip, mapDefFor, playerUnload, playerAttack, startGame, Clock, settings, togglePause, endTurnFlow, stateHash, hostGame, joinGame, localResign,
+  window.__mw = { get G() { return G; }, S, NET, kickBot, snapshotOf, applySnap, applyRemote, coinFlip, mapDefFor, playerUnload, playerAttack, startGame, Clock, settings, endTurnFlow, stateHash, hostGame, joinGame, localResign,
     // Testing: let the bot play this side's online turn through the same path as clicks.
     async autoPlay(level) {
+      // keep synced state untouched: makeAI records a difficulty income bonus
+      const bi = G.bonusIncome ? G.bonusIncome.slice() : null;
       const ai = makeAI(G, S.me, level || 'normal');
+      if (bi) G.bonusIncome = bi; else delete G.bonusIncome;
       const act = {
         async move(u, path) { const e = path[path.length - 1]; record({ t: 'move', id: u.id, x: e.x, y: e.y }); await aMove(u, path); },
         async attack(a, opt) { record({ t: 'atk', id: a.id, k: opt.k }); await aAttack(a, opt); },

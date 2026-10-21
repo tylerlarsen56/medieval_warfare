@@ -24,6 +24,8 @@
   --red-soft: #ffd2cb;
   --green: #2fae5a;
   --green-dark: #1d6e3a;
+  --purple: #9b51e0;
+  --purple-dark: #5e2a99;
   --gold: #f5c03a;
   --gold-dark: #b9851a;
   --leaf: #3fa653;
@@ -91,6 +93,7 @@ button { font-family: inherit; }
 .chip.blue { background: var(--blue); color: var(--white); }
 .chip.red { background: var(--red); color: var(--white); }
 .chip.green { background: var(--green); color: var(--white); }
+.chip.purple { background: var(--purple); color: var(--white); }
 .chip.land { background: #c6e6a8; }
 .chip.air { background: #d6ecff; }
 .chip.water { background: #9fd0ff; }
@@ -146,6 +149,7 @@ button { font-family: inherit; }
 .turn-chip { display: flex; align-items: center; gap: 10px; padding: 6px 14px; border-radius: 8px; border: 3px solid var(--ink); color: var(--white); background: var(--blue); font-weight: 600; font-size: 17px; min-width: 0; }
 .turn-chip.red { background: var(--red); }
 .turn-chip.green { background: var(--green); }
+.turn-chip.purple { background: var(--purple); }
 .turn-chip .day { font-family: var(--font-display); font-size: 28px; line-height: 0.8; font-weight: 400; }
 .purse { display: flex; align-items: center; gap: 6px; font-size: 18px; font-weight: 600; padding: 4px 10px; border-radius: 8px; border: 3px solid var(--ink); background: var(--parchment); font-variant-numeric: tabular-nums; }
 .purse .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); }
@@ -219,6 +223,7 @@ button { font-family: inherit; }
 }
 .banner.red div { background: var(--red); }
 .banner.green div { background: var(--green); }
+.banner.purple div { background: var(--purple); }
 @keyframes bannerSlide { 0% { transform: translateX(-110%); } 22%, 78% { transform: translateX(0); } 100% { transform: translateX(110%); } }
 .toast-area { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 7; display: flex; flex-direction: column; gap: 6px; align-items: center; pointer-events: none; width: max-content; max-width: 90%; }
 .toast { padding: 6px 14px; font-weight: 600; font-size: 14px; line-height: 1.3; animation: toastIn 2.6s ease forwards; text-align: center; }
@@ -257,12 +262,28 @@ button { font-family: inherit; }
 .code-big { font: 700 44px var(--font-ui); letter-spacing: 0.28em; text-align: center; padding: 10px 0 10px 0.28em; margin: 4px 0 12px; border: 3px dashed var(--ink); border-radius: 10px; background: var(--white); color: var(--ink); user-select: all; }
 .net-status { margin: 12px 0; text-align: center; color: var(--muted); line-height: 1.4; }
 .net-status.err { color: var(--red-dark); font-weight: 600; }
+#online-name { font: 600 16px var(--font-ui); padding: 8px 10px; border: 3px solid var(--ink); border-radius: 9px; background: var(--white); color: var(--ink); width: 100%; box-sizing: border-box; }
+.roster { display: grid; gap: 8px; margin: 4px 0 8px; }
+.roster .team { display: grid; gap: 6px; padding: 8px; border: 3px solid var(--ink); border-radius: 10px; background: var(--parchment); }
+.roster h4 { margin: 0; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.roster .row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 3px solid var(--ink); border-radius: 8px; background: var(--white); font-weight: 600; }
+.roster .row.empty { opacity: 0.55; font-weight: 400; font-style: italic; }
+.roster .row .who { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.roster .row .tag { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.roster .row .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); flex: none; }
+.roster .row.new, .lobby-notice.pop { animation: rosterPop 0.7s ease-out; }
+.btn.mini { padding: 3px 8px; font-size: 12px; width: auto; flex: none; }
+.lobby-notice { margin: 0 0 8px; text-align: center; font-weight: 700; color: var(--green-dark); border-radius: 8px; padding: 4px; }
+@keyframes rosterPop { 0% { transform: scale(0.92); background: var(--gold); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .roster .row.new, .lobby-notice.pop { animation: none; } }
 .online-where { font-size: 12.5px; color: var(--muted); margin: 0; line-height: 1.4; }
 .thinking { padding: 5px 12px; font-weight: 600; font-size: 14px; background: var(--red); color: var(--white); border: 3px solid var(--ink); border-radius: 8px; line-height: 1.2; white-space: nowrap; animation: thinkPulse 1.6s ease-in-out infinite; }
 .thinking.green { background: var(--green); }
+.thinking.purple { background: var(--purple); }
 @keyframes thinkPulse { 50% { filter: brightness(1.15); } }
 @media (prefers-reduced-motion: reduce) { .thinking { animation: none; } }
 .btn-green { background: var(--green); color: var(--white); }
+.btn-purple { background: var(--purple); color: var(--white); }
 .speed-btn { width: auto; min-width: 42px; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
 .paused-cover { position: absolute; inset: 0; z-index: 8; display: grid; place-items: center; background: rgba(16,12,34,0.55); }
 .paused-cover div { font-family: var(--font-display); font-size: 64px; color: var(--white); text-shadow: 0 4px 0 var(--ink); line-height: 1; }
@@ -373,6 +394,7 @@ button { font-family: inherit; }
       <div class="purse" title="Blue Kingdom gold"><span class="dot" style="background:var(--blue)"></span><span class="who" id="who-0">You</span><span id="gold-0">$0</span></div>
       <div class="purse" title="Red Empire gold"><span class="dot" style="background:var(--red)"></span><span class="who" id="who-1">Bot</span><span id="gold-1">$0</span></div>
       <div class="purse" title="Green Duchy gold" id="purse-2" hidden><span class="dot" style="background:var(--green)"></span><span class="who" id="who-2">Ally</span><span id="gold-2">$0</span></div>
+      <div class="purse" title="Purple Order gold" id="purse-3" hidden><span class="dot" style="background:var(--purple)"></span><span class="who" id="who-3">Rival</span><span id="gold-3">$0</span></div>
       <div class="net-pill" id="net-pill" hidden><span class="dot"></span><span id="net-text">Online</span></div>
       <div class="thinking" id="thinking" hidden role="status">Bot is plotting…</div>
       <div class="hud-spacer"></div>
@@ -481,10 +503,13 @@ button { font-family: inherit; }
       <div class="modal-head"><h2 id="online-title">Play Online</h2><button class="btn btn-plain" data-close type="button">Close</button></div>
       <div class="modal-body">
         <div class="menu-list" id="online-home">
-          <p class="confirm-text" style="margin:0">Battle a friend 1 v 1, team up against a bot, or fight a three-way free-for-all. One of you hosts and shares a five-letter code; everyone else joins with it.</p>
+          <p class="confirm-text" style="margin:0">Battle a friend 1 v 1, team up against a bot, or bring three or four friends for a free-for-all or 2v2. One of you hosts and shares a five-letter code; everyone else joins with it.</p>
+          <input id="online-name" maxlength="14" placeholder="Your name (optional)" autocomplete="off" spellcheck="false" aria-label="Your name">
           <button class="btn btn-blue" id="online-host" type="button">Host 1 v 1</button>
           <button class="btn btn-green" id="online-host2" type="button">Host 2 vs Bot</button>
           <button class="btn btn-red" id="online-host3" type="button">Host 1v1v1 (3 players)</button>
+          <button class="btn btn-purple" id="online-host4" type="button">Host 1v1v1v1 (4 players)</button>
+          <button class="btn btn-blue" id="online-host22" type="button">Host 2v2 (4 players)</button>
           <div class="online-or">or join one</div>
           <div class="join-row"><input id="online-code" maxlength="5" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Game code"><button class="btn" id="online-join" type="button">Join</button></div>
           <button class="btn btn-plain" id="online-resume" type="button" hidden>Rejoin game</button>
@@ -493,6 +518,9 @@ button { font-family: inherit; }
         <div id="online-wait" hidden>
           <p class="confirm-text" id="online-wait-lead">Send this code to your friend:</p>
           <div class="code-big" id="online-code-big">-----</div>
+          <p class="lobby-notice" id="online-notice" role="status" hidden></p>
+          <div class="roster" id="online-roster" hidden></div>
+          <div class="menu-list" id="online-lobby-actions" hidden><button class="btn btn-plain" id="online-random" type="button">Randomize teams</button><button class="btn btn-blue" id="online-start" type="button" disabled>Start game</button></div>
           <div class="menu-list">
             <button class="btn btn-plain" id="online-copy" type="button" hidden>Copy invite link</button>
           </div>
@@ -585,7 +613,15 @@ const TERRAIN = {
 };
 
 const START_INCOME = 100;
-const SIDE_NAMES = ['Blue Kingdom', 'Red Empire', 'Green Duchy'];
+const SIDE_NAMES = ['Blue Kingdom', 'Red Empire', 'Green Duchy', 'Purple Order'];
+// Online modes with more than two humans: how many seats. 1v1v1 and 1v1v1v1 are free-for-alls;
+// 2v2 is Blue + Green (west) against Red + Purple (east), and the teams take turns in turn.
+const SEATS = { '3p': 3, '4p': 4, '2v2': 4 };
+const FFA_NOTES = {
+  '3p': '<b style="color:var(--text)">Online 1v1v1.</b> Three players, every kingdom for itself. You host as the Blue Kingdom; two friends join with the code as Red and Green. Turn order is random, and the last HQ standing wins.',
+  '4p': '<b style="color:var(--text)">Online 1v1v1v1.</b> Four players, every kingdom for itself. You host as Blue; three friends join with the code as Red, Green and Purple. Turn order is random, and the last HQ standing wins.',
+  '2v2': '<b style="color:var(--text)">Online 2v2.</b> You host as Blue in the west. Once your three friends have joined, pick your partner (or randomize the teams) and press Start. Teams alternate turns, and your team wins when both enemy HQs fall.',
+};
 // Terraforming by Gnomes: tile kind -> cost
 const TERRA = { T: { name: 'Forest', price: 25 }, M: { name: 'Mountain', price: 75 } };
 
@@ -662,14 +698,29 @@ const MAPS = [
     ]),
   },
   {
+    id: 'corners', name: 'Four Corners', focus: 'land', focusLabel: 'Land battle', players: 4,
+    blurb: 'Four kingdoms, four corners, one crossroads in the middle. Everyone has a neighbour to bully and a rival to fear.',
+    rows: buildMap4(['..T....T.', '.B.....T.', '...MT....', '.T....M..', '....T..TT', 'T.M...T..']),
+  },
+  {
+    id: 'lakeside', name: 'Lakeside Quartet', focus: 'water', focusLabel: 'Sea battle', players: 4,
+    blurb: 'A vast lake fills the heart of the realm. Armies circle its shores; navies fight for the middle.',
+    rows: buildMap4(['..T......', '.B...T...', '.T..WWWWW', '....WWWWW', '.T..WWWWW', '....WWWWW']),
+  },
+  {
+    id: 'quartet', name: 'Thornwood Quartet', focus: 'land', focusLabel: 'Forest battle', players: 4,
+    blurb: 'Four kingdoms share one tangled forest. Every step into the trees ends a march, so clear a path or be cut off.',
+    rows: buildMap4(['T.T.TT.T.', '.B.T.T.TT', 'TT.TT.T.T', '.T.T..TT.', 'T.TT.T..T', '.T..T.TT.']),
+  },
+  {
     id: 'triple', name: 'Triple Crown', focus: 'land', focusLabel: 'Land battle', players: 3,
     blurb: 'Blue holds the north; Red and Green face off in the south. Open fields, scattered woods, and nobody to trust.',
-    rows: buildMap3(['.T..WT..T.', '..M...T..B', '.T....T...', '..WMM.....', 'TWWM..TT..', '..T....M..', '.T..T.M...', '...T...TT.', 'T.....M...', '..MM.T....', '.T..T...T.', '..R...M...', 'T...T..T.W']),
+    rows: buildMap3(['.T...T..T.', '..M...T..B', '.T....T...', '...MM.....', 'T..M..TT..', '..T....M..', '.T..T.M...', '...T...TT.', 'T.....M...', '..MM.T....', '.T..T...T.', '..R...M...', 'T...T..T..']),
   },
   {
     id: 'shores', name: 'Three Shores', focus: 'water', focusLabel: 'Sea battle', players: 3,
     blurb: 'A great lake splits the realm. March round its edges, or build a Water Tower and rule the waves.',
-    rows: buildMap3(['M.T..M.T..', '...T..T..B', '.T........', '..M..WWWWW', 'M..WWWWWWW', '.TWWWWWWWW', '..WWWWWWWW', 'M.WWWWWWWW', '.T.WWWWWWW', '..M.WWWWWW', '.T..T.WT.W', '..R...T...', 'TM..T...MT']),
+    rows: buildMap3(['..T....T..', '...T...T.B', '.T........', '..WWWWWWW', '..WWWWWWW', '.TWWWWWWW', '..WWWWWWW', '..WWWWWWW', '.TWWWWWWW', '..........', '.T..T..T..', '..R...T...', 'T...T....T']),
   },
   {
     id: 'triad', name: 'Thornwood Triad', focus: 'land', focusLabel: 'Forest battle', players: 3,
@@ -690,6 +741,13 @@ const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const key = (x, y) => x + ',' + y;
 const manhattan = (ax, ay, bx, by) => Math.abs(ax - bx) + Math.abs(ay - by);
 
+// 4-player maps are written as the top-left quarter (9 wide, 6 tall) and mirrored both ways, so all four
+// corners get identical ground. 'B' is the Blue HQ; its twins become Red (top right), Green (bottom left), Purple (bottom right).
+function buildMap4(tl) {
+  const top = tl.map((r) => r + r.split('').reverse().join('').replace('B', 'R'));
+  const bot = tl.slice().reverse().map((r) => r.replace('B', 'G') + r.split('').reverse().join('').replace('B', 'P'));
+  return top.concat(bot);
+}
 // 3-player maps are written as their left half plus the centre column (10 wide) and mirrored,
 // so Red (left) and Green (right) get identical ground. 'B' (Blue HQ) sits on the centre column.
 function buildMap3(left) {
@@ -718,16 +776,16 @@ function createGame(mapDef, opts) {
     G.terrain.push([]);
     for (let x = 0; x < G.w; x++) {
       let c = mapDef.rows[y][x];
-      if (c === 'B' || c === 'R' || c === 'G') {
-        addTower(G, 'hq', c === 'B' ? 0 : c === 'R' ? 1 : 2, x, y, false);
+      if (c !== '' && 'BRGP'.includes(c)) {
+        addTower(G, 'hq', 'BRGP'.indexOf(c), x, y, false);
         c = '.';
       }
       G.terrain[y].push(c);
     }
   }
   if (opts.mode === '2v1') setupTeams(G, opts.botLevel);
-  else if (opts.mode === '3p') setupFFA(G);
-  G.gold = G.order ? [G.startBonus, G.startBonus, G.startBonus] : [G.startBonus, G.startBonus];
+  else if (SEATS[opts.mode]) setupFFA(G, opts.mode);
+  G.gold = G.order ? G.order.map(() => G.startBonus) : [G.startBonus, G.startBonus];
   return G;
 }
 
@@ -765,10 +823,11 @@ function setupTeams(G, botLevel) {
   }
 }
 // 1v1v1: three players, every side its own team, no bots. Forest around each HQ is cleared.
-function setupFFA(G) {
-  G.mode = '3p'; G.teams = [0, 1, 2]; G.order = [0, 1, 2]; G.incomeMul = [1, 1, 1];
-  G.out = [false, false, false]; G.bots = [];
-  for (let s = 0; s < 3; s++) {
+function setupFFA(G, mode) {
+  const n = SEATS[mode];
+  G.mode = mode; G.teams = mode === '2v2' ? [0, 1, 0, 1] : [0, 1, 2, 3].slice(0, n); G.order = [0, 1, 2, 3].slice(0, n);
+  G.incomeMul = G.order.map(() => 1); G.out = G.order.map(() => false); G.bots = [];
+  for (let s = 0; s < n; s++) {
     const hq = hqOf(G, s); if (!hq) continue;
     for (const [dx, dy] of [[0, 0]].concat(DIRS)) { const nx = hq.x + dx, ny = hq.y + dy; if (inBounds(G, nx, ny) && G.terrain[ny][nx] === 'T') G.terrain[ny][nx] = '.'; }
   }
@@ -1711,6 +1770,7 @@ const ART = (() => {
     { main: '#3b7bff', light: '#9cc1ff', dark: '#1f45a8', name: 'blue' },
     { main: '#ff4b3a', light: '#ffa190', dark: '#a8241b', name: 'red' },
     { main: '#2fae5a', light: '#9ee6b4', dark: '#1d6e3a', name: 'green' },
+    { main: '#9b51e0', light: '#d3b0f5', dark: '#5e2a99', name: 'purple' },
   ];
   const C = {
     skin: '#f5c99b', steel: '#cdd6e0', steelDark: '#8a96a6', wood: '#a8662f', woodDark: '#6b3d17',
@@ -2350,7 +2410,7 @@ const ART = (() => {
     const tm = TEAM[e.side];
     ctx.save();
     if (e.kind === 'unit') {
-      if (e.side === 1 && !opts.noFlip) { ctx.translate(T, 0); ctx.scale(-1, 1); }
+      if ((e.side === 1 || e.side === 3) && !opts.noFlip) { ctx.translate(T, 0); ctx.scale(-1, 1); }
       UNIT_DRAW[e.type](ctx, tm, t);
       // a passenger riding on a Carrier, drawn small on the deck
       if (e.cargo && UNIT_DRAW[e.cargo.type]) {
@@ -2656,12 +2716,12 @@ const SOUND = (() => {
     if (name === 'maps') {
       SOUND.playMusic('title');
       for (const m of MAPS) if (m.random) m.rows = genRandomMap();
-      const host = S.flow === 'host', team = host && NET.pendingMode === '2v1', ffa = host && NET.pendingMode === '3p';
-      if ((MAPS[S.mapIdx].players === 3) !== ffa) S.mapIdx = MAPS.findIndex((m) => (m.players === 3) === ffa);
+      const host = S.flow === 'host', team = host && NET.pendingMode === '2v1', ffa = host && !!SEATS[NET.pendingMode], np = host ? (SEATS[NET.pendingMode] || 2) : 2;
+      if ((MAPS[S.mapIdx].players || 2) !== np) S.mapIdx = MAPS.findIndex((m) => (m.players || 2) === np);
       renderMapCards();
       $('#maps-diff-wrap').hidden = host && !team; $('#maps-online-note').hidden = !host;
       $('#maps-online-note').innerHTML = ffa
-        ? '<b style="color:var(--text)">Online 1v1v1.</b> Three players, every kingdom for itself. You host as the Blue Kingdom; two friends join with the code as Red and Green. Turn order is random, and the last HQ standing wins.'
+        ? FFA_NOTES[NET.pendingMode]
         : team
         ? '<b style="color:var(--text)">2 vs Bot.</b> You (Blue) and your friend (Green) each get an HQ in the west. The Red bot has one HQ and earns double gold. A coin toss decides whether your team or the bot moves first.'
         : '<b style="color:var(--text)">Online 1v1.</b> You host as the Blue Kingdom; a coin toss decides who moves first. Starting gold and the Oil Rig limit come from your Settings.';
@@ -2673,11 +2733,11 @@ const SOUND = (() => {
   // Who a side is, from this player's point of view.
   function nameOf(s) {
     if (s === S.me) return 'You';
-    if (G && G.mode === '3p') return SIDE_NAMES[s].split(' ')[0];
+    if (G && SEATS[G.mode]) return G.mode === '2v2' && !isFoe(G, s, S.me) ? 'Ally' : SIDE_NAMES[s].split(' ')[0];
     if (G && G.mode === '2v1') return isFoe(G, s, S.me) ? 'Bot' : 'Ally';
     return S.online ? 'Rival' : 'Bot';
   }
-  const SIDE_CLASS = ['blue', 'red', 'green'];
+  const SIDE_CLASS = ['blue', 'red', 'green', 'purple'];
 
   // ---------------- Board sizing ----------------
   function fitBoard() {
@@ -3661,11 +3721,12 @@ const SOUND = (() => {
     $('#hud-day').textContent = 'Day ' + G.day;
     const mine = G.turn === S.me;
     const out = G.out && G.out[S.me];
-    $('#hud-turn').textContent = S.flipping ? 'Coin toss' : out ? (G.mode === '3p' ? 'Eliminated · watching' : 'Watching your ally') : mine ? 'Your turn' : nameOf(G.turn) + '’s turn';
+    $('#hud-turn').textContent = S.flipping ? 'Coin toss' : out ? (G.mode === '3p' || G.mode === '4p' ? 'Eliminated · watching' : 'Watching your ally') : mine ? 'Your turn' : nameOf(G.turn) + '’s turn';
     $('#turn-chip').classList.toggle('red', G.turn === 1);
     $('#turn-chip').classList.toggle('green', G.turn === 2);
-    for (const s of [0, 1, 2]) {
-      if (s === 2) $('#purse-2').hidden = !G.order;
+    $('#turn-chip').classList.toggle('purple', G.turn === 3);
+    for (const s of [0, 1, 2, 3]) {
+      if (s >= 2) $('#purse-' + s).hidden = !(G.order && G.order.includes(s));
       if (G.gold[s] == null) continue;
       $('#who-' + s).textContent = nameOf(s);
       $('#gold-' + s).textContent = '$' + G.gold[s];
@@ -3673,13 +3734,14 @@ const SOUND = (() => {
     // tell players when a side in 2 vs Bot is knocked out
     if (G.out) for (const s of G.order) if (G.out[s] && !S.outSeen[s] && G.winner === null) {
       S.outSeen[s] = true;
-      toast(s === S.me ? (G.mode === '3p' ? 'Your HQ has fallen! Stay and watch the finish.' : 'Your HQ has fallen! Your ally fights on.') : SIDE_NAMES[s] + ' has fallen!');
+      toast(s === S.me ? (G.mode === '3p' || G.mode === '4p' ? 'Your HQ has fallen! Stay and watch the finish.' : 'Your HQ has fallen! Your ally fights on.') : SIDE_NAMES[s] + ' has fallen!');
     }
     const rc = readyCount();
     $('#ready-count').textContent = mine && !S.flipping ? (rc ? rc + ' ready' : 'all done') : 'please wait';
     $('#end-turn').disabled = !mine || S.busy || G.winner !== null || (S.online && !netReady());
     $('#end-turn').classList.toggle('btn-red', S.me === 1);
     $('#end-turn').classList.toggle('btn-green', S.me === 2);
+    $('#end-turn').classList.toggle('btn-purple', S.me === 3);
     $('#end-turn').classList.toggle('btn-blue', S.me === 0);
     const pill = $('#net-pill');
     pill.hidden = !S.online;
@@ -3692,7 +3754,7 @@ const SOUND = (() => {
       if (NET.needSync) { th.hidden = false; th.textContent = 'Re-syncing with your ' + peer + '…'; }
       else if (G.winner !== null || mine || S.flipping) th.hidden = true;
       else if (botTurn) { th.hidden = false; th.textContent = NET.role === 'host' || NET.oppOnline ? 'Bot is plotting…' : 'Waiting for the host…'; }
-      else { th.hidden = false; th.textContent = NET.oppOnline ? (G.mode === '3p' ? nameOf(G.turn) + ' is plotting…' : G.mode === '2v1' ? 'Ally is planning…' : 'Rival is plotting…') : 'Waiting for your ' + peer + '…'; }
+      else { th.hidden = false; th.textContent = NET.oppOnline ? (SEATS[G.mode] ? (G.mode === '2v2' && !isFoe(G, G.turn, S.me) ? 'Ally is planning…' : nameOf(G.turn) + ' is plotting…') : G.mode === '2v1' ? 'Ally is planning…' : 'Rival is plotting…') : 'Waiting for your ' + peer + '…'; }
       pill.classList.toggle('away', !NET.oppOnline);
       $('#net-text').textContent = NET.oppOnline ? (NET.code || 'Online') : NET.t ? peerWord()[0].toUpperCase() + peerWord().slice(1) + ' offline' : 'Offline';
       pill.title = 'Online game ' + (NET.code || '');
@@ -3904,7 +3966,7 @@ const SOUND = (() => {
     const el = $('#banner');
     el.hidden = true; void el.offsetWidth;
     el.className = 'banner' + (side ? ' ' + SIDE_CLASS[side] : '');
-    const ally = G.mode === '2v1' && side !== S.me && !isFoe(G, side, S.me);
+    const ally = !!G.teams && side !== S.me && !isFoe(G, side, S.me);
     el.firstElementChild.textContent = side === S.me ? 'Day ' + G.day + ' · Your turn' : SIDE_NAMES[side] + (ally ? ' · your ally' : '');
     el.hidden = false;
     SOUND.play(side === S.me || ally ? 'turn' : 'enemyTurn');
@@ -3946,7 +4008,7 @@ const SOUND = (() => {
       await wait(base);
       SOUND.play('coin');
       const name = SIDE_NAMES[first];
-      txt.textContent = G && G.mode === '3p' ? (first === S.me ? 'You go first!' : `${name} goes first.`) : G && G.mode === '2v1'
+      txt.textContent = G && G.mode === '2v2' ? (isFoe(G, first, S.me) ? 'The enemy team goes first.' : 'Your team goes first!') : G && (G.mode === '3p' || G.mode === '4p') ? (first === S.me ? 'You go first!' : `${name} goes first.`) : G && G.mode === '2v1'
         ? (first === 1 ? 'Red Empire: the bot goes first.' : 'Your team goes first!')
         : first === S.me ? `${name}: you go first!` : `${name}: ${S.online ? 'your rival goes' : 'the bot goes'} first.`;
       await wait(1150);
@@ -4007,7 +4069,7 @@ const SOUND = (() => {
   }
   $('#end-turn').addEventListener('click', () => { SOUND.init(); endTurnFlow(); });
 
-  function newStats() { return { recruited: [0, 0, 0], lost: [0, 0, 0], built: [0, 0, 0], towersLost: [0, 0, 0] }; }
+  function newStats() { return { recruited: [0, 0, 0, 0], lost: [0, 0, 0, 0], built: [0, 0, 0, 0], towersLost: [0, 0, 0, 0] }; }
   function resetBattle() {
     gen++; flushTimers();
     Clock.paused = false; $('#paused-cover').hidden = true; SOUND.duck(false);
@@ -4075,7 +4137,7 @@ const SOUND = (() => {
     $('#end-title').textContent = won ? 'Victory!' : 'Defeat';
     const resigned = S.online && NET.resignedBy !== null;
     const team = G.mode === '2v1';
-    $('#end-sub').textContent = G.mode === '3p' ? (won ? `You destroyed both rival HQs on day ${G.day}. Long live the king!` : `Your HQ fell on day ${G.day}. The ${SIDE_NAMES[G.winner]} wins.`) : resigned
+    $('#end-sub').textContent = G.mode === '2v2' ? (won ? `Both enemy HQs fell on day ${G.day}. Well fought, partners!` : `Your team’s HQs fell by day ${G.day}. Regroup and try again.`) : G.mode === '3p' || G.mode === '4p' ? (won ? `You destroyed every rival HQ by day ${G.day}. Long live the king!` : `Your HQ fell on day ${G.day}. The ${SIDE_NAMES[G.winner]} wins.`) : resigned
       ? (team ? (NET.resignedBy === S.me ? `Your team surrendered on day ${G.day}.` : `Your ally surrendered on day ${G.day}.`)
         : won ? `Your rival surrendered on day ${G.day}.` : `You surrendered on day ${G.day}.`)
       : won ? `The ${SIDE_NAMES[op]}’s HQ has fallen on day ${G.day}.${team ? ' Well fought, allies!' : ''}`
@@ -4260,9 +4322,9 @@ const SOUND = (() => {
   function renderMapCards() {
     const grid = $('#map-grid');
     grid.innerHTML = '';
-    const want3 = S.flow === 'host' && NET.pendingMode === '3p';
+    const np = S.flow === 'host' ? (SEATS[NET.pendingMode] || 2) : 2;
     MAPS.forEach((m, i) => {
-      if ((m.players === 3) !== want3) return;
+      if ((m.players || 2) !== np) return;
       const card = document.createElement('button');
       card.type = 'button'; card.className = 'map-card panel';
       card.setAttribute('aria-pressed', i === S.mapIdx ? 'true' : 'false');
@@ -4280,7 +4342,7 @@ const SOUND = (() => {
       const b = hqOf(D, 0);
       const route = Math.min(...DIRS.map(([dx, dy]) => (f[b.y + dy] && f[b.y + dy][b.x + dx] != null ? f[b.y + dy][b.x + dx] : 1e9)));
       const div = document.createElement('div');
-      div.innerHTML = `<h3>${m.name}</h3><div class="map-meta"><span class="chip ${m.focus === 'water' ? 'water' : m.focus}">${clsIcon(m.focus)}${m.focusLabel}</span><span>${D.w}×${D.h} tiles</span><span>${m.players === 3 ? 'Three players' : m.random ? 'New layout every game' : route >= 1e9 ? 'No land route' : 'Land route about ' + route + ' tiles'}</span></div><p>${m.blurb}</p>`;
+      div.innerHTML = `<h3>${m.name}</h3><div class="map-meta"><span class="chip ${m.focus === 'water' ? 'water' : m.focus}">${clsIcon(m.focus)}${m.focusLabel}</span><span>${D.w}×${D.h} tiles</span><span>${m.players ? m.players + ' players' : m.random ? 'New layout every game' : route >= 1e9 ? 'No land route' : 'Land route about ' + route + ' tiles'}</span></div><p>${m.blurb}</p>`;
       card.appendChild(div);
       card.addEventListener('click', () => { SOUND.play('select'); S.mapIdx = i; renderMapCards(); });
       card.addEventListener('dblclick', () => { if (S.flow === 'host') { S.mapIdx = i; hostGame(); } else startGame(i); });
@@ -4409,7 +4471,7 @@ const SOUND = (() => {
   $('#menu-quit').addEventListener('click', () => confirmMenu(S.online
     ? 'Leave this battle? It stays saved in this browser: choose Play Online, then Rejoin, to come back.'
     : 'Quit to the title screen? Progress in this battle will be lost.', () => { leaveGame(); show('title'); }));
-  $('#menu-resign').addEventListener('click', () => confirmMenu(G && G.mode === '3p' ? 'Surrender this battle? Your HQ falls and you are out of the game.' : G && G.mode === '2v1' ? 'Surrender this battle? Your whole team loses to the bot.' : 'Surrender this battle? Your rival wins.', () => localResign()));
+  $('#menu-resign').addEventListener('click', () => confirmMenu(G && G.mode === '2v2' ? 'Surrender your HQ? You are out, but your partner fights on.' : G && (G.mode === '3p' || G.mode === '4p') ? 'Surrender this battle? Your HQ falls and you are out of the game.' : G && G.mode === '2v1' ? 'Surrender this battle? Your whole team loses to the bot.' : 'Surrender this battle? Your rival wins.', () => localResign()));
   $('#menu-yes').addEventListener('click', () => { SOUND.play('select'); $('#modal-menu').hidden = true; const f = pendingConfirm; pendingConfirm = null; if (f) f(); });
   $('#menu-no').addEventListener('click', () => { SOUND.play('cancel'); $('#menu-main').hidden = false; $('#menu-confirm').hidden = true; });
 
@@ -4492,7 +4554,8 @@ const SOUND = (() => {
     t: null, code: null, role: null, gid: null, count: 0, logBase: 0, log: {}, needSync: false,
     lastRecv: 0, oppOnline: false, rematch: { me: false, them: false }, resigned: null, resignedBy: null,
     parts: new Map(), timer: null, lobby: false, mapIdx: 0, pumping: false, syncAt: 0, syncPending: false,
-    resendAt: 0, status: '', error: '', connecting: false, resyncs: 0, mode: '1v1', pendingMode: '1v1', pid: Math.random().toString(36).slice(2, 10), peers: new Map(), rmSet: new Set(),
+    resendAt: 0, status: '', error: '', connecting: false, resyncs: 0, mode: '1v1', pendingMode: '1v1', pid: Math.random().toString(36).slice(2, 10), peers: new Map(), rmSet: new Set(), lobbyInfo: null, lastJoined: null,
+    name: (() => { try { return localStorage.getItem('medieval-warfare-name') || ''; } catch (e) { return ''; } })(),
   };
   const netReady = () => !!NET.gid && !NET.needSync;
 
@@ -4522,7 +4585,7 @@ const SOUND = (() => {
   }
   function validSnap(s) {
     return s && typeof s === 'object' && MAPS[s.map] && Array.isArray(s.e) && Array.isArray(s.ter) &&
-      s.ter.length === MAPS[s.map].rows.length && Array.isArray(s.gold) && [0, 1, 2].includes(s.turn) && (s.md === undefined || s.md === '2v1' || s.md === '3p');
+      s.ter.length === MAPS[s.map].rows.length && Array.isArray(s.gold) && [0, 1, 2, 3].includes(s.turn) && (s.md === undefined || s.md === '2v1' || !!SEATS[s.md]);
   }
   function applySnap(g, s) {
     const old = new Map();
@@ -4540,11 +4603,11 @@ const SOUND = (() => {
     g.entities = s.e.map(make).filter(valid);
     g.terrain = s.ter.map((r) => String(r).split(''));
     g.stumps = new Set(s.st || []);
-    g.gold = s.gold.slice(0, 3); g.turn = s.turn; g.day = s.day; g.winner = s.winner;
+    g.gold = s.gold.slice(0, 4); g.turn = s.turn; g.day = s.day; g.winner = s.winner;
     g.startBonus = s.bonus || 0; g.nextId = s.nid; g.n = s.n || 0; g.first = s.first || 0;
     g.oilCap = s.oc == null ? null : s.oc;
     if (s.bi) g.bonusIncome = s.bi.slice(); else delete g.bonusIncome;
-    if (s.md === '2v1' || s.md === '3p') Object.assign(g, { mode: s.md, teams: s.tm, order: s.od, out: s.out.slice(), incomeMul: s.im, bots: s.bots, botLevel: s.bl });
+    if (s.md === '2v1' || SEATS[s.md]) Object.assign(g, { mode: s.md, teams: s.tm, order: s.od, out: s.out.slice(), incomeMul: s.im, bots: s.bots, botLevel: s.bl });
     else { delete g.mode; delete g.teams; delete g.order; delete g.out; delete g.incomeMul; delete g.bots; delete g.botLevel; }
   }
 
@@ -4570,6 +4633,7 @@ const SOUND = (() => {
     if (!NET.t) return;
     if (msg.gid === undefined) msg.gid = NET.gid;
     if (msg.pid === undefined) msg.pid = NET.pid;
+    if (msg.nm === undefined && NET.name) msg.nm = NET.name;
     const s = JSON.stringify(msg);
     if (s.length <= 3000) { NET.t.send(msg); return; }
     const id = Math.random().toString(36).slice(2, 8), of = Math.ceil(s.length / 2800);
@@ -4577,7 +4641,8 @@ const SOUND = (() => {
   }
   function sendSt() {
     netSend({ t: 'st', v: PROTO, n: NET.count, side: NET.gid ? S.me : null,
-      rm: NET.rematch.me || undefined, rs: NET.resigned === null ? undefined : NET.resigned });
+      rm: NET.rematch.me || undefined, rs: NET.resigned === null ? undefined : NET.resigned,
+      lb: NET.role === 'host' && NET.lobby && SEATS[NET.mode] ? { j: NET.peers.size, n: SEATS[NET.mode] - 1 } : undefined });
   }
   // Record a local action: number it, checksum the state it starts from, send it.
   function record(a) {
@@ -4588,11 +4653,12 @@ const SOUND = (() => {
     G.n = (G.n || 0) + 1;
     netSend({ t: 'act', n, a, h: entry.h });
   }
+  const seatList = (mode) => ((mode || (G && G.mode)) === '2v2' ? [2, 1, 3] : [1, 2, 3]).slice(0, (SEATS[mode || (G && G.mode)] || 3) - 1);   // who sits where, in join order
   function sendSync(to) {
-    if (G && G.mode === '3p') {   // star network: only the host sends whole boards, each addressed to one guest
+    if (G && SEATS[G.mode]) {   // star network: only the host sends whole boards, each addressed to one guest
       if (NET.role !== 'host' || !NET.gid) return;
       if (S.busy && G.winner === null) { setTimeout(() => sendSync(to), 250); return; }
-      const free = [1, 2].filter((x) => ![...NET.peers.values()].some((p) => p.side === x));
+      const free = seatList().filter((x) => ![...NET.peers.values()].some((p) => p.side === x));
       for (const pid of (to ? [to] : [...NET.peers.keys()])) {
         if (!NET.peers.has(pid) && free.length) NET.peers.set(pid, { side: free.shift() });
         const p = NET.peers.get(pid);
@@ -4656,6 +4722,7 @@ const SOUND = (() => {
   }
   function onPeerStatus(m) {
     if (m.v !== PROTO) { netError('Your rival has a different version of the game. Both of you should reload the page.'); return; }
+    if (m.lb && NET.role === 'guest') { NET.lobbyInfo = m.lb; onNetChange(); }
     if (NET.gid && m.gid === NET.gid) {
       if (m.n < NET.count && Date.now() - NET.resendAt > 1200) {
         NET.resendAt = Date.now();
@@ -4663,25 +4730,27 @@ const SOUND = (() => {
         else for (let n = m.n; n < Math.min(NET.count, m.n + 12); n++) netSend({ t: 'act', n, a: NET.log[n].a, h: NET.log[n].h });
       }
       if ([0, 1, 2].includes(m.rs)) remoteResign(m.rs);
-      if (m.rm && G && G.mode === '3p') { NET.rmSet.add(m.pid); if (NET.rmSet.size >= 2 && !NET.rematch.them) { NET.rematch.them = true; updateEndButtons(); checkRematch(); } }
+      if (m.rm && G && SEATS[G.mode]) { NET.rmSet.add(m.pid); if (NET.rmSet.size >= SEATS[G.mode] - 1 && !NET.rematch.them) { NET.rematch.them = true; updateEndButtons(); checkRematch(); } }
       else if (m.rm && !NET.rematch.them) { NET.rematch.them = true; updateEndButtons(); checkRematch(); }
       return;
     }
     if (NET.gid) { if (NET.role === 'host' || !m.gid) sendSync(m.pid); return; }
     if (NET.role === 'host' && NET.lobby && !m.gid) {
-      if (NET.mode !== '3p') createHostedGame();
+      if (!SEATS[NET.mode]) createHostedGame();
       else {
-        if (m.pid && !NET.peers.has(m.pid) && NET.peers.size < 2) { NET.peers.set(m.pid, { side: NET.peers.size + 1 }); onNetChange(); }
-        if (NET.peers.size === 2) createHostedGame();
+        const nm = String(m.nm || '').slice(0, 14);
+        if (m.pid && !NET.peers.has(m.pid) && NET.peers.size < SEATS[NET.mode] - 1) { NET.peers.set(m.pid, { side: seatList(NET.mode)[NET.peers.size], n: NET.peers.size + 2, name: nm }); announceJoin(m.pid); }
+        else if (m.pid && NET.peers.has(m.pid) && nm && NET.peers.get(m.pid).name !== nm) { NET.peers.get(m.pid).name = nm; renderRoster(); }
+        if (NET.mode !== '2v2' && NET.peers.size === SEATS[NET.mode] - 1) createHostedGame();
       }
     }
   }
   function adoptSync(m) {
     if (!validSnap(m.snap) || ![0, 1, 2].includes(m.side) || typeof m.gid !== 'string') return;
     if (NET.role === 'host' && NET.gid && NET.gid !== m.gid) return; // the host's game wins
-    if (m.snap.md === '3p' && (NET.role === 'host' || m.to !== NET.pid || ![1, 2].includes(m.you))) return;   // 1v1v1: only the host deals boards, addressed to one guest
+    if (SEATS[m.snap.md] && (NET.role === 'host' || m.to !== NET.pid || ![1, 2, 3].includes(m.you))) return;   // 1v1v1: only the host deals boards, addressed to one guest
     // 1v1: the guest plays the other side. 2 vs Bot: the host is Blue, the guest Green.
-    const me = m.snap.md === '3p' ? m.you : m.snap.md === '2v1' ? (m.side === 0 ? 2 : 0) : 1 - m.side;
+    const me = SEATS[m.snap.md] ? m.you : m.snap.md === '2v1' ? (m.side === 0 ? 2 : 0) : 1 - m.side;
     if (S.online && G && NET.gid === m.gid && S.me === me) {
       serial(async () => {
         applySnap(G, m.snap);
@@ -4871,8 +4940,8 @@ const SOUND = (() => {
     NET.lobby = false;
     const gid = Math.random().toString(36).slice(2, 10);
     const g = createGame(mapDefFor(NET.mapIdx), { startBonus: settings.startBonus, oilCap: settings.oilCap < 0 ? null : settings.oilCap, mode: NET.mode, botLevel: settings.difficulty });
-    if (g.mode === '3p') {
-      g.order = [0, 1, 2].sort(() => Math.random() - 0.5);   // random turn order
+    if (SEATS[g.mode]) {
+      g.order = g.mode === '2v2' ? (Math.random() < 0.5 ? [0, 1, 2, 3] : [1, 2, 3, 0]) : g.order.slice().sort(() => Math.random() - 0.5);   // random order; in 2v2 the teams alternate
       g.first = g.order[0];
     } else if (g.mode === '2v1') {
       // the coin decides whether the team or the bot goes first
@@ -4914,7 +4983,7 @@ const SOUND = (() => {
   }
   function localResign() {
     if (!S.online || !G || G.winner !== null) return;
-    if (G.mode === '3p') {   // a recorded action, so all three boards stay in step
+    if (SEATS[G.mode]) {   // a recorded action, so every board stays in step
       if (G.turn !== S.me || S.busy) { toast('You can surrender on your own turn.'); return; }
       record({ t: 'res' });
       runPlayer(async () => { await aResign3(S.me); });
@@ -4944,7 +5013,7 @@ const SOUND = (() => {
     clearInterval(NET.timer); NET.timer = null;
     if (!keepSave) clearSaved();
     Object.assign(NET, { code: null, role: null, gid: null, count: 0, logBase: 0, log: {}, needSync: false, oppOnline: false,
-      lastRecv: 0, lobby: false, pumping: false, resigned: null, resignedBy: null, rematch: { me: false, them: false }, error: '', status: '', connecting: false, peers: new Map(), rmSet: new Set() });
+      lastRecv: 0, lobby: false, pumping: false, resigned: null, resignedBy: null, rematch: { me: false, them: false }, error: '', status: '', connecting: false, peers: new Map(), rmSet: new Set(), lobbyInfo: null, lastJoined: null });
     NET.parts.clear();
     S.online = false; S.me = 0;
     syncSettingsUI();
@@ -5079,7 +5148,7 @@ const SOUND = (() => {
     if (!el) return;
     el.classList.toggle('err', !!NET.error);
     el.textContent = NET.error || NET.status ||
-      (NET.role === 'host' ? (NET.mode === '3p' ? 'Players joined: ' + NET.peers.size + ' of 2…' : NET.oppOnline ? 'Rival found! Starting…' : 'Waiting for your rival to join…') : NET.oppOnline ? 'Found the host. Starting…' : 'Looking for game ' + (NET.code || '') + '…');
+      (NET.role === 'host' ? (SEATS[NET.mode] ? (NET.mode === '2v2' && NET.peers.size === SEATS[NET.mode] - 1 ? 'Everyone is here! Arrange the teams, then press Start.' : 'Players joined: ' + NET.peers.size + ' of ' + (SEATS[NET.mode] - 1) + '…') : NET.oppOnline ? 'Rival found! Starting…' : 'Waiting for your rival to join…') : NET.oppOnline ? (NET.lobbyInfo && !NET.gid ? 'You’re in! ' + NET.lobbyInfo.j + ' of ' + NET.lobbyInfo.n + ' players are here. Waiting for the host to start…' : 'Found the host. Starting…') : 'Looking for game ' + (NET.code || '') + '…');
     if (!NET.error) { const sp = document.createElement('span'); sp.className = 'spin'; sp.setAttribute('aria-hidden', 'true'); el.prepend(sp); }
   }
   function newCode() {
@@ -5098,7 +5167,8 @@ const SOUND = (() => {
     const saved = loadSaved();
     const rb = $('#online-resume');
     rb.hidden = !saved;
-    if (saved) rb.textContent = `Rejoin ${saved.snap.md === '3p' ? '1v1v1' : saved.snap.md === '2v1' ? '2 vs Bot' : ''} game ${saved.code} · day ${saved.snap.day}`.replace('  ', ' ');
+    if (saved) rb.textContent = `Rejoin ${({ '3p': '1v1v1', '4p': '1v1v1v1', '2v2': '2v2' })[saved.snap.md] || (saved.snap.md === '2v1' ? '2 vs Bot' : '')} game ${saved.code} · day ${saved.snap.day}`.replace('  ', ' ');
+    $('#online-name').value = NET.name;
     if (prefill) $('#online-code').value = prefill;
     $('#online-where').textContent = inClaude
       ? 'You’re playing inside Claude: your friend opens this same artifact (shared with them) and joins with the code.'
@@ -5106,12 +5176,67 @@ const SOUND = (() => {
     openModal('#modal-online');
     if (prefill) joinGame(prefill);
   }
+  // Host's waiting room for 3- and 4-player games: who has joined, and (2v2) who is on which team.
+  function renderRoster() {
+    const box = $('#online-roster'), acts = $('#online-lobby-actions');
+    const multi = NET.role === 'host' && NET.lobby && !!SEATS[NET.mode];
+    box.hidden = !multi; acts.hidden = !(multi && NET.mode === '2v2');
+    if (!multi) { $('#online-notice').hidden = true; return; }
+    const need = SEATS[NET.mode] - 1, entries = [...NET.peers.entries()];
+    const colour = ['--blue', '--red', '--green', '--purple'];
+    box.textContent = '';
+    const add = (parent, side) => {
+      const found = side === 0 ? null : entries.find(([, q]) => q.side === side);
+      const row = document.createElement('div');
+      row.className = 'row' + (side && !found ? ' empty' : '') + (found && found[0] === NET.lastJoined ? ' new' : '');
+      const dot = document.createElement('span'); dot.className = 'dot'; dot.style.background = 'var(' + colour[side] + ')';
+      const who = document.createElement('span'); who.className = 'who';
+      who.textContent = side === 0 ? (NET.name || 'You') + ' (host)' : found ? (found[1].name || 'Player ' + found[1].n) : 'Waiting for a player…';
+      const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = SIDE_NAMES[side];
+      row.append(dot, who, tag);
+      if (NET.mode === '2v2' && found && side !== 2) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'btn btn-plain mini'; b.textContent = 'Make partner';
+        b.addEventListener('click', () => makePartner(found[0])); row.append(b);
+      }
+      parent.append(row);
+    };
+    const group = (title, sides) => {
+      const g = document.createElement('div'); g.className = 'team';
+      const h = document.createElement('h4'); h.textContent = title; g.append(h);
+      sides.forEach((x) => add(g, x)); box.append(g);
+    };
+    if (NET.mode === '2v2') { group('West team', [0, 2]); group('East team', [1, 3]); }
+    else group('Players', [0, 1, 2, 3].slice(0, need + 1));
+    $('#online-start').disabled = NET.peers.size < need;
+  }
+  function announceJoin(pid) {
+    const q = NET.peers.get(pid), need = SEATS[NET.mode] - 1;
+    NET.lastJoined = pid;
+    SOUND.play('turn');
+    const el = $('#online-notice');
+    el.hidden = false; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+    el.textContent = '✔ ' + (q.name || 'Player ' + q.n) + ' joined (' + NET.peers.size + ' of ' + need + ')';
+    renderRoster(); onNetChange();
+  }
+  function makePartner(pid) {   // 2v2: the chosen player takes Green's seat, beside the host; Green moves to their old seat
+    const q = NET.peers.get(pid); if (!q || q.side === 2) return;
+    const other = [...NET.peers.values()].find((x) => x.side === 2);
+    if (other) other.side = q.side;
+    q.side = 2; NET.lastJoined = pid; SOUND.play('select'); renderRoster();
+  }
+  function randomizeTeams() {
+    const list = [...NET.peers.values()], sides = list.map((x) => x.side).sort(() => Math.random() - 0.5);
+    list.forEach((x, k) => { x.side = sides[k]; });
+    NET.lastJoined = null; SOUND.play('select'); renderRoster();
+  }
   function showWait(code, role) {
     showOnlinePanel('wait');
     $('#online-code-big').textContent = code;
-    $('#online-wait-lead').textContent = role === 'host' ? (NET.mode === '3p' ? 'Send this code to your two friends:' : 'Send this code to your friend:') : 'Joining game';
+    $('#online-wait-lead').textContent = role === 'host' ? (SEATS[NET.mode] ? 'Send this code to your ' + (SEATS[NET.mode] === 3 ? 'two' : 'three') + ' friends:' : 'Send this code to your friend:') : 'Joining game';
     const link = !inClaude && /^https?:$/.test(location.protocol) && role === 'host';
     $('#online-copy').hidden = !link;
+    NET.lastJoined = null; $('#online-notice').hidden = true;
+    renderRoster();
     renderOnlineStatus();
   }
   function hostGame() {
@@ -5145,6 +5270,11 @@ const SOUND = (() => {
   $('#btn-online').addEventListener('click', () => { SOUND.play('select'); openOnline(); });
   $('#online-host').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '1v1'; show('maps'); });
   $('#online-host3').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '3p'; show('maps'); });
+  $('#online-host4').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '4p'; show('maps'); });
+  $('#online-host22').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '2v2'; show('maps'); });
+  $('#online-random').addEventListener('click', randomizeTeams);
+  $('#online-start').addEventListener('click', () => { if (NET.role === 'host' && NET.lobby && NET.peers.size === SEATS[NET.mode] - 1) createHostedGame(); });
+  $('#online-name').addEventListener('input', (ev) => { NET.name = ev.target.value.slice(0, 14); try { localStorage.setItem('medieval-warfare-name', NET.name); } catch (e) { /* ignore */ } });
   $('#online-host2').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '2v1'; show('maps'); });
   $('#online-join').addEventListener('click', () => joinGame($('#online-code').value));
   $('#online-code').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') joinGame(ev.target.value); });

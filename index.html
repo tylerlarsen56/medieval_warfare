@@ -4330,7 +4330,7 @@ const SOUND = (() => {
       card.type = 'button'; card.className = 'map-card panel';
       card.setAttribute('aria-pressed', i === S.mapIdx ? 'true' : 'false');
       const c = document.createElement('canvas');
-      const D = createGame(m, {});
+      const D = createGame(m, S.flow === 'host' && NET.pendingMode === '2v1' ? { mode: '2v1' } : {});
       const px = 22;
       c.width = D.w * px; c.height = D.h * px;
       const cx = c.getContext('2d');

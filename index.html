@@ -284,6 +284,7 @@ button { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { .thinking { animation: none; } }
 .btn-green { background: var(--green); color: var(--white); }
 .btn-purple { background: var(--purple); color: var(--white); }
+.btn-yellow { background: var(--gold); color: var(--ink); }
 .speed-btn { width: auto; min-width: 42px; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
 .paused-cover { position: absolute; inset: 0; z-index: 8; display: grid; place-items: center; background: rgba(16,12,34,0.55); }
 .paused-cover div { font-family: var(--font-display); font-size: 64px; color: var(--white); text-shadow: 0 4px 0 var(--ink); line-height: 1; }
@@ -509,7 +510,7 @@ button { font-family: inherit; }
           <button class="btn btn-green" id="online-host2" type="button">Host 2 vs Bot</button>
           <button class="btn btn-red" id="online-host3" type="button">Host 1v1v1 (3 players)</button>
           <button class="btn btn-purple" id="online-host4" type="button">Host 1v1v1v1 (4 players)</button>
-          <button class="btn btn-blue" id="online-host22" type="button">Host 2v2 (4 players)</button>
+          <button class="btn btn-yellow" id="online-host22" type="button">Host 2v2 (4 players)</button>
           <div class="online-or">or join one</div>
           <div class="join-row"><input id="online-code" maxlength="5" placeholder="CODE1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Game code"><button class="btn" id="online-join" type="button">Join</button></div>
           <button class="btn btn-plain" id="online-resume" type="button" hidden>Rejoin game</button>
@@ -705,7 +706,7 @@ const MAPS = [
   {
     id: 'lakeside', name: 'Lakeside Quartet', focus: 'water', focusLabel: 'Sea battle', players: 4,
     blurb: 'A vast lake fills the heart of the realm. Armies circle its shores; navies fight for the middle.',
-    rows: buildMap4(['..T......', '.B...T...', '.T.WWWWWW', '.MWWWWWWW', 'MWWWWWWWW', 'WWWWWWWWM']),
+    rows: buildMap4(['..T...WWW', '.B...T..W', '.T.WWWWWW', '.MWWWWWWW', 'MWWWWWWWW', 'WWWWWWWWM']),
   },
   {
     id: 'quartet', name: 'Thornwood Quartet', focus: 'land', focusLabel: 'Forest battle', players: 4,

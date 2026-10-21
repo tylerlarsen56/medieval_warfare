@@ -236,6 +236,15 @@ button { font-family: inherit; }
 .coin .front { background: var(--blue); }
 .coin .back { background: var(--red); transform: rotateY(180deg); }
 .coin .face canvas { width: 76px; height: 76px; }
+.coin-stage[hidden], .spinner-stage[hidden] { display: none; }
+.spinner-stage { position: relative; width: 204px; height: 204px; margin-top: 18px; }
+.spinner-wheel { position: absolute; inset: 0; border-radius: 50%; border: 7px solid var(--gold); outline: 3px solid var(--ink); box-shadow: inset 0 0 0 3px var(--ink), 0 6px 0 rgba(0,0,0,0.25); overflow: hidden; }
+.spin-div { position: absolute; left: 50%; top: 0; width: 4px; height: 50%; margin-left: -2px; background: var(--ink); transform-origin: 50% 100%; }
+.spin-ico { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; transform: rotate(var(--a)) translateY(-60px) scale(var(--sc, 1)); transition: transform 0.25s ease; }
+.spin-ico canvas { width: 100%; height: 100%; display: block; }
+.spin-ico.won { --sc: 1.3; }
+.spinner-hub { position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: var(--gold); border: 4px solid var(--ink); z-index: 2; }
+.spinner-pointer { position: absolute; left: 50%; top: -20px; margin-left: -14px; width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 28px solid var(--gold); filter: drop-shadow(0 0 0 var(--ink)) drop-shadow(0 2px 0 var(--ink)) drop-shadow(2px 0 0 var(--ink)) drop-shadow(-2px 0 0 var(--ink)); z-index: 3; transform-origin: 50% 0; }
 .coin-text { padding: 8px 18px; font-weight: 600; font-size: 19px; text-align: center; max-width: 100%; }
 .spin { display: inline-block; width: 16px; height: 16px; margin-right: 8px; vertical-align: -3px; border: 3px solid var(--parchment-3); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -371,7 +380,7 @@ button { font-family: inherit; }
         <button class="btn btn-big btn-plain" id="btn-settings-title" type="button">Settings</button>
       </div>
     </div>
-    <div class="version">V1.5</div>
+    <div class="version">V1.5.2</div>
   </section>
 
   <!-- ===== Map select ===== -->
@@ -421,6 +430,7 @@ button { font-family: inherit; }
           <div class="paused-cover" id="paused-cover" hidden><div>Paused</div></div>
           <div class="coin-wrap" id="coin" hidden>
             <div class="coin-stage"><div class="coin" id="coin-el"><div class="face front"></div><div class="face back"></div></div></div>
+            <div class="spinner-stage" id="spin-stage" hidden><div class="spinner-pointer" id="spin-pointer"></div><div class="spinner-wheel" id="spin-wheel"></div><div class="spinner-hub"></div></div>
             <div class="coin-text panel" id="coin-text" role="status">Tossing a coin for the first move…</div>
           </div>
         </div>
@@ -471,7 +481,7 @@ button { font-family: inherit; }
         <div class="setting-row"><label for="set-sfx">Sound effects</label><input type="range" id="set-sfx" min="0" max="1" step="0.05"></div>
         <div class="setting-row"><span class="lab" id="lab-grid">Show grid</span><button class="switch" id="set-grid" role="switch" aria-labelledby="lab-grid" type="button"></button></div>
         <div class="setting-row"><span class="lab">Oil Rig limit<small>Most Oil Rigs each side may own. Online, the host's choice is used.</small></span><span class="seg" id="set-oil"></span></div>
-        <div class="setting-row"><span class="lab" id="lab-dev">Add money button<small>Shows a +$1000 button that gives every side $1000. Works online too, on your turn.</small></span><button class="switch" id="set-dev" role="switch" aria-labelledby="lab-dev" type="button"></button></div>
+        <div class="setting-row"><span class="lab" id="lab-dev">Add money button<small>Enables a +$1000 button that gives each side $1000</small></span><button class="switch" id="set-dev" role="switch" aria-labelledby="lab-dev" type="button"></button></div>
       </div>
     </div>
   </div>
@@ -507,7 +517,7 @@ button { font-family: inherit; }
           <p class="confirm-text" style="margin:0">Battle a friend 1 v 1, team up against a bot, or bring three or four friends for a free-for-all or 2v2. One of you hosts and shares a five-letter code; everyone else joins with it.</p>
           <input id="online-name" maxlength="14" placeholder="Your name (optional)" autocomplete="off" spellcheck="false" aria-label="Your name">
           <button class="btn btn-blue" id="online-host" type="button">Host 1 v 1</button>
-          <button class="btn btn-green" id="online-host2" type="button">Host 2 vs Bot</button>
+          <button class="btn btn-green" id="online-host2" type="button">Host 2 vs Bot (2 players)</button>
           <button class="btn btn-red" id="online-host3" type="button">Host 1v1v1 (3 players)</button>
           <button class="btn btn-purple" id="online-host4" type="button">Host 1v1v1v1 (4 players)</button>
           <button class="btn btn-yellow" id="online-host22" type="button">Host 2v2 (4 players)</button>
@@ -563,7 +573,7 @@ const UNIT_TYPES = {
     desc: 'A leader on horseback who uses a spear to attack further.' },
   juggernaut:{ name: 'Juggernaut', cls: 'land',  hp: 400, atk: 125, range: 1, move: 3, price: 300,
     desc: 'A walking fortress in full plate. Slow and short-reached, but very hard to bring down.' },
-  sniper:    { name: 'Sniper',     cls: 'land',  hp: 50,  atk: 50,  range: 7, move: 2, price: 200,
+  sniper:    { name: 'Sniper',     cls: 'land',  hp: 50,  atk: 50,  range: 7, move: 1, price: 200,
     desc: 'A marksman with a heavy crossbow. Fragile and slow, but hits anything up to 7 tiles away.' },
   mage:      { name: 'Mage',       cls: 'land',  hp: 200, atk: 50,  range: 2, move: 4, price: 250, area: 'burst',
     desc: 'Casts a blast that hits every enemy within 2 tiles at once, for 50 damage each. Blasts can\'t be hit back.' },
@@ -593,11 +603,11 @@ const UNIT_ORDER = ['soldier', 'archer', 'axeman', 'captain', 'juggernaut', 'sni
 const TOWER_TYPES = {
   hq:          { name: 'HQ',           hp: 500, atk: 0,  range: 0, price: 0,
     effect: 'Home base. Protect it at all costs! Land units are recruited next to it.' },
-  archerTower: { name: 'Archer Tower', hp: 200, atk: 50, range: 5, price: 100,
+  archerTower: { name: 'Archer Tower', hp: 200, atk: 50, range: 5, price: 150,
     effect: 'A long-range bowman sits in the canopy. Attacks once per turn, and units it shoots can\'t hit back.' },
   oilRig:      { name: 'Oil Rig',      hp: 150, atk: 0,  range: 0, price: 250,
     effect: 'Earns an additional $50 per turn. Can be built on plains or water.', income: 50 },
-  nurseTent:   { name: 'Nurse Tent',   hp: 200, atk: 0,  range: 2, price: 150,
+  nurseTent:   { name: 'Nurse Tent',   hp: 200, atk: 0,  range: 2, price: 200,
     effect: 'Heals every friendly unit in range by 25 HP at the start of your turn.', heal: 25 },
   windTower:   { name: 'Wind Tower',   hp: 300, atk: 0,  range: 1, price: 250,
     effect: 'Air units may be recruited and placed next to it.', spawns: 'air' },
@@ -619,8 +629,8 @@ const SIDE_NAMES = ['Blue Kingdom', 'Red Empire', 'Green Duchy', 'Purple Order']
 // 2v2 is Blue + Green (west) against Red + Purple (east), and the teams take turns in turn.
 const SEATS = { '3p': 3, '4p': 4, '2v2': 4 };
 const FFA_NOTES = {
-  '3p': '<b style="color:var(--text)">Online 1v1v1.</b> Three players, every kingdom for itself. You host as the Blue Kingdom; two friends join with the code as Red and Green. Turn order is random, and the last HQ standing wins.',
-  '4p': '<b style="color:var(--text)">Online 1v1v1v1.</b> Four players, every kingdom for itself. You host as Blue; three friends join with the code as Red, Green and Purple. Turn order is random, and the last HQ standing wins.',
+  '3p': '<b style="color:var(--text)">Online 1v1v1.</b> Three players, every kingdom for itself. You host as the Blue Kingdom; two friends join with the code as Red and Green. A spinner decides who goes first (the rest of the turn order is random), and the last HQ standing wins.',
+  '4p': '<b style="color:var(--text)">Online 1v1v1v1.</b> Four players, every kingdom for itself. You host as Blue; three friends join with the code as Red, Green and Purple. A spinner decides who goes first (the rest of the turn order is random), and the last HQ standing wins.',
   '2v2': '<b style="color:var(--text)">Online 2v2.</b> You host as Blue in the west. Once your three friends have joined, pick your partner (or randomize the teams) and press Start. Teams alternate turns, and your team wins when both enemy HQs fall.',
 };
 // Terraforming by Gnomes: tile kind -> cost
@@ -2622,6 +2632,7 @@ const SOUND = (() => {
     },
     pop(t) { noise(sfxBus, t, 0.35, 0.5, { filter: 'lowpass', freq: 3000, freqTo: 200 }); for (let i = 0; i < 6; i++) noise(sfxBus, t + 0.12 + Math.random() * 0.35, 0.03, 0.15, { filter: 'highpass', freq: 5000 }); },
     magic(t) { ['E5', 'G#5', 'B5', 'E6'].forEach((n, i) => tone(sfxBus, 'sine', n, t + i * 0.045, 0.24, 0.16)); noise(sfxBus, t, 0.35, 0.1, { filter: 'bandpass', freq: 5000, q: 2 }); tone(sfxBus, 'triangle', 220, t, 0.3, 0.16, { slideTo: 660 }); },
+    tick(t) { tone(sfxBus, 'square', 1900, t, 0.02, 0.07); noise(sfxBus, t, 0.015, 0.08, { filter: 'highpass', freq: 5000 }); },
     flip(t) { for (let i = 0; i < 10; i++) tone(sfxBus, 'square', i % 2 ? 1250 : 1550, t + i * 0.085, 0.03, 0.06); },
     bolt(t) { noise(sfxBus, t, 0.1, 0.35, { filter: 'bandpass', freq: 2500, freqTo: 5200, q: 3 }); tone(sfxBus, 'square', 900, t, 0.05, 0.08, { slideTo: 420 }); },
     launch(t) { noise(sfxBus, t, 0.5, 0.12, { filter: 'bandpass', freq: 600, freqTo: 3000, q: 2 }); },
@@ -3722,7 +3733,7 @@ const SOUND = (() => {
     $('#hud-day').textContent = 'Day ' + G.day;
     const mine = G.turn === S.me;
     const out = G.out && G.out[S.me];
-    $('#hud-turn').textContent = S.flipping ? 'Coin toss' : out ? (G.mode === '3p' || G.mode === '4p' ? 'Eliminated · watching' : 'Watching your ally') : mine ? 'Your turn' : nameOf(G.turn) + '’s turn';
+    $('#hud-turn').textContent = S.flipping ? (G.mode === '3p' || G.mode === '4p' ? 'Spinner' : 'Coin toss') : out ? (G.mode === '3p' || G.mode === '4p' ? 'Eliminated · watching' : 'Watching your ally') : mine ? 'Your turn' : nameOf(G.turn) + '’s turn';
     $('#turn-chip').classList.toggle('red', G.turn === 1);
     $('#turn-chip').classList.toggle('green', G.turn === 2);
     $('#turn-chip').classList.toggle('purple', G.turn === 3);
@@ -3988,8 +3999,68 @@ const SOUND = (() => {
     updateAll();
     if (events.length > 1) await wait(350);
   }
+  // The spinner that decides who moves first in 1v1v1 and 1v1v1v1 battles.
+  // The host has already picked the order; every screen spins to the same side.
+  async function spinFlip(first) {
+    const wrap = $('#coin'), coinStage = $('#coin .coin-stage'), stage = $('#spin-stage'), wheel = $('#spin-wheel'), pointer = $('#spin-pointer'), txt = $('#coin-text');
+    const sides = G.order.slice().sort((a, b) => a - b), n = sides.length, seg = 360 / n;
+    const colors = ['var(--blue)', 'var(--red)', 'var(--green)', 'var(--purple)'];
+    wheel.innerHTML = '';
+    wheel.style.background = 'conic-gradient(' + sides.map((s, i) => `${colors[s]} ${i * seg}deg ${(i + 1) * seg}deg`).join(', ') + ')';
+    const icons = [];
+    sides.forEach((s, i) => {
+      const d = document.createElement('div'); d.className = 'spin-div'; d.style.transform = `rotate(${i * seg}deg)`; wheel.appendChild(d);
+      const ico = document.createElement('div'); ico.className = 'spin-ico'; ico.style.setProperty('--a', (i + 0.5) * seg + 'deg');
+      ico.appendChild(ART.iconCanvas('tower', 'hq', s, 92)); wheel.appendChild(ico); icons.push(ico);
+    });
+    const k = Math.max(0, sides.indexOf(first));
+    const end = 6 * 360 + 360 - ((k + 0.5) * seg + (Math.random() - 0.5) * seg * 0.6);   // lands inside the winning slice
+    const base = reduceMotion ? 600 : 3800;
+    S.flipping = true; updateHUD();
+    coinStage.hidden = true; stage.hidden = false; wrap.hidden = false;
+    txt.textContent = 'Spinning for the first move…';
+    let anim = null, raf = 0, lastIdx = 0, lastTick = 0;
+    try {
+      anim = wheel.animate([
+        { transform: 'rotate(0deg)' },
+        { transform: `rotate(${end}deg)` },
+      ], { duration: Math.max(1, base * speedMul()), easing: 'cubic-bezier(.17,.67,.1,1)', fill: 'forwards' });
+      const loop = () => {
+        if (!anim || anim.playState !== 'running') return;
+        const pr = anim.effect.getComputedTiming().progress;
+        if (pr != null) {
+          const idx = Math.floor(end * pr / seg);
+          if (idx !== lastIdx) {
+            lastIdx = idx;
+            const now = performance.now();
+            if (now - lastTick > 45) {
+              lastTick = now; SOUND.play('tick');
+              try { pointer.animate([{ transform: 'rotate(-20deg)' }, { transform: 'rotate(0deg)' }], { duration: 110 }); } catch (e) { /* ignore */ }
+            }
+          }
+        }
+        raf = requestAnimationFrame(loop);
+      };
+      raf = requestAnimationFrame(loop);
+    } catch (e) { wheel.style.transform = `rotate(${end}deg)`; }
+    try {
+      await wait(base);
+      SOUND.play('coin');
+      icons[k].classList.add('won');
+      const name = SIDE_NAMES[first];
+      txt.textContent = first === S.me ? 'You go first!' : `${name} goes first.`;
+      await wait(1150);
+    } finally {
+      cancelAnimationFrame(raf);
+      wrap.hidden = true; S.flipping = false;
+      stage.hidden = true; coinStage.hidden = false;
+      if (anim) anim.cancel();
+      wheel.style.transform = '';
+    }
+  }
   // The coin toss that decides who moves first.
   async function coinFlip(first) {
+    if (G && (G.mode === '3p' || G.mode === '4p')) return spinFlip(first);
     const wrap = $('#coin'), coin = $('#coin-el'), txt = $('#coin-text');
     S.flipping = true; updateHUD();
     wrap.hidden = false;
@@ -4435,7 +4506,7 @@ const SOUND = (() => {
       }
       const rules = document.createElement('div'); rules.className = 'guide-card'; rules.style.gridColumn = '1 / -1'; rules.style.display = 'block';
       rules.innerHTML = `<h3>How a turn works</h3>
-        <p style="margin-top:6px">A coin toss decides who moves first. Each side gets $100 at the start of its turn (plus $50 per Oil Rig). Click a unit to act with it. If it has nothing to attack, it goes straight into moving; otherwise choose <b>Move</b> or <b>Attack</b>. Each unit can move once and attack once per turn. Move first: a unit that attacks without moving stays put for the rest of the turn. A land unit must stop when it steps into a forest. Units can walk through buildings but can't stop on them. Range counts tiles in straight steps, so range 2 covers the 8 tiles around a unit plus the 4 tiles two steps away. Click any unit, even on the other side's turn, to see where it can move and what it can hit.</p>
+        <p style="margin-top:6px">A coin toss decides who moves first (a spinner, in three- and four-player games). Each side gets $100 at the start of its turn (plus $50 per Oil Rig). Click a unit to act with it. If it has nothing to attack, it goes straight into moving; otherwise choose <b>Move</b> or <b>Attack</b>. Each unit can move once and attack once per turn. Move first: a unit that attacks without moving stays put for the rest of the turn. A land unit must stop when it steps into a forest. Units can walk through buildings but can't stop on them. Range counts tiles in straight steps, so range 2 covers the 8 tiles around a unit plus the 4 tiles two steps away. Click any unit, even on the other side's turn, to see where it can move and what it can hit.</p>
         <p style="margin-top:6px">A unit that survives an attack hits back at full strength if the attacker is within its own range. Archer Tower shots can't be returned, and neither can area attacks: the Mage blasts every enemy within 2 tiles, and the Phoenix breathes fire in a line 3 tiles straight or 2 tiles diagonally, hitting every enemy in it. Builders put up towers on an adjacent tile; they finish at the start of your next turn and can be attacked while under construction. A Builder wears out after 3 buildings. Axe-men and Dragons can clear a forest tile next to them instead of attacking.</p>
         <p style="margin-top:6px">To ferry troops over water, move a land unit onto your Carrier from the shore. The Carrier can sail off that same turn, and from your next turn on it can unload the unit onto a free land tile beside it. A unit can still attack right after it lands. If a Carrier sinks, its passenger goes down with it. Destroy the enemy HQ to win.</p>
         <p style="margin-top:6px">A Cheerleader gives every friendly fighter within 2 tiles +25 attack (a gold star marks them; two Cheerleaders don't stack). A Gnome plants a forest ($25) or raises a mountain ($75) on open plains next to him, three times before he's worn out; mountains can't go right next to an HQ. A green dashed area around a Nurse Tent shows where it heals. Settings can cap how many Oil Rigs each side may own.</p>

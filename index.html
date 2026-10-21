@@ -237,14 +237,17 @@ button { font-family: inherit; }
 .coin .back { background: var(--red); transform: rotateY(180deg); }
 .coin .face canvas { width: 76px; height: 76px; }
 .coin-stage[hidden], .spinner-stage[hidden] { display: none; }
-.spinner-stage { position: relative; width: 204px; height: 204px; margin-top: 18px; }
+.coin-wrap { container-type: size; }
+.coin-wrap.wheel-mode { gap: 14px; padding: 8px; }
+.spinner-stage { --d: min(204px, 45vmin); position: relative; flex: none; width: var(--d); height: var(--d); margin-top: 22px; }
+@supports (width: 1cqw) { .spinner-stage { --d: max(88px, min(204px, calc(100cqh - 112px), calc(100cqw - 32px))); } }   /* shrinks to fit short phone boards, always stays round */
 .spinner-wheel { position: absolute; inset: 0; border-radius: 50%; border: 7px solid var(--gold); outline: 3px solid var(--ink); box-shadow: inset 0 0 0 3px var(--ink), 0 6px 0 rgba(0,0,0,0.25); overflow: hidden; }
 .spin-div { position: absolute; left: 50%; top: 0; width: 4px; height: 50%; margin-left: -2px; background: var(--ink); transform-origin: 50% 100%; }
-.spin-ico { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; transform: rotate(var(--a)) translateY(-60px) scale(var(--sc, 1)); transition: transform 0.25s ease; }
+.spin-ico { position: absolute; left: 50%; top: 50%; width: calc(var(--d) * 0.225); height: calc(var(--d) * 0.225); margin: calc(var(--d) * -0.1125) 0 0 calc(var(--d) * -0.1125); transform: rotate(var(--a)) translateY(calc(var(--d) * -0.294)) scale(var(--sc, 1)); transition: transform 0.25s ease; }
 .spin-ico canvas { width: 100%; height: 100%; display: block; }
 .spin-ico.won { --sc: 1.3; }
-.spinner-hub { position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: var(--gold); border: 4px solid var(--ink); z-index: 2; }
-.spinner-pointer { position: absolute; left: 50%; top: -20px; margin-left: -14px; width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 28px solid var(--gold); filter: drop-shadow(0 0 0 var(--ink)) drop-shadow(0 2px 0 var(--ink)) drop-shadow(2px 0 0 var(--ink)) drop-shadow(-2px 0 0 var(--ink)); z-index: 3; transform-origin: 50% 0; }
+.spinner-hub { position: absolute; left: 50%; top: 50%; width: calc(var(--d) * 0.147); height: calc(var(--d) * 0.147); margin: calc(var(--d) * -0.0735) 0 0 calc(var(--d) * -0.0735); border-radius: 50%; background: var(--gold); border: 4px solid var(--ink); box-sizing: border-box; z-index: 2; }
+.spinner-pointer { position: absolute; left: 50%; top: calc(var(--d) * -0.098); margin-left: calc(var(--d) * -0.069); width: 0; height: 0; border-left: calc(var(--d) * 0.069) solid transparent; border-right: calc(var(--d) * 0.069) solid transparent; border-top: calc(var(--d) * 0.137) solid var(--gold); filter: drop-shadow(0 0 0 var(--ink)) drop-shadow(0 2px 0 var(--ink)) drop-shadow(2px 0 0 var(--ink)) drop-shadow(-2px 0 0 var(--ink)); z-index: 3; transform-origin: 50% 0; }
 .coin-text { padding: 8px 18px; font-weight: 600; font-size: 19px; text-align: center; max-width: 100%; }
 .spin { display: inline-block; width: 16px; height: 16px; margin-right: 8px; vertical-align: -3px; border: 3px solid var(--parchment-3); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -4017,16 +4020,21 @@ const SOUND = (() => {
     const end = 6 * 360 + 360 - ((k + 0.5) * seg + (Math.random() - 0.5) * seg * 0.6);   // lands inside the winning slice
     const base = reduceMotion ? 600 : 3800;
     S.flipping = true; updateHUD();
-    coinStage.hidden = true; stage.hidden = false; wrap.hidden = false;
+    coinStage.hidden = true; stage.hidden = false; wrap.classList.add('wheel-mode'); wrap.hidden = false;
     txt.textContent = 'Spinning for the first move…';
     let anim = null, raf = 0, lastIdx = 0, lastTick = 0;
     try {
+      // The wheel follows the game clock, not the wall clock. The clock only runs while the tab is
+      // being drawn, so a background tab starts its spin when you switch to it instead of finishing unseen.
+      const dur = Math.max(1, base * speedMul()), t0 = Clock.t;
       anim = wheel.animate([
         { transform: 'rotate(0deg)' },
         { transform: `rotate(${end}deg)` },
-      ], { duration: Math.max(1, base * speedMul()), easing: 'cubic-bezier(.17,.67,.1,1)', fill: 'forwards' });
+      ], { duration: dur, easing: 'cubic-bezier(.17,.67,.1,1)', fill: 'forwards' });
+      anim.pause(); anim.currentTime = 0;
       const loop = () => {
-        if (!anim || anim.playState !== 'running') return;
+        const el = Math.min(dur, Math.max(0, Clock.t - t0));
+        anim.currentTime = el;
         const pr = anim.effect.getComputedTiming().progress;
         if (pr != null) {
           const idx = Math.floor(end * pr / seg);
@@ -4039,7 +4047,7 @@ const SOUND = (() => {
             }
           }
         }
-        raf = requestAnimationFrame(loop);
+        if (el < dur) raf = requestAnimationFrame(loop);
       };
       raf = requestAnimationFrame(loop);
     } catch (e) { wheel.style.transform = `rotate(${end}deg)`; }
@@ -4052,7 +4060,7 @@ const SOUND = (() => {
       await wait(1150);
     } finally {
       cancelAnimationFrame(raf);
-      wrap.hidden = true; S.flipping = false;
+      wrap.hidden = true; S.flipping = false; wrap.classList.remove('wheel-mode');
       stage.hidden = true; coinStage.hidden = false;
       if (anim) anim.cancel();
       wheel.style.transform = '';

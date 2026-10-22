@@ -274,7 +274,13 @@ button { font-family: inherit; }
 .code-big { font: 700 44px var(--font-ui); letter-spacing: 0.28em; text-align: center; padding: 10px 0 10px 0.28em; margin: 4px 0 12px; border: 3px dashed var(--ink); border-radius: 10px; background: var(--white); color: var(--ink); user-select: all; }
 .net-status { margin: 12px 0; text-align: center; color: var(--muted); line-height: 1.4; }
 .net-status.err { color: var(--red-dark); font-weight: 600; }
-#online-name { font: 600 16px var(--font-ui); padding: 8px 10px; border: 3px solid var(--ink); border-radius: 9px; background: var(--white); color: var(--ink); width: 100%; box-sizing: border-box; }
+#online-name, #online-name-wait { font: 600 16px var(--font-ui); padding: 8px 10px; border: 3px solid var(--ink); border-radius: 9px; background: var(--white); color: var(--ink); width: 100%; box-sizing: border-box; }
+.name-edit { display: grid; gap: 4px; text-align: left; margin: 2px 0 6px; }
+.name-edit label { font-size: 13px; font-weight: 700; }
+.name-edit small { font-weight: 500; opacity: 0.75; }
+.online-rules { margin: 0 0 6px; font-size: 13px; font-weight: 600; opacity: 0.85; }
+.end-time { margin: 2px 0 8px; font-weight: 700; opacity: 0.85; }
+.build-item .nm small { font-weight: 700; opacity: 0.75; }
 .roster { display: grid; gap: 8px; margin: 4px 0 8px; }
 .roster .team { display: grid; gap: 6px; padding: 8px; border: 3px solid var(--ink); border-radius: 10px; background: var(--parchment); }
 .roster h4 { margin: 0; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -383,7 +389,7 @@ button { font-family: inherit; }
         <button class="btn btn-big btn-plain" id="btn-settings-title" type="button">Settings</button>
       </div>
     </div>
-    <div class="version">V1.5.2</div>
+    <div class="version">V1.6</div>
   </section>
 
   <!-- ===== Map select ===== -->
@@ -532,6 +538,8 @@ button { font-family: inherit; }
         <div id="online-wait" hidden>
           <p class="confirm-text" id="online-wait-lead">Send this code to your friend:</p>
           <div class="code-big" id="online-code-big">-----</div>
+          <div class="name-edit"><label for="online-name-wait">Your name <small>(you can change it while you wait)</small></label><input id="online-name-wait" maxlength="14" placeholder="Enter your name" autocomplete="off" spellcheck="false"></div>
+          <p class="online-rules" id="online-rules" role="status" hidden></p>
           <p class="lobby-notice" id="online-notice" role="status" hidden></p>
           <div class="roster" id="online-roster" hidden></div>
           <div class="menu-list" id="online-lobby-actions" hidden><button class="btn btn-plain" id="online-random" type="button">Randomize teams</button><button class="btn btn-blue" id="online-start" type="button" disabled>Start game</button></div>
@@ -551,6 +559,7 @@ button { font-family: inherit; }
     <div class="end-card panel">
       <h2 id="end-title">Victory!</h2>
       <p id="end-sub"></p>
+      <p class="end-time" id="end-time"></p>
       <div class="end-stats" id="end-stats"></div>
       <div class="end-buttons">
         <button class="btn btn-blue" id="end-again" type="button">Play again</button>
@@ -626,7 +635,8 @@ const TERRAIN = {
   'W': { name: 'Water',    desc: 'Only ships can sail here. Flying units can cross.' },
 };
 
-const START_INCOME = 100;
+const START_INCOME = 150;
+const CHOP_BONUS = 25;   // coins for every tree an Axe-man or Dragon clears
 const SIDE_NAMES = ['Blue Kingdom', 'Red Empire', 'Green Duchy', 'Purple Order'];
 // Online modes with more than two humans: how many seats. 1v1v1 and 1v1v1v1 are free-for-alls;
 // 2v2 is Blue + Green (west) against Red + Purple (east), and the teams take turns in turn.
@@ -877,8 +887,10 @@ function addUnit(G, type, side, x, y) {
 const inBounds = (G, x, y) => x >= 0 && y >= 0 && x < G.w && y < G.h;
 const terrainAt = (G, x, y) => G.terrain[y][x];
 function entityAt(G, x, y) {
-  for (const e of G.entities) if (e.x === x && e.y === y) return e;
-  return null;
+  // A unit standing on a tower is the one you can select, move and target; the tower shares its tile.
+  let tower = null;
+  for (const e of G.entities) if (e.x === x && e.y === y) { if (e.kind !== 'tower') return e; tower = tower || e; }
+  return tower;
 }
 const statsOf = (e) => (e.kind === 'unit' ? UNIT_TYPES[e.type] : TOWER_TYPES[e.type]);
 const maxHp = (e) => statsOf(e).hp;
@@ -918,7 +930,7 @@ function reachable(G, e, opts) {
       if (!boards && !canEnter(cls, t)) continue;
       let stop = true;
       if (occ && !boards) {
-        if (occ.kind === 'tower') stop = false;          // walk through buildings, never stop on one
+        if (occ.kind === 'tower') stop = !isFoe(G, occ.side, e.side);   // may stop on a friendly HQ or tower; never on an enemy one
         else if (isFoe(G, occ.side, e.side)) continue;
         else stop = false;
       }
@@ -990,7 +1002,13 @@ function attackOptions(G, e, fx, fy) {
     });
     return out;
   }
-  return targetsFrom(G, e, fx, fy).map((t) => ({ k: t.id, victims: [t], tiles: [{ x: t.x, y: t.y }] }));
+  // One option per tile (the unit if a unit stands on a tower); doAttack hits everything on that tile.
+  const byTile = new Map();
+  for (const t of targetsFrom(G, e, fx, fy)) {
+    const k = t.x + ',' + t.y, o = byTile.get(k);
+    if (!o || (o.kind === 'tower' && t.kind !== 'tower')) byTile.set(k, t);
+  }
+  return [...byTile.values()].map((t) => ({ k: t.id, victims: [t], tiles: [{ x: t.x, y: t.y }] }));
 }
 // Would def hit back at an attacker standing on (fx, fy)? Shots from Archer
 // Towers are never returned.
@@ -1046,14 +1064,17 @@ function checkWinner(G) {
 function doAttack(G, att, opt) {
   const a = statsOf(att), atk = atkOf(G, att);
   const res = { attacker: att, hits: [], counter: 0, counterKilled: false, area: !!a.area };
-  for (const def of opt.victims) {
+  const single = !a.area && opt.victims.length === 1;
+  // When a tile takes damage, a unit and the tower under it are both hit.
+  const victims = a.area ? opt.victims : opt.victims.concat(G.entities.filter((o) => !opt.victims.includes(o) && opt.victims.some((v) => v.x === o.x && v.y === o.y && v.side === o.side)));
+  for (const def of victims) {
     if (!G.entities.includes(def)) continue;
     const hit = { e: def, dmg: Math.min(atk, def.hp), killed: false };
     def.hp -= atk;
     if (def.hp <= 0) { def.hp = 0; hit.killed = true; removeEntity(G, def); }
     res.hits.push(hit);
   }
-  const def = res.hits.length === 1 ? res.hits[0].e : null;
+  const def = single && res.hits.length ? res.hits[0].e : null;
   if (!res.area && def && !res.hits[0].killed && canCounter(att, def, att.x, att.y)) {
     const datk = atkOf(G, def);
     res.counter = Math.min(datk, att.hp);
@@ -1169,6 +1190,7 @@ function doChop(G, e, x, y) {
   G.terrain[y][x] = '.';
   if (!G.stumps) G.stumps = new Set();
   G.stumps.add(key(x, y));
+  G.gold[e.side] += CHOP_BONUS;
   e.acted = true;
 }
 
@@ -2916,7 +2938,8 @@ const SOUND = (() => {
     const max = maxHp(e);
     if (hp >= max && !e.building) return;
     const r = Math.max(0, hp / max);
-    const w = 34, x = px + (T - w) / 2, y = py + T - 7;
+    const stacked = e.kind === 'tower' && G.entities.some((o) => o.kind === 'unit' && o.x === e.x && o.y === e.y);
+    const w = 34, x = px + (T - w) / 2, y = stacked ? py + 3 : py + T - 7;
     ctx.fillStyle = '#1b1530'; ctx.fillRect(x - 1.5, y - 1.5, w + 3, 7);
     ctx.fillStyle = '#5a4a3a'; ctx.fillRect(x, y, w, 4);
     ctx.fillStyle = r > 0.6 ? '#4fd364' : r > 0.3 ? '#f5c03a' : '#ff4b3a';
@@ -2925,7 +2948,8 @@ const SOUND = (() => {
       ctx.font = '600 12px "Fredoka", "Trebuchet MS", sans-serif';
       ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
       ctx.lineWidth = 3; ctx.strokeStyle = '#1b1530'; ctx.fillStyle = '#fffaf0';
-      ctx.strokeText(String(hp), px + T - 2, y - 1); ctx.fillText(String(hp), px + T - 2, y - 1);
+      const ly = stacked ? y + 17 : y - 1;
+      ctx.strokeText(String(hp), px + T - 2, ly); ctx.fillText(String(hp), px + T - 2, ly);
     }
   }
   function render() {
@@ -2997,6 +3021,7 @@ const SOUND = (() => {
     }
     for (const { e, p } of drawn) if (e.kind === 'unit' && UNIT_TYPES[e.type].cls === 'air') drawOne(ctx, e, p);
     for (const { e, p } of drawn) drawHpBar(ctx, e, p.x, p.y);
+    drawNames(ctx);
     for (const { e, p } of drawn) if (e.kind === 'unit' && !S.ghosts.includes(e) && cheerBonus(G, e)) drawCheer(ctx, p.x, p.y);
     // selection ring
     if (S.sel && G.entities.includes(S.sel) && S.mode !== 'idle') {
@@ -3016,6 +3041,35 @@ const SOUND = (() => {
     drawParticles(ctx);
     drawFloats(ctx);
     if (S.hover && G.turn === S.me && !S.busy) drawCursor(ctx, S.hover.x, S.hover.y);
+  }
+  S.nameFade = {};
+  function nameFor(side) {
+    const n = G.names && G.names[side];
+    if (n) return n;
+    if (G.bots && G.bots.includes(side)) return 'Bot';
+    if (side === S.me) return 'You';
+    return G.names || G.mode ? SIDE_NAMES[side].split(' ')[0] : 'Bot';
+  }
+  // Each player's name floats above their HQ; it fades out while the mouse is over it so it never blocks the view.
+  function drawNames(ctx) {
+    const cols = ['#3b7bff', '#ff4b3a', '#2fae5a', '#9b51e0'];
+    for (const e of G.entities) {
+      if (e.type !== 'hq') continue;
+      const near = !!S.hover && Math.abs(S.hover.x - e.x) <= 1 && (S.hover.y === e.y || S.hover.y === e.y - 1);
+      let a = S.nameFade[e.side]; if (a == null) a = 1;
+      a += ((near ? 0 : 1) - a) * 0.25; S.nameFade[e.side] = a;
+      if (a < 0.03) continue;
+      ctx.save(); ctx.globalAlpha = a;
+      ctx.font = '700 12px "Fredoka", "Trebuchet MS", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      let text = nameFor(e.side);
+      while (text.length > 3 && ctx.measureText(text).width > 96) text = text.slice(0, -2) + '…';
+      const w = ctx.measureText(text).width + 22, h = 18, cx = e.x * T + T / 2, y0 = Math.max(1, e.y * T - h - 2), x0 = Math.min(Math.max(1, cx - w / 2), G.w * T - w - 1);
+      ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x0, y0, w, h, 9); else ctx.rect(x0, y0, w, h);
+      ctx.fillStyle = 'rgba(27,21,48,0.92)'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = cols[e.side]; ctx.stroke();
+      ctx.beginPath(); ctx.arc(x0 + 9, y0 + h / 2, 3.5, 0, Math.PI * 2); ctx.fillStyle = cols[e.side]; ctx.fill();
+      ctx.fillStyle = '#fffaf0'; ctx.fillText(text, x0 + 11 + (w - 11) / 2, y0 + h / 2 + 0.5);
+      ctx.restore();
+    }
   }
   function drawOne(ctx, e, p) {
     const flash = S.flashes.get(e);
@@ -3239,7 +3293,7 @@ const SOUND = (() => {
     doChop(G, u, x, y);
     buildTerrainCache();
     burst(x, y, { n: 12, colors: ['#e7d7b0', '#cbb98e', '#9a9aa6'], speed: 0.04, life: 600, size: 4 });
-    floatText(x, y, fire ? 'Burned!' : 'Timber!', '#fffaf0');
+    floatText(x, y, (fire ? 'Burned!' : 'Timber!') + ' +$' + CHOP_BONUS, '#fffaf0');
     updateAll();
     await wait(250);
     S.offsets.delete(u);
@@ -3892,7 +3946,8 @@ const SOUND = (() => {
       b.setAttribute('aria-pressed', S.mode === 'build-place' && !S.sel && S.buildType === type ? 'true' : 'false');
       b.appendChild(ART.iconCanvas('tower', type, S.me, 36));
       const mid = document.createElement('span');
-      mid.innerHTML = `<span class="nm">${BUILD_SHORT[type]}</span>`;
+      const oilTag = type === 'oilRig' && G.oilCap != null ? ` <small>${towersOf(G, S.me).filter((t) => t.type === 'oilRig').length}/${G.oilCap}</small>` : '';
+      mid.innerHTML = `<span class="nm">${BUILD_SHORT[type]}${oilTag}</span>`;
       b.appendChild(mid);
       const pr = document.createElement('span'); pr.className = 'price'; pr.innerHTML = ICON.gold + tt.price;
       b.appendChild(pr);
@@ -4149,7 +4204,7 @@ const SOUND = (() => {
   }
   $('#end-turn').addEventListener('click', () => { SOUND.init(); endTurnFlow(); });
 
-  function newStats() { return { recruited: [0, 0, 0, 0], lost: [0, 0, 0, 0], built: [0, 0, 0, 0], towersLost: [0, 0, 0, 0] }; }
+  function newStats() { return { t0: Date.now(), recruited: [0, 0, 0, 0], lost: [0, 0, 0, 0], built: [0, 0, 0, 0], towersLost: [0, 0, 0, 0] }; }
   function resetBattle() {
     gen++; flushTimers();
     Clock.paused = false; $('#paused-cover').hidden = true; SOUND.duck(false);
@@ -4222,6 +4277,9 @@ const SOUND = (() => {
         : won ? `Your rival surrendered on day ${G.day}.` : `You surrendered on day ${G.day}.`)
       : won ? `The ${SIDE_NAMES[op]}’s HQ has fallen on day ${G.day}.${team ? ' Well fought, allies!' : ''}`
       : team ? `Both of your HQs fell on day ${G.day}. Regroup and try again.` : `Your HQ fell on day ${G.day}. Regroup and try again.`;
+    const secs = Math.max(0, Math.round((Date.now() - ((S.stats && S.stats.t0) || Date.now())) / 1000));
+    const hh = Math.floor(secs / 3600), mm = Math.floor((secs % 3600) / 60), ss = secs % 60;
+    $('#end-time').textContent = 'Play time ' + (hh ? hh + ':' + String(mm).padStart(2, '0') : mm) + ':' + String(ss).padStart(2, '0');
     const s = S.stats;
     const row = (label, arr) => `<span>${label}</span>` + cols.map((c) => `<b>${arr[c] || 0}</b>`).join('');
     $('#end-stats').style.gridTemplateColumns = `auto repeat(${cols.length}, auto)`;
@@ -4514,7 +4572,7 @@ const SOUND = (() => {
       }
       const rules = document.createElement('div'); rules.className = 'guide-card'; rules.style.gridColumn = '1 / -1'; rules.style.display = 'block';
       rules.innerHTML = `<h3>How a turn works</h3>
-        <p style="margin-top:6px">A coin toss decides who moves first (a spinner, in three- and four-player games). Each side gets $100 at the start of its turn (plus $50 per Oil Rig). Click a unit to act with it. If it has nothing to attack, it goes straight into moving; otherwise choose <b>Move</b> or <b>Attack</b>. Each unit can move once and attack once per turn. Move first: a unit that attacks without moving stays put for the rest of the turn. A land unit must stop when it steps into a forest. Units can walk through buildings but can't stop on them. Range counts tiles in straight steps, so range 2 covers the 8 tiles around a unit plus the 4 tiles two steps away. Click any unit, even on the other side's turn, to see where it can move and what it can hit.</p>
+        <p style="margin-top:6px">A coin toss decides who moves first (a spinner, in three- and four-player games). Each side gets $150 at the start of its turn (plus $50 per Oil Rig). Clearing a tree pays $25, and units can stand on your own HQ and towers (a hit on that tile damages everything on it). Click a unit to act with it. If it has nothing to attack, it goes straight into moving; otherwise choose <b>Move</b> or <b>Attack</b>. Each unit can move once and attack once per turn. Move first: a unit that attacks without moving stays put for the rest of the turn. A land unit must stop when it steps into a forest. Units can walk through buildings but can't stop on them. Range counts tiles in straight steps, so range 2 covers the 8 tiles around a unit plus the 4 tiles two steps away. Click any unit, even on the other side's turn, to see where it can move and what it can hit.</p>
         <p style="margin-top:6px">A unit that survives an attack hits back at full strength if the attacker is within its own range. Archer Tower shots can't be returned, and neither can area attacks: the Mage blasts every enemy within 2 tiles, and the Phoenix breathes fire in a line 3 tiles straight or 2 tiles diagonally, hitting every enemy in it. Builders put up towers on an adjacent tile; they finish at the start of your next turn and can be attacked while under construction. A Builder wears out after 3 buildings. Axe-men and Dragons can clear a forest tile next to them instead of attacking.</p>
         <p style="margin-top:6px">To ferry troops over water, move a land unit onto your Carrier from the shore. The Carrier can sail off that same turn, and from your next turn on it can unload the unit onto a free land tile beside it. A unit can still attack right after it lands. If a Carrier sinks, its passenger goes down with it. Destroy the enemy HQ to win.</p>
         <p style="margin-top:6px">A Cheerleader gives every friendly fighter within 2 tiles +25 attack (a gold star marks them; two Cheerleaders don't stack). A Gnome plants a forest ($25) or raises a mountain ($75) on open plains next to him, three times before he's worn out; mountains can't go right next to an HQ. A green dashed area around a Nurse Tent shows where it heals. Settings can cap how many Oil Rigs each side may own.</p>
@@ -4645,7 +4703,7 @@ const SOUND = (() => {
       v: PROTO, map: mapIdx, n: g.n || 0, turn: g.turn, day: g.day, winner: g.winner, gold: g.gold.slice(),
       bonus: g.startBonus, nid: g.nextId, ter: g.terrain.map((r) => r.join('')), st: g.stumps ? [...g.stumps] : [],
       first: g.first || 0, e: g.entities.map(entRow), oc: g.oilCap == null ? null : g.oilCap,
-      bi: g.bonusIncome ? g.bonusIncome.slice() : null,
+      bi: g.bonusIncome ? g.bonusIncome.slice() : null, pn: g.names ? g.names.slice() : null,
     };
     if (g.mode) Object.assign(s, { md: g.mode, tm: g.teams, od: g.order, out: g.out.slice(), im: g.incomeMul, bots: g.bots, bl: g.botLevel });
     if (stats) s.stats = stats;
@@ -4687,6 +4745,7 @@ const SOUND = (() => {
     g.startBonus = s.bonus || 0; g.nextId = s.nid; g.n = s.n || 0; g.first = s.first || 0;
     g.oilCap = s.oc == null ? null : s.oc;
     if (s.bi) g.bonusIncome = s.bi.slice(); else delete g.bonusIncome;
+    g.names = Array.isArray(s.pn) ? s.pn.slice(0, 4).map((x) => String(x || '').slice(0, 14)) : undefined;
     if (s.md === '2v1' || SEATS[s.md]) Object.assign(g, { mode: s.md, teams: s.tm, order: s.od, out: s.out.slice(), incomeMul: s.im, bots: s.bots, botLevel: s.bl });
     else { delete g.mode; delete g.teams; delete g.order; delete g.out; delete g.incomeMul; delete g.bots; delete g.botLevel; }
   }
@@ -4722,7 +4781,7 @@ const SOUND = (() => {
   function sendSt() {
     netSend({ t: 'st', v: PROTO, n: NET.count, side: NET.gid ? S.me : null,
       rm: NET.rematch.me || undefined, rs: NET.resigned === null ? undefined : NET.resigned,
-      lb: NET.role === 'host' && NET.lobby && SEATS[NET.mode] ? { j: NET.peers.size, n: SEATS[NET.mode] - 1 } : undefined });
+      lb: NET.role === 'host' && NET.lobby && SEATS[NET.mode] ? { j: NET.peers.size, n: SEATS[NET.mode] - 1, oc: settings.oilCap, sb: settings.startBonus } : undefined });
   }
   // Record a local action: number it, checksum the state it starts from, send it.
   function record(a) {
@@ -4816,7 +4875,7 @@ const SOUND = (() => {
     }
     if (NET.gid) { if (NET.role === 'host' || !m.gid) sendSync(m.pid); return; }
     if (NET.role === 'host' && NET.lobby && !m.gid) {
-      if (!SEATS[NET.mode]) createHostedGame();
+      if (!SEATS[NET.mode]) { NET.joinName = String(m.nm || '').slice(0, 14); createHostedGame(); }
       else {
         const nm = String(m.nm || '').slice(0, 14);
         if (m.pid && !NET.peers.has(m.pid) && NET.peers.size < SEATS[NET.mode] - 1) { NET.peers.set(m.pid, { side: seatList(NET.mode)[NET.peers.size], n: NET.peers.size + 2, name: nm }); announceJoin(m.pid); }
@@ -5020,6 +5079,10 @@ const SOUND = (() => {
     NET.lobby = false;
     const gid = Math.random().toString(36).slice(2, 10);
     const g = createGame(mapDefFor(NET.mapIdx), { startBonus: settings.startBonus, oilCap: settings.oilCap < 0 ? null : settings.oilCap, mode: NET.mode, botLevel: settings.difficulty });
+    // names shown above each castle: the host's, then whoever joined (blank = fall back to the empire)
+    g.names = [NET.name || '', '', '', ''];
+    if (SEATS[g.mode]) for (const q of NET.peers.values()) g.names[q.side] = q.name || '';
+    else g.names[g.mode === '2v1' ? 2 : 1] = NET.joinName || '';
     if (SEATS[g.mode]) {
       g.order = g.mode === '2v2' ? (Math.random() < 0.5 ? [0, 1, 2, 3] : [1, 2, 3, 0]) : g.order.slice().sort(() => Math.random() - 0.5);   // random order; in 2v2 the teams alternate
       g.first = g.order[0];
@@ -5222,10 +5285,22 @@ const SOUND = (() => {
   // ---- UI ----
   function setNetStatus(text) { NET.status = text; renderOnlineStatus(); updateHUD(); }
   function netError(text) { NET.error = text; renderOnlineStatus(); if (S.online) toast(text); updateHUD(); }
-  function onNetChange() { renderOnlineStatus(); updateHUD(); }
+  function rulesText(oc, sb) {
+    return 'Host rules: ' + (oc == null || oc < 0 ? 'no Oil Rig limit' : oc === 0 ? 'no Oil Rigs' : 'max ' + oc + ' Oil Rig' + (oc > 1 ? 's' : '') + ' each') + ' · ' + (sb ? 'start bonus +$' + sb : 'no start bonus');
+  }
+  function renderRules(role) {
+    const el = $('#online-rules'); if (!el) return;
+    role = role || NET.role;
+    let t = '';
+    if (role === 'host') t = rulesText(settings.oilCap, settings.startBonus);
+    else if (role === 'guest' && NET.lobbyInfo && NET.lobbyInfo.oc !== undefined) t = rulesText(NET.lobbyInfo.oc, NET.lobbyInfo.sb);
+    el.textContent = t; el.hidden = !t;
+  }
+  function onNetChange() { renderOnlineStatus(); renderRules(); updateHUD(); }
   function renderOnlineStatus() {
     const el = $('#online-status');
     if (!el) return;
+    renderRules();
     el.classList.toggle('err', !!NET.error);
     el.textContent = NET.error || NET.status ||
       (NET.role === 'host' ? (SEATS[NET.mode] ? (NET.mode === '2v2' && NET.peers.size === SEATS[NET.mode] - 1 ? 'Everyone is here! Arrange the teams, then press Start.' : 'Players joined: ' + NET.peers.size + ' of ' + (SEATS[NET.mode] - 1) + '…') : NET.oppOnline ? 'Rival found! Starting…' : 'Waiting for your rival to join…') : NET.oppOnline ? (NET.lobbyInfo && !NET.gid ? 'You’re in! ' + NET.lobbyInfo.j + ' of ' + NET.lobbyInfo.n + ' players are here. Waiting for the host to start…' : 'Found the host. Starting…') : 'Looking for game ' + (NET.code || '') + '…');
@@ -5316,6 +5391,8 @@ const SOUND = (() => {
     const link = !inClaude && /^https?:$/.test(location.protocol) && role === 'host';
     $('#online-copy').hidden = !link;
     NET.lastJoined = null; $('#online-notice').hidden = true;
+    $('#online-name-wait').value = NET.name || '';
+    renderRules(role);
     renderRoster();
     renderOnlineStatus();
   }
@@ -5354,6 +5431,13 @@ const SOUND = (() => {
   $('#online-host22').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '2v2'; show('maps'); });
   $('#online-random').addEventListener('click', randomizeTeams);
   $('#online-start').addEventListener('click', () => { if (NET.role === 'host' && NET.lobby && NET.peers.size === SEATS[NET.mode] - 1) createHostedGame(); });
+  let nameSendT = 0;
+  $('#online-name-wait').addEventListener('input', (ev) => {
+    NET.name = ev.target.value.slice(0, 14); $('#online-name').value = NET.name;
+    try { localStorage.setItem('medieval-warfare-name', NET.name); } catch (e) { /* ignore */ }
+    if (NET.role === 'host') renderRoster();
+    else if (NET.role === 'guest' && !NET.gid) { clearTimeout(nameSendT); nameSendT = setTimeout(() => sendSt(), 250); }   // the host's roster picks the new name up
+  });
   $('#online-name').addEventListener('input', (ev) => { NET.name = ev.target.value.slice(0, 14); try { localStorage.setItem('medieval-warfare-name', NET.name); } catch (e) { /* ignore */ } });
   $('#online-host2').addEventListener('click', () => { SOUND.play('select'); closeModal($('#modal-online')); S.flow = 'host'; NET.pendingMode = '2v1'; show('maps'); });
   $('#online-join').addEventListener('click', () => joinGame($('#online-code').value));
